@@ -1,4 +1,4 @@
-package com.example.algorithm_development
+package com.sawears.algorithm_development
 
 class Main {
 }

@@ -33,6 +33,6 @@ tasks.test {
 }
 
 application {
-    mainClass.set("com.example.algorithm_development.MainKt")
+    mainClass.set("com.sawears.algorithm_development.MainKt")
 }
 

@@ -1,4 +1,4 @@
-package com.example.sawears_client
+package com.sawears.sawears_client
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
