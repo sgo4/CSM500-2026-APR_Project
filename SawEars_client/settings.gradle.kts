@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SawEars_client"
 include(":app")
+include(":algorithm_development")
