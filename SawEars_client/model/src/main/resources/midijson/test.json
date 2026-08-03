@@ -1,0 +1,38 @@
+{
+    "title": "Never gonna give you up",
+    "composers": ["Rick Astley"],
+    "notes": [
+        {
+            "pitch": 61,
+            "duration": 1.5
+        },
+        {
+            "pitch": 63,
+            "duration": 1.5
+        },
+        {
+            "pitch": 64,
+            "duration": 1.5
+        },
+        {
+            "pitch": 64,
+            "duration": 1.5
+        },
+        {
+            "pitch": 66,
+            "duration": 1.5
+        },
+        {
+            "pitch": 63,
+            "duration": 1.5
+        },
+        {
+            "pitch": 61,
+            "duration": 1.5
+        },
+        {
+            "pitch": 59,
+            "duration": 6
+        }
+    ]
+}
