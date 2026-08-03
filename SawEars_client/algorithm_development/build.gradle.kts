@@ -32,14 +32,9 @@ tasks.test {
     useJUnitPlatform()
 }
 
-<<<<<<< HEAD
 dokka {
     dokkaSourceSets.main {
         includes.from("docs/packages.md")
     }
-=======
-application {
-    mainClass.set("com.sawears.algorithm_development.MainKt")
->>>>>>> 80a2dfeac97401bcf5579e85545b576604ed29ce
 }
 

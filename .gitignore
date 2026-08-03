@@ -53,3 +53,7 @@ local.properties
 
 # personal files marked 'tmp_'
 *tmp_*
+
+# large files
+*csv
+*wav
