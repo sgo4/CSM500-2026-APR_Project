@@ -5,8 +5,9 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
+import kotlin.test.assertFailsWith
 import kotlin.test.assertEquals
-import kotlin.math.round
+import kotlin.test.Test
 
 class SongTest {
 
@@ -28,6 +29,20 @@ class SongTest {
 
         assertEquals(expected,transposedSong)
 
+    }
+    @Test
+    fun `range transposition fails if target range smaller than song range`(){
+
+        val song = generateTestSong(
+            intArrayOf(1,1000) // song with a really big range!
+        )
+
+        val rangeMin = 2
+        val rangeMax = 4 // really small target range!
+
+        assertFailsWith<TranspositionException> {
+            song.adaptForRange(rangeMin, rangeMax)
+        }
     }
 
     /*
