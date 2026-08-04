@@ -73,6 +73,5 @@ class NoteTest {
         assertFailsWith<TranspositionException>{
             note.transpose(-1)
          }
-
     }
 }

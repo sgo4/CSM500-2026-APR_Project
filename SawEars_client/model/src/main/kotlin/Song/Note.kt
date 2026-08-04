@@ -42,6 +42,11 @@ data class Note(
      * @return a new Note with updated pitch
      */
     fun transpose(semitones: Int): Note {
+
+        // do not transpose negative note values as these represent rests
+        if (pitchMidi < 0){
+            return this
+        }
         val transposedPitch = pitchMidi + semitones
         if (transposedPitch < 0){
             throw TranspositionException("Pitch $pitchMidi cannot be transposed by $semitones semitones")

@@ -49,15 +49,21 @@ data class Song(
      */
     fun adaptForRange(minMidi: Int, maxMidi: Int): Song {
 
-        // throw error if max not greater than min
         if (maxMidi <= minMidi){
+            // throw error if max not greater than min
             throw TranspositionException(
                 "Unable to transpose for range min=$minMidi max=$maxMidi. Max must be greater than min."
             )
+        } else if (maxMidi < 0 || minMidi < 0){
+            // throw error if range includes negative values
+            throw TranspositionException(
+                "Transposition failed: target range boundaries must be postitive vs. min=$minMidi max=$maxMidi"
+            )
         }
 
-        val songMin = notes.minOf { it.pitchMidi}
-        val songMax = notes.maxOf { it.pitchMidi }
+        // calculate song range, only factoring in positive values
+        val songMin = notes.filter {it.pitchMidi >= 0}.minOf { it.pitchMidi}
+        val songMax = notes.filter {it.pitchMidi >= 0}.maxOf { it.pitchMidi }
         val songRange = songMax - songMin
         val targetRange = maxMidi - minMidi
 

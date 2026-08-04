@@ -97,11 +97,11 @@ class WindowsSineWaveGenerator(
 
 
 fun main(){
-    val name = "test"
+    val name = "somewhereovertherainbow"
     var song = SongRepository().load(name).toSong()
 
     var t = 0
-    repeat(4){
+    repeat(1){
         println("transpose $t")
         song=song.transpose(t)
         t += 2

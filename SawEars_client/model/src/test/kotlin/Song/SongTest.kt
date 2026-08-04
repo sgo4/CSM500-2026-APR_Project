@@ -60,6 +60,21 @@ class SongTest {
         }
     }
 
+    @Test
+    fun `range transposition fails with negative range boundaries`(){
+
+        val song = generateTestSong(
+            intArrayOf(1,2) // song with a really big range!
+        )
+
+        val rangeMin = -1 // negative range
+        val rangeMax = 20
+
+        assertFailsWith<TranspositionException> {
+            song.adaptForRange(rangeMin, rangeMax)
+        }
+    }
+
     /*
      * Test cases in form notes, rangeMin, rangeMax, transposed notes
      */
