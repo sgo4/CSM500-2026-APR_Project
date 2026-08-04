@@ -39,6 +39,43 @@ data class Song(
             transposedNotes
         )
     }
+
+    /**
+     * Transpose song to better fit an instrumental / vocal range
+     *
+     * @param minMidi the lowest note the instrument / voice can produce
+     * @param maxMidi the highest note the instrument / voice can produce
+     * @return a new song object with transposed melody centred on target range
+     */
+    fun adaptForRange(minMidi: Int, maxMidi: Int): Song {
+
+        // throw error if max not greater than min
+        if (maxMidi <= minMidi){
+            throw TranspositionException(
+                "Unable to transpose for range min=$minMidi max=$maxMidi. Max must be greater than min."
+            )
+        }
+
+        val songMin = notes.minOf { it.pitchMidi}
+        val songMax = notes.maxOf { it.pitchMidi }
+        val songRange = songMax - songMin
+        val targetRange = maxMidi - minMidi
+
+        // throw exception if song's range is wider than the target range
+        if (songRange < targetRange){
+            throw TranspositionException(
+                "Transposition failed. Range of song ($songRange) is greater than target ($targetRange)"
+            )
+        }
+
+        // attempt to center melody on instrument range
+        val targetRangeCentre = minMidi + (maxMidi - minMidi) / 2
+        val songRangeCentre = songMin + (songMax - songMin) / 2
+        // calculate distance between centres (in semitones)
+        val transpositionDistance = targetRangeCentre - songRangeCentre
+        // return new Song object with melody transposed
+        return transpose(transpositionDistance)
+    }
 }
 
 /**
