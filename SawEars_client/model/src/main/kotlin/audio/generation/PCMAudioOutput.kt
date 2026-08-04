@@ -1,4 +1,4 @@
-package com.sawears.core.audio.generation
+package com.sawears.model.audio.generation
 
 /**
  * Provides a stream of raw PCM samples for audio output
