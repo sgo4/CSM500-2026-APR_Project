@@ -1,5 +1,5 @@
 package com.sawears.model.io.audioOut
-import com.sawears.model.Song.Note
+
 import com.sawears.model.Song.Song
 import kotlin.math.PI
 import kotlin.math.roundToInt
@@ -10,16 +10,19 @@ import kotlin.math.sin
  * Servers as platform independent input for platform
  * dependent sound generation.
  *
- * @property samples a stream of signed 16 bit PCM samples
- * @property sampleRate sample rate
+ * @param input a Song to be converted to sine wave output
+ * @param defaultTempo tempo to be used if none specified by input
+ * @param amplitude controls volume (float in range -1 <= amplitude <= 1)
+ * @property sampleRate samples per second
+ * @property attackReleaseMillis transition period between notes to avoid jumps (ms)
  */
-class PCMAudioOutputSource(
+internal class SineWaveOutputSource(
     input: Song,
     defaultTempo: Int = 90,
-    val sampleRate: Float = 48_000f,
-    val amplitude: Float = 0.25f,
-    val attackReleaseMillis: Double = 5.0
-){
+    override val sampleRate: Int = 48_000,
+    private val amplitude: Float = 0.25f,
+    private val attackReleaseMillis: Double = 5.0
+): AudioOutputSource {
     private val tempo = input.tempo?: defaultTempo
     private val notes = input.notes
     private val samples = sinePCMStream()
@@ -29,6 +32,25 @@ class PCMAudioOutputSource(
         require(tempo > 0){
             "Tempo must be an integer greater than 0"
         }
+        require(amplitude in -1f..1f){
+            "Amplitude must be in range -1 <= amplitude <= 1"
+        }
+    }
+
+    override fun readIntoBuffer(buffer: ShortArray): Int{
+        val windowSize = buffer.size
+        if (offset >= samples.size){
+            return 0
+        }
+
+        val count = minOf(windowSize,(samples.size - offset))
+
+        for (idx in 0 until count){
+            buffer[idx] = samples[offset]
+            offset++
+        }
+
+        return count
     }
 
     /**
@@ -80,24 +102,4 @@ class PCMAudioOutputSource(
         return samples
     }
 
-    /**
-     * Fill a given buffer with the next window of PCM samples
-     *
-     * @return the number of samples written
-     */
-    fun readIntoBuffer(destination: ShortArray): Int{
-        val windowSize = destination.size
-        if (offset >= samples.size){
-            return 0
-        }
-
-        val count = minOf(windowSize,(samples.size - offset))
-
-        for (idx in 0 until count){
-            destination[idx] = samples[offset]
-            offset++
-        }
-
-        return count
-    }
 }

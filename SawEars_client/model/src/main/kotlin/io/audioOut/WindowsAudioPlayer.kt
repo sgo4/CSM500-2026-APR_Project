@@ -12,14 +12,14 @@ import com.sawears.model.Song.toSong
  * TODO move this to a platform specific folder (or simply delete)
  */
 class WindowsSineWaveGenerator(
-    val audioSource: PCMAudioOutputSource
+    val audioSource: AudioOutputSource
 ): Closeable{
     val sampleRate = audioSource.sampleRate
     val windowSize = (sampleRate * 0.02).toInt() // calculate window to deliver audio in ~0.2 ms chunks
     private val byteWindow = ByteArray(windowSize * Short.SIZE_BYTES)
     private val buffer = ShortArray(windowSize)
     private val format = AudioFormat(
-        sampleRate,
+        sampleRate.toFloat(),
         16,
         1,
         true,
@@ -105,7 +105,7 @@ fun main(){
         println("transpose $t")
         song=song.transpose(t)
         t += 2
-        val audioSource = PCMAudioOutputSource(
+        val audioSource: AudioOutputSource = SineWaveOutputSource(
             song
         )
         val genny = WindowsSineWaveGenerator(
