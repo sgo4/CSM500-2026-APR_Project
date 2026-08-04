@@ -98,15 +98,15 @@ class WindowsSineWaveGenerator(
 
 fun main(){
     val name = "somewhereovertherainbow"
-    var song = SongRepository().load(name).toSong()
+    val song = SongRepository().load(name).toSong()
 
-    var t = 0
-    repeat(1){
+    var t = -40
+    repeat(4){
         println("transpose $t")
-        song=song.transpose(t)
-        t += 2
+        val transposedsong=song.transpose(t)
+        t += 5
         val audioSource: AudioOutputSource = SineWaveOutputSource(
-            song
+            transposedsong
         )
         val genny = WindowsSineWaveGenerator(
             audioSource
