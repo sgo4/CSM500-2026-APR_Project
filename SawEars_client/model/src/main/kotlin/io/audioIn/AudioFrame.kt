@@ -3,10 +3,10 @@ package com.sawears.model.io.audioIn
 /**
  * A single frame of audio
  *
- * @param samples an array of PCM samples
- * @param timeStamp time captured
+ * @param samples an array of normalised PCM samples
+ * @param timeStampNanos time captured
  */
 class AudioFrame(
     val samples: FloatArray,
-    val timeStamp: Double
+    val timeStampNanos: Double
 )
