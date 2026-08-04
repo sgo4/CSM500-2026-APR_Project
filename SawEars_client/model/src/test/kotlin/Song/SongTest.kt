@@ -1,26 +1,43 @@
 package com.sawears.model.Song
 
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
 import kotlin.test.assertEquals
 import kotlin.math.round
 
 class SongTest {
 
+    /**
+     * Tests that a Song can be correctly transposed to fit within a given range
+     */
     @ParameterizedTest
-    @CsvSource(
+    @MethodSource("validTranspositionTestCases")
+    fun `transpose song to fit target range`(
+        melody: IntArray,
+        rangeMin: Int,
+        rangeMax: Int,
+        transposedMelody: IntArray
+    ){
 
-    )
-    fun `transpose song to fit target range`(){
+        val song = generateTestSong(melody)
+        val transposedSong = song.adaptForRange(rangeMin, rangeMax)
+        val expected = generateTestSong(transposedMelody)
 
+        assertEquals(expected,transposedSong)
 
     }
 
+    /*
+     * Test cases in form notes, rangeMin, rangeMax, transposed notes
+     */
     companion object {
         @JvmStatic
-        fun testSongs(): Stream<Arguments> = Stream.of(
-            Arguments.of(),
-            Arguments.of()
+        fun validTranspositionTestCases(): Stream<Arguments> = Stream.of(
+            Arguments.of(intArrayOf(1,2,3),9,11,intArrayOf(9,10,11)),
+            Arguments.of(intArrayOf(1,6,10),20,40, intArrayOf(26,31,35))
         )
     }
 }

@@ -62,7 +62,7 @@ data class Song(
         val targetRange = maxMidi - minMidi
 
         // throw exception if song's range is wider than the target range
-        if (songRange < targetRange){
+        if (songRange > targetRange){
             throw TranspositionException(
                 "Transposition failed. Range of song ($songRange) is greater than target ($targetRange)"
             )
