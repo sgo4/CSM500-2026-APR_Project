@@ -45,6 +45,21 @@ class SongTest {
         }
     }
 
+    @Test
+    fun `range transposition fails with negative target range`(){
+
+        val song = generateTestSong(
+            intArrayOf(1,2) // song with a really big range!
+        )
+
+        val rangeMin = 20
+        val rangeMax = 2 // max less than min
+
+        assertFailsWith<TranspositionException> {
+            song.adaptForRange(rangeMin, rangeMax)
+        }
+    }
+
     /*
      * Test cases in form notes, rangeMin, rangeMax, transposed notes
      */
@@ -52,7 +67,8 @@ class SongTest {
         @JvmStatic
         fun validTranspositionTestCases(): Stream<Arguments> = Stream.of(
             Arguments.of(intArrayOf(1,2,3),9,11,intArrayOf(9,10,11)),
-            Arguments.of(intArrayOf(1,6,10),20,40, intArrayOf(26,31,35))
+            Arguments.of(intArrayOf(1,6,10),20,40, intArrayOf(26,31,35)),
+            Arguments.of(intArrayOf(2,4,6,8),1,10,intArrayOf(2,4,6,8))
         )
     }
 }
