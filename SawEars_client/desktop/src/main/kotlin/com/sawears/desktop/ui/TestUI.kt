@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.sawears.algorithm_development.pitch.PitchResult
 import kotlinx.coroutines.delay
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -27,10 +28,88 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.data.io.audioIn.AudioInputSource
+import kotlin.math.ceil
 
 @Composable
 fun TestUI(){
 }
+
+/**
+ * Canvas for piano roll style lesson
+ *
+ * @param minPitchMidi min pitch to display
+ * @param maxPitchMidi max pitch to display
+ * @param durationSeconds time range to display
+ * @param currentTimeNanos current timestamp
+ */
+@Composable
+fun lessonCanvas(
+    minPitchMidi: Float,
+    maxPitchMidi: Float,
+    durationSeconds: Double,
+    currentTimeNanos: Long = 1L
+){
+
+    Canvas(Modifier.fillMaxSize()){
+        // set up canvas dimensions
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+
+        if (canvasWidth <= 0f || canvasHeight <= 0f) {
+            return@Canvas
+        }
+
+        drawOctaveBoundaries(
+            minPitchMidi,
+            maxPitchMidi,
+            canvasWidth,
+            canvasHeight
+        )
+    }
+
+}
+
+/**
+ * Generate octave dividers for pitch display
+ *
+ * @param canvas canvas object on which to draw boundaries
+ * @param minMidi
+ * @param maxMidi
+ * @param colour (colour of midi lines on screen)
+ * @param canvasWidth
+ * @param canvasHeight
+ */
+fun DrawScope.drawOctaveBoundaries(
+    minMidi: Float,
+    maxMidi: Float,
+    canvasWidth: Float,
+    canvasHeight: Float,
+    colour: Color = Color(0xFF343A40)
+){
+
+    val firstMidiLine = ceil(minMidi / 12f).toInt() * 12
+
+    var midiLine = firstMidiLine
+
+    while(midiLine <= maxMidi){
+        val yCoord = midiToY(
+            midiLine.toFloat(),
+            minMidi,
+            maxMidi,
+            canvasHeight
+        )
+
+        drawLine(
+            colour,
+            Offset(0f,yCoord),
+            Offset(canvasWidth, yCoord),
+            strokeWidth = 1f
+        )
+
+        midiLine += 12 // note: 12 semitones in an octave
+    }
+}
+
 
 /**
  * Convert Hz values (logarithmic) to midi (linear) for
