@@ -1,4 +1,4 @@
-package com.sawears.model.io.audioIn
+package com.sawears.data.io.audioIn
 
 /**
  * A single frame of audio

@@ -1,4 +1,4 @@
-package com.sawears.model.io.audioOut
+package com.sawears.data.io.audioOut
 
 import java.io.Closeable
 import javax.sound.sampled.AudioFormat

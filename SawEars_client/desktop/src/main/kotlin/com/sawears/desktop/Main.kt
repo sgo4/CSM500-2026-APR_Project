@@ -1,8 +1,7 @@
 package com.sawears.desktop
 
 import com.sawears.desktop.io.audioOut.WindowsSineWaveGenerator
-import com.sawears.model.io.audioOut.AudioOutputSource
-import com.sawears.model.io.audioOut.SinewWa
+import com.sawears.data.io.audioOut.AudioOutputSource
 import com.sawears.model.useCases.LoadSong
 
 suspend fun main(){

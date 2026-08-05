@@ -1,4 +1,4 @@
-package com.sawears.model.Song
+package com.sawears.model
 
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

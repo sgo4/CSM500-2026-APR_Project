@@ -1,4 +1,4 @@
-package com.sawears.model.io.audioIn
+package com.sawears.data.io.audioIn
 
 /**
  * Generic interface for audio source as a stream of normalized PCM samples

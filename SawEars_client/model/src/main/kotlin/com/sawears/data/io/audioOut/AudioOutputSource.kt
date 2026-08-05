@@ -1,4 +1,4 @@
-package com.sawears.model.io.audioOut
+package com.sawears.data.io.audioOut
 
 /**
  * Model layer audio output interface.

@@ -1,4 +1,4 @@
-package com.sawears.model.Song
+package com.sawears.model
 
 import kotlinx.serialization.Serializable
 import kotlin.math.pow

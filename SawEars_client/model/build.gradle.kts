@@ -12,7 +12,6 @@ dependencies {
     implementation("be.tarsos.dsp:core:2.5")
     implementation("be.tarsos.dsp:jvm:2.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-    implementation(project(":data"))
 }
 
 tasks.test {
