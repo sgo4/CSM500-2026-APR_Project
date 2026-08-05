@@ -1,8 +1,33 @@
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+
 plugins {
     kotlin("jvm")
 
     kotlin("plugin.serialization") version "2.2.0"
+    id("org.jetbrains.dokka") version "2.2.0"
 
+}
+
+dokka {
+    dokkaPublications.html {
+        moduleName.set("sawears.model")
+        moduleVersion.set(project.version.toString())
+
+        outputDirectory.set(
+            layout.buildDirectory.dir("documentation/html")
+        )
+
+        failOnWarning.set(true)
+    }
+
+    dokkaSourceSets.main {
+        documentedVisibilities.set(
+            setOf(VisibilityModifier.Public)
+        )
+
+        skipDeprecated.set(false)
+        suppressGeneratedFiles.set(true)
+    }
 }
 
 
