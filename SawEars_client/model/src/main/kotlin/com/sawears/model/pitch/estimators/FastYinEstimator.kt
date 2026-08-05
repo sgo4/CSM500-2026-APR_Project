@@ -1,7 +1,7 @@
 package com.sawears.model.pitch.estimators
 
 import be.tarsos.dsp.pitch.FastYin
-import com.sawears.model.io.audioIn.AudioFrame
+import com.sawears.data.io.audioIn.AudioFrame
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.PitchResult
 

@@ -1,15 +1,20 @@
 package com.sawears.desktop
 
-import com.sawears.desktop.io.audioOut.WindowsSineWaveGenerator
+import com.sawears.data.io.audioOut.WindowsSineWaveGenerator
 import com.sawears.data.io.audioOut.AudioOutputSource
+import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.model.useCases.LoadSong
+import com.sawears.data.MidiJsonRepository
+import com.sawears.model.Song
 
 suspend fun main(){
     val name = "somewhereovertherainbow"
-    val song = LoadSong().load(name)?: error("Song not found")
+    val song: Song = LoadSong(
+        MidiJsonRepository()
+    ).load(name)?: error("Song with that name not found")
 
 
-    var t = -40
+    var t = -5
     repeat(4){
         println("transpose $t")
         val transposedsong=song.transpose(t)

@@ -1,6 +1,6 @@
 package com.sawears.data.io.audioOut
 
-import com.sawears.model.Song.Song
+import com.sawears.model.Song
 import kotlin.math.PI
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -16,7 +16,7 @@ import kotlin.math.sin
  * @property sampleRate samples per second
  * @property attackReleaseMillis transition period between notes to avoid jumps (ms)
  */
-internal class SineWaveOutputSource(
+class SineWaveOutputSource(
     input: Song,
     defaultTempo: Int = 90,
     override val sampleRate: Int = 48_000,

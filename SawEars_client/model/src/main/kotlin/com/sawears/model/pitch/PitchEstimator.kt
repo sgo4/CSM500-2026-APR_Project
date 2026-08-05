@@ -1,6 +1,6 @@
 package com.sawears.model.pitch
 
-import com.sawears.model.io.audioIn.AudioFrame
+import com.sawears.data.io.audioIn.AudioFrame
 
 /**
  * Model layer interface representing a pitch estimator

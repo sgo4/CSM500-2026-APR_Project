@@ -3,13 +3,9 @@ package com.sawears.data.io.audioOut
 import java.io.Closeable
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
-import com.sawears.data.midijson.SongRepository
-import com.sawears.model.Song.toSong
 
 /**
- * Class for simple sine wave generator
- *
- * TODO move this to a platform specific folder (or simply delete)
+ * Windows implementation of a simple sine wave generator, for test purposes
  */
 class WindowsSineWaveGenerator(
     val audioSource: AudioOutputSource
@@ -92,43 +88,4 @@ class WindowsSineWaveGenerator(
         line.stop()
         line.close()
     }
-}
-
-
-
-fun main(){
-    val name = "somewhereovertherainbow"
-    val song = SongRepository().load(name).toSong()
-
-    var t = -40
-    repeat(4){
-        println("transpose $t")
-        val transposedsong=song.transpose(t)
-        t += 5
-        val audioSource: AudioOutputSource = SineWaveOutputSource(
-            transposedsong
-        )
-        val genny = WindowsSineWaveGenerator(
-            audioSource
-        )
-
-        try{
-            genny.use {
-
-                    player ->
-                while (true){
-                    val windowLength = player.writeWindow()
-                    if (windowLength < 1){
-                        break
-                    }
-                }
-            }
-            genny.drain()
-        } finally {
-            genny.close()
-        }
-    }
-
-
-
 }
