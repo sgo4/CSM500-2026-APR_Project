@@ -7,7 +7,7 @@ import com.sawears.model.useCases.LoadSong
 import com.sawears.data.MidiJsonRepository
 import com.sawears.model.Song
 
-suspend fun main(){
+suspend fun loadasongandplayit(){
     val name = "somewhereovertherainbow"
     val song: Song = LoadSong(
         MidiJsonRepository()
@@ -44,5 +44,9 @@ suspend fun main(){
     }
 
 
+
+}
+
+fun main(){
 
 }
