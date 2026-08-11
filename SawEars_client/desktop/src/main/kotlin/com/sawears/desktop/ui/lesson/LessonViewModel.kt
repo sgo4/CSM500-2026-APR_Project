@@ -1,10 +1,7 @@
-package com.sawears.desktop.ui
+package com.sawears.desktop.ui.lesson
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
-import com.sawears.data.MidiJsonRepository
-import com.sawears.model.useCases.LoadSong
-import com.sawears.model.Note
+import com.sawears.desktop.AppContainer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,33 +11,11 @@ import com.sawears.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import com.sawears.data.io.audioOut.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 
-interface AppContainer {
-    val loadSong: LoadSong
-    val audioPlayer: AudioPlayer
-}
 
-/**
- * Simple dependency injection container to supply classes to application.
- *
- * Could be replaced with more advanced DI through hilt etc. but not necessary at
- * this stage as dependencies are fairly simple.
- */
-class DefaultAppContainer : AppContainer {
-    // class that handles loading songs from a repository
-    override val loadSong: LoadSong = LoadSong(
-        MidiJsonRepository()
-    )
-    // audio player class
-    override val audioPlayer = WindowsAudioPlayer(
-        SineWaveOutputSource()
-    )
-}
 
 /**
  * Experimental working class for a view model holding lesson state

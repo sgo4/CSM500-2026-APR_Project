@@ -1,68 +1,29 @@
-package com.sawears.desktop.ui
+package com.sawears.desktop.ui.lesson.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import kotlin.math.ln
-import kotlin.math.ceil
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sawears.desktop.ui.lesson.DisplayNote
+import com.sawears.desktop.ui.lesson.LessonUiState
+import com.sawears.desktop.ui.lesson.LessonViewModel
+import kotlin.math.ceil
+import kotlin.math.ln
 
-fun TestApp() = application{
-
-    val container = DefaultAppContainer()
-
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Real-time pitch graph"
-    ) {
-        MaterialTheme {
-            Surface(Modifier.fillMaxSize()) {
-                mainScreen(container)
-            }
-        }
-    }
-}
-
-@Composable
-fun mainScreen(container: AppContainer){
-
-    val viewModel = viewModel {LessonViewModel(container)}
-
-
-    LaunchedEffect(Unit) {
-        viewModel.loadSong("somewhereovertherainbow")
-    }
-
-    Column(){
-        Text("Main Screen")
-        when {
-//            viewModel.data != null -> Text(viewModel.data!!.title)
-            !viewModel.loading ->   lessonCanvas(
-                20.0,
-                System.nanoTime(),
-                viewModel
-            )
-        }
-    }
-
-}
 
 /**
  * Canvas for piano roll style lesson
@@ -142,7 +103,12 @@ fun lessonCanvas(
             if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
                 return@Canvas
             }
-
+            drawOctaveBoundaries(
+                minPitchMidi,
+                maxPitchMidi,
+                canvasWidthPx,
+                canvasHeightPx
+            )
             drawPianoRoll(
                 lessonState,
                 minPitchMidi,
@@ -187,6 +153,7 @@ fun DrawScope.drawPianoRoll(
         )
     }
 }
+
 fun DrawScope.drawNote(
     note: DisplayNote,
     minMidi: Float,
@@ -225,8 +192,8 @@ fun DrawScope.drawNote(
 fun DrawScope.drawOctaveBoundaries(
     minMidi: Float,
     maxMidi: Float,
-    canvasWidth: Float,
-    canvasHeight: Float,
+    canvasWidthPx: Float,
+    canvasHeightPx: Float,
     colour: Color = Color(0xFF343A40)
 ){
 
@@ -239,13 +206,13 @@ fun DrawScope.drawOctaveBoundaries(
             midiLine.toFloat(),
             minMidi,
             maxMidi,
-            canvasHeight
+            canvasHeightPx
         )
 
         drawLine(
             colour,
             Offset(0f,yCoord),
-            Offset(canvasWidth, yCoord),
+            Offset(canvasWidthPx, yCoord),
             strokeWidth = 1f
         )
 

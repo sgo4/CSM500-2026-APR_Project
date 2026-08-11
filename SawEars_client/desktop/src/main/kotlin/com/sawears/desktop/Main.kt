@@ -1,54 +1,32 @@
 package com.sawears.desktop
 
-import com.sawears.data.io.audioOut.WindowsSineWaveGenerator
-import com.sawears.data.io.audioOut.AudioOutputSource
-import com.sawears.data.io.audioOut.SineWaveOutputSource
-import com.sawears.model.useCases.LoadSong
-import com.sawears.data.MidiJsonRepository
-import com.sawears.desktop.ui.TestApp
-import com.sawears.model.Song
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import com.sawears.desktop.DefaultAppContainer
+import com.sawears.desktop.ui.lesson.lessonMainScreen
 
-//suspend fun loadasongandplayit(){
-//    val name = "somewhereovertherainbow"
-//    val song: Song = LoadSong(
-//        MidiJsonRepository()
-//    ).load(name)?: error("Song with that name not found")
-//
-//
-//    var t = -5
-//    repeat(4){
-//        println("transpose $t")
-//        val transposedsong=song.transpose(t)
-//        t += 5
-//        val audioSource: AudioOutputSource = SineWaveOutputSource(
-//            transposedsong
-//        )
-//        val genny = WindowsSineWaveGenerator(
-//            audioSource
-//        )
-//
-//        try{
-//            genny.use {
-//
-//                    player ->
-//                while (true){
-//                    val windowLength = player.writeWindow()
-//                    if (windowLength < 1){
-//                        break
-//                    }
-//                }
-//            }
-//            genny.drain()
-//        } finally {
-//            genny.close()
-//        }
-//    }
-//
-//
-//
-//}
+
+fun SawEarsApp() = application {
+
+    val container = DefaultAppContainer()
+
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Real-time pitch graph"
+    ) {
+        MaterialTheme {
+            Surface(Modifier.fillMaxSize()) {
+                lessonMainScreen(container)
+            }
+        }
+    }
+}
 
 fun main(){
     println("starting")
-    TestApp()
+    SawEarsApp()
 }
