@@ -7,25 +7,24 @@ import kotlin.math.sin
 
 /**
  * Provides a stream of PCM samples for audio output
- * Servers as platform independent input for platform
+ * Serves as platform independent input for platform
  * dependent sound generation.
  *
- * @param input a Song to be converted to sine wave output
  * @param defaultTempo tempo to be used if none specified by input
  * @param amplitude controls volume (float in range -1 <= amplitude <= 1)
  * @property sampleRate samples per second
  * @property attackReleaseMillis transition period between notes to avoid jumps (ms)
  */
 class SineWaveOutputSource(
-    input: Song,
+    var currentInput: Song? = null,
     defaultTempo: Int = 90,
     override val sampleRate: Int = 48_000,
     private val amplitude: Float = 0.25f,
     private val attackReleaseMillis: Double = 5.0
 ): AudioOutputSource {
-    private val tempo = input.tempo?: defaultTempo
-    private val notes = input.notes
-    private val samples = sinePCMStream()
+
+    private var tempo = defaultTempo
+    private var samples: ShortArray? = null
     private var offset = 0
 
     init {
@@ -37,16 +36,30 @@ class SineWaveOutputSource(
         }
     }
 
+    override fun loadInput(input: Song){
+        currentInput = input
+        tempo = currentInput!!.tempo?: tempo
+        reset()
+    }
+
+    override fun reset(){
+        samples = sinePCMStream(currentInput!!)
+        offset = 0
+    }
+
     override fun readIntoBuffer(buffer: ShortArray): Int{
+        if (samples == null){
+            return 0
+        }
         val windowSize = buffer.size
-        if (offset >= samples.size){
+        if (offset >= samples!!.size){
             return 0
         }
 
-        val count = minOf(windowSize,(samples.size - offset))
+        val count = minOf(windowSize,(samples!!.size - offset))
 
         for (idx in 0 until count){
-            buffer[idx] = samples[offset]
+            buffer[idx] = samples!![offset]
             offset++
         }
 
@@ -56,7 +69,8 @@ class SineWaveOutputSource(
     /**
      * Generate a signed 16 bit PCM sample stream for a sine wave at correct hz values
      */
-    private fun sinePCMStream(): ShortArray{
+    private fun sinePCMStream(input: Song): ShortArray{
+        val notes = input.notes
         val n_frames = notes.sumOf { note ->
             (note.toMs(tempo) * sampleRate / 1_000.0).toInt()
         }

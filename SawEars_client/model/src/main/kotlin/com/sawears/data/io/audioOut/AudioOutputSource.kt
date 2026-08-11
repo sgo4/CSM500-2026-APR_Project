@@ -1,5 +1,7 @@
 package com.sawears.data.io.audioOut
 
+import com.sawears.model.Song
+
 /**
  * Model layer audio output interface.
  *
@@ -11,11 +13,15 @@ package com.sawears.data.io.audioOut
 interface AudioOutputSource {
 
     val sampleRate: Int
+
+    fun loadInput(input: Song)
+    fun reset()
     /**
      * Read a frame of samples into an audio processing buffer.
      *
      * @return the number of samples written, or 0 if source is empty
      */
     fun readIntoBuffer(buffer: ShortArray): Int
+
 
 }

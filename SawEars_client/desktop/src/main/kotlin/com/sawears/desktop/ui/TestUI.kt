@@ -99,15 +99,28 @@ fun lessonCanvas(
         val player = lessonState.player?: return
 
         Text(player.song.title)
-        Button(
-            viewModel::togglePlay
-        ){
-            if (lessonState.paused){
-                Text("Play")
-            } else{
-                Text("Pause")
+        Row(modifier = Modifier.fillMaxWidth()){
+            Button(
+                viewModel::toggleLessonPlay
+            ){
+                if (lessonState.paused){
+                    Text("Play")
+                } else{
+                    Text("Pause")
+                }
+            }
+
+            Button(
+                viewModel::playAudio
+            ){
+                if (lessonState.audioPaused){
+                    Text("Play Audio")
+                } else{
+                    Text("Pause Audio")
+                }
             }
         }
+
 
         Canvas(Modifier.fillMaxSize()){
             val player = lessonState.player?: return@Canvas

@@ -1,5 +1,6 @@
 package com.sawears.desktop.ui
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import com.sawears.data.MidiJsonRepository
 import com.sawears.model.useCases.LoadSong
@@ -13,14 +14,31 @@ import com.sawears.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import com.sawears.data.io.audioOut.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 
 interface AppContainer {
     val loadSong: LoadSong
+    val audioPlayer: AudioPlayer
 }
 
+/**
+ * Simple dependency injection container to supply classes to application.
+ *
+ * Could be replaced with more advanced DI through hilt etc. but not necessary at
+ * this stage as dependencies are fairly simple.
+ */
 class DefaultAppContainer : AppContainer {
+    // class that handles loading songs from a repository
     override val loadSong: LoadSong = LoadSong(
         MidiJsonRepository()
+    )
+    // audio player class
+    override val audioPlayer = WindowsSineWaveGenerator(
+        SineWaveOutputSource()
     )
 }
 
@@ -33,10 +51,12 @@ class DefaultAppContainer : AppContainer {
  * Current pitch
  */
 class LessonViewModel(
-    private val container: AppContainer
+    container: AppContainer
 ): ViewModel() {
     val loadSong = container.loadSong
-
+    val audioPlayer = container.audioPlayer
+    private var playbackJob: Job? = null
+    var lessonPlayer: LessonPlayer? = null
     private val _state = MutableStateFlow(LessonUiState())
     val lessonState = _state.asStateFlow()
     var loading by mutableStateOf(false)
@@ -52,9 +72,12 @@ class LessonViewModel(
 
             try {
                 val song = loadSong.load(title)!!
+                lessonPlayer = LessonPlayer(song)
+                setPlayBackSong(song)
                 _state.update {
-                    LessonUiState(
-                        LessonPlayer(song)
+                    it.copy(
+                        song= song,
+                        player = lessonPlayer
                     )
                 }
             } catch (exception: Exception) {
@@ -65,6 +88,47 @@ class LessonViewModel(
         }
     }
 
+    fun toggleAudioPause(){
+
+        _state.update {
+            it.copy(
+                audioPaused = !it.audioPaused
+            )
+        }
+        if (_state.value.audioPaused){
+            audioPlayer.pause()
+        } else {
+            audioPlayer.play()
+        }
+
+    }
+
+    fun setPlayBackSong(song: Song){
+        audioPlayer.audioSource.loadInput(song)
+    }
+
+    fun playAudio(){
+        toggleAudioPause()
+        if (_state.value.audioPaused) {
+            playbackJob?.cancel()
+            playbackJob = null
+            return
+        }
+
+
+        playbackJob = viewModelScope.launch(Dispatchers.Default) {
+            while (isActive && !_state.value.audioPaused) {
+                val windowLength = audioPlayer.writeWindow()
+
+                if (windowLength < 1) {
+                    audioPlayer.audioSource.reset()
+                    break
+                }
+            }
+        }
+
+    }
+
     fun updateClock(frameDeltaMillis: Long){
         _state.update {
             it.copy(
@@ -73,13 +137,17 @@ class LessonViewModel(
         }
     }
 
-
-    fun togglePlay(){
+    fun toggleLessonPlay(){
         _state.update {
             it.copy(
                 paused = !it.paused
             )
         }
+    }
+
+    override fun onCleared(){
+        audioPlayer.close() // close and drain audio line
+        super.onCleared()
     }
 }
 data class DisplayNote(
@@ -90,9 +158,12 @@ data class DisplayNote(
 )
 
 data class LessonUiState(
+    val song: Song? = null,
     val player: LessonPlayer? = null,
     val paused: Boolean = true,
-    var frameMillis: Long = 0L
+    var frameMillis: Long = 0L,
+    val audioPaused: Boolean = true,
+    val songTitle: String? = null
 )
 
 /**
