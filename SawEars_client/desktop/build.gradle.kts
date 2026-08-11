@@ -16,10 +16,11 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
-    implementation("com.github.wendykierp:JTransforms:3.1")
     implementation(project(":model"))
     implementation(project(":algorithm_development")) //TODO delete
-
+    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.2")
 }
 
 kotlin {

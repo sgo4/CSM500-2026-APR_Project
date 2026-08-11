@@ -22,13 +22,15 @@ data class Song(
     val description: String?,
     val notes: List<Note>
 ) {
+    val songMinMidi = notes.filter {it.pitchMidi >= 0}.minOf { it.pitchMidi}
+    val songMaxMidi = notes.filter {it.pitchMidi >= 0}.maxOf { it.pitchMidi }
 
     /**
      * Return a transposed Song object by a defined number of semitones
      */
     fun transpose(semitones: Int): Song {
         val transposedNotes = notes.map {
-            it -> it.transpose(semitones)
+            it.transpose(semitones)
         }
         return Song(
             title,
@@ -43,29 +45,27 @@ data class Song(
     /**
      * Transpose song to better fit an instrumental / vocal range
      *
-     * @param minMidi the lowest note the instrument / voice can produce
-     * @param maxMidi the highest note the instrument / voice can produce
+     * @param rangeMinMidi the lowest note the instrument / voice can produce
+     * @param rangeMaxMidi the highest note the instrument / voice can produce
      * @return a new song object with transposed melody centred on target range
      */
-    fun adaptForRange(minMidi: Int, maxMidi: Int): Song {
+    fun adaptForRange(rangeMinMidi: Int, rangeMaxMidi: Int): Song {
 
-        if (maxMidi <= minMidi){
+        if (rangeMaxMidi <= rangeMinMidi){
             // throw error if max not greater than min
             throw TranspositionException(
-                "Unable to transpose for range min=$minMidi max=$maxMidi. Max must be greater than min."
+                "Unable to transpose for range min=$rangeMinMidi max=$rangeMaxMidi. Max must be greater than min."
             )
-        } else if (maxMidi < 0 || minMidi < 0){
+        } else if (rangeMaxMidi < 0 || rangeMinMidi < 0){
             // throw error if range includes negative values
             throw TranspositionException(
-                "Transposition failed: target range boundaries must be postitive vs. min=$minMidi max=$maxMidi"
+                "Transposition failed: target range boundaries must be postitive vs. min=$rangeMinMidi max=$rangeMaxMidi"
             )
         }
 
         // calculate song range, only factoring in positive values
-        val songMin = notes.filter {it.pitchMidi >= 0}.minOf { it.pitchMidi}
-        val songMax = notes.filter {it.pitchMidi >= 0}.maxOf { it.pitchMidi }
-        val songRange = songMax - songMin
-        val targetRange = maxMidi - minMidi
+        val songRange = songMaxMidi - songMinMidi
+        val targetRange = rangeMaxMidi - rangeMinMidi
 
         // throw exception if song's range is wider than the target range
         if (songRange > targetRange){
@@ -75,8 +75,8 @@ data class Song(
         }
 
         // attempt to center melody on instrument range
-        val targetRangeCentre = minMidi + (maxMidi - minMidi) / 2
-        val songRangeCentre = songMin + (songMax - songMin) / 2
+        val targetRangeCentre = rangeMinMidi + (rangeMaxMidi - rangeMinMidi) / 2
+        val songRangeCentre = songMinMidi + (songMaxMidi - songMinMidi) / 2
         // calculate distance between centres (in semitones)
         val transpositionDistance = targetRangeCentre - songRangeCentre
         // return new Song object with melody transposed

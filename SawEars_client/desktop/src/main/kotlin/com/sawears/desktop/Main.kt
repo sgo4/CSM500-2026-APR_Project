@@ -5,6 +5,7 @@ import com.sawears.data.io.audioOut.AudioOutputSource
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.model.useCases.LoadSong
 import com.sawears.data.MidiJsonRepository
+import com.sawears.desktop.ui.TestApp
 import com.sawears.model.Song
 
 suspend fun loadasongandplayit(){
@@ -48,5 +49,6 @@ suspend fun loadasongandplayit(){
 }
 
 fun main(){
-
+    println("starting")
+    TestApp()
 }
