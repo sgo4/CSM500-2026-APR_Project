@@ -28,17 +28,17 @@ import kotlin.math.ln
 /**
  * Canvas for piano roll style lesson
  *
- * @param minPitchMidi min pitch to display
- * @param maxPitchMidi max pitch to display
+ * @param viewModel
  * @param durationSeconds time range to display
- * @param currentTimeNanos current timestamp
+ * @param pitchDisplayMarginMidi margin around song's range to display, as a %
  */
 @Composable
 fun lessonCanvas(
+    viewModel: LessonViewModel,
     durationSeconds: Double,
-    currentTimeNanos: Long = 1L,
-    viewModel: LessonViewModel
+    pitchDisplayMarginMidi: Float = 5f
 ){
+
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
 
     LaunchedEffect(lessonState.paused) {
@@ -55,72 +55,40 @@ fun lessonCanvas(
             }
         }
     }
+    Canvas(Modifier.fillMaxSize()){
+        val player = lessonState.player?: return@Canvas
 
-    Column(modifier = Modifier.fillMaxSize()){
-        val player = lessonState.player?: return
+        // set up canvas dimensions
+        val canvasWidthPx = size.width
+        val canvasHeightPx = size.height
 
-        Text(player.song.title)
-        Row(modifier = Modifier.fillMaxWidth()){
-            Button(
-                viewModel::toggleLessonPlay
-            ){
-                if (lessonState.paused){
-                    Text("Play")
-                } else{
-                    Text("Pause")
-                }
-            }
-
-            Button(
-                viewModel::playAudio
-            ){
-                if (lessonState.audioPaused){
-                    Text("Play Audio")
-                } else{
-                    Text("Pause Audio")
-                }
-            }
+        if (canvasWidthPx <= 0f || canvasHeightPx <= 0f) {
+            return@Canvas
         }
 
+        // calculate range of pitches to display based on song range +/- a fixed margin
+        val minPitchMidi = player.song.songMinMidi - pitchDisplayMarginMidi
+        val maxPitchMidi = player.song.songMaxMidi + pitchDisplayMarginMidi
 
-        Canvas(Modifier.fillMaxSize()){
-            val player = lessonState.player?: return@Canvas
-
-            // set up canvas dimensions
-            val canvasWidthPx = size.width
-            val canvasHeightPx = size.height
-
-            if (canvasWidthPx <= 0f || canvasHeightPx <= 0f) {
-                return@Canvas
-            }
-
-            // calculate range of pitches to display based on song range +/- a fixed margin
-            val pitchDisplayMarginMidi = 6f
-            val minPitchMidi = player.song.songMinMidi - pitchDisplayMarginMidi
-            val maxPitchMidi = player.song.songMaxMidi + pitchDisplayMarginMidi
-
-            // canvas height must be >= range of displayable notes otherwise they won't fit on screen
-            if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
-                return@Canvas
-            }
-            drawOctaveBoundaries(
-                minPitchMidi,
-                maxPitchMidi,
-                canvasWidthPx,
-                canvasHeightPx
-            )
-            drawPianoRoll(
-                lessonState,
-                minPitchMidi,
-                maxPitchMidi,
-                canvasWidthPx,
-                canvasHeightPx
-            )
+        // canvas height must be >= range of displayable notes otherwise they won't fit on screen
+        if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
+            return@Canvas
         }
+        drawOctaveBoundaries(
+            minPitchMidi,
+            maxPitchMidi,
+            canvasWidthPx,
+            canvasHeightPx
+        )
+        drawPianoRoll(
+            lessonState,
+            minPitchMidi,
+            maxPitchMidi,
+            canvasWidthPx,
+            canvasHeightPx
+        )
     }
 }
-
-
 
 fun DrawScope.drawPianoRoll(
     lessonState: LessonUiState,
@@ -186,8 +154,8 @@ fun DrawScope.drawNote(
  * @param minMidi
  * @param maxMidi
  * @param colour (colour of midi lines on screen)
- * @param canvasWidth
- * @param canvasHeight
+ * @param canvasWidthPx
+ * @param canvasHeightPx
  */
 fun DrawScope.drawOctaveBoundaries(
     minMidi: Float,

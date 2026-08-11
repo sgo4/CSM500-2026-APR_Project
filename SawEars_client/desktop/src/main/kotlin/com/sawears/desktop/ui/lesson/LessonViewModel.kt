@@ -15,8 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 
-
-
 /**
  * Experimental working class for a view model holding lesson state
  *

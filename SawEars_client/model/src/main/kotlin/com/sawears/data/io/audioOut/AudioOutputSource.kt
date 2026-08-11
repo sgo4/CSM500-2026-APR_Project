@@ -16,12 +16,12 @@ interface AudioOutputSource {
 
     fun loadInput(input: Song)
     fun reset()
+
     /**
      * Read a frame of samples into an audio processing buffer.
      *
      * @return the number of samples written, or 0 if source is empty
      */
     fun readIntoBuffer(buffer: ShortArray): Int
-
 
 }
