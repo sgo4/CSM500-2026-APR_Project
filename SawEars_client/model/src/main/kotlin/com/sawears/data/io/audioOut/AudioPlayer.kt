@@ -9,17 +9,40 @@ interface AudioPlayer: Closeable {
     val audioSource: AudioOutputSource
 
     fun writeWindow(): Int
+
+    /**
+     * Start / restart playback
+     */
     fun play()
+
+    /**
+     * Pause playback
+     */
     fun pause()
+
+    /**
+     * Discard buffered audio
+     */
+    fun flush()
+
+    /**
+     * Stop playback and discard unplayed audio
+     */
     fun stop()
+
+    /**
+     * Play unplayed audio
+     */
     fun drain()
 }
+
 /**
  * Windows implementation of a simple sine wave generator, for test purposes
  */
-class WindowsSineWaveGenerator(
+class WindowsAudioPlayer(
     override val audioSource: AudioOutputSource
 ): AudioPlayer, Closeable{
+
     val sampleRate = audioSource.sampleRate
     val windowSize = (sampleRate * 0.02).toInt() // calculate window to deliver audio in ~20 ms chunks
     private val byteWindow = ByteArray(windowSize * Short.SIZE_BYTES)
@@ -33,25 +56,10 @@ class WindowsSineWaveGenerator(
     )
     private val line = AudioSystem.getSourceDataLine(format)
     val internalBufferSize = byteWindow.size * 4
+
     init {
         line.open(format, internalBufferSize)
     }
-
-    override fun play(){
-        line.start()
-    }
-
-    override fun pause(){
-        line.stop()
-    }
-
-    override fun stop(){
-        line.flush()
-        line.stop()
-
-    }
-
-
 
     override fun writeWindow(): Int {
 
@@ -67,11 +75,35 @@ class WindowsSineWaveGenerator(
             byteWindow[byteIdx++] = sampleValue.toByte()
             byteWindow[byteIdx++] = (sampleValue shr 8).toByte()
         }
-        writeFully(byteWindow, byteIdx)
+        writeToLine(byteWindow, byteIdx)
         return length
     }
 
-    private fun writeFully(
+    override fun play(){
+        line.start()
+    }
+
+    override fun pause(){
+        line.stop()
+    }
+
+    override fun flush() {
+        line.flush()
+    }
+
+    override fun stop(){
+        line.flush()
+        line.stop()
+    }
+
+    override fun drain() {
+        line.drain()
+    }
+
+    /*
+    Write contents of byte window to audio line
+     */
+    private fun writeToLine(
         bytes: ByteArray,
         length: Int
     ) {
@@ -92,26 +124,16 @@ class WindowsSineWaveGenerator(
                             "open=${line.isOpen}, running=${line.isRunning}, " +
                             "active=${line.isActive}, available=${line.available()}"
                 )
-                "Audio output wrote no data"
             }
-
             offset += written
         }
     }
 
-    /**
-     * Play all played audio
-     */
-    override fun drain() {
-        line.drain()
-    }
 
-    /**
-     * Discard unplayed audio
-     */
-    fun flush() {
-        line.flush()
-    }
+
+
+
+
 
     override fun close(){
         line.drain()

@@ -37,7 +37,7 @@ class DefaultAppContainer : AppContainer {
         MidiJsonRepository()
     )
     // audio player class
-    override val audioPlayer = WindowsSineWaveGenerator(
+    override val audioPlayer = WindowsAudioPlayer(
         SineWaveOutputSource()
     )
 }
