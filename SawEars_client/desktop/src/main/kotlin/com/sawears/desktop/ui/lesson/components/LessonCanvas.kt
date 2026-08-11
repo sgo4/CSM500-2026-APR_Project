@@ -1,12 +1,7 @@
 package com.sawears.desktop.ui.lesson.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +50,7 @@ fun lessonCanvas(
             }
         }
     }
+
     Canvas(Modifier.fillMaxSize()){
         val player = lessonState.player?: return@Canvas
 
@@ -70,40 +66,39 @@ fun lessonCanvas(
         val minPitchMidi = player.song.songMinMidi - pitchDisplayMarginMidi
         val maxPitchMidi = player.song.songMaxMidi + pitchDisplayMarginMidi
 
-        // canvas height must be >= range of displayable notes otherwise they won't fit on screen
-        if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
-            return@Canvas
-        }
-        drawOctaveBoundaries(
+        // combine dimension-related information into single object
+        val dimensions = LessonCanvasDimensions(
             minPitchMidi,
             maxPitchMidi,
             canvasWidthPx,
             canvasHeightPx
         )
+        // canvas height must be >= range of displayable notes otherwise they won't fit on screen
+        if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
+            return@Canvas
+        }
+
+        drawOctaveBoundaries(
+            dimensions
+        )
         drawPianoRoll(
             lessonState,
-            minPitchMidi,
-            maxPitchMidi,
-            canvasWidthPx,
-            canvasHeightPx
+            dimensions
         )
     }
 }
 
 fun DrawScope.drawPianoRoll(
     lessonState: LessonUiState,
-    minPitchMidi: Float,
-    maxPitchMidi: Float,
-    canvasWidthPx: Float,
-    canvasHeightPx: Float
+    dimensions: LessonCanvasDimensions
 ){
     val player = lessonState.player?: return
     val notesInView = player.notesInView(lessonState.frameMillis)
     // calculate noteheight as canvas height / range of displayable notes
-    val noteHeightPx = canvasHeightPx / (maxPitchMidi - minPitchMidi)
+    val noteHeightPx = dimensions.canvasHeightPx / (dimensions.maxPitchMidi - dimensions.minPitchMidi)
     // calculate startX
-    val headPx = player.playBackHeadPosition * canvasWidthPx
-    val pxPerBeat = canvasWidthPx / player.canvasWidthBeats
+    val headPx = player.playBackHeadPosition * dimensions.canvasWidthPx
+    val pxPerBeat = dimensions.canvasWidthPx / player.canvasWidthBeats
 
     for (note in notesInView){
 
@@ -112,10 +107,8 @@ fun DrawScope.drawPianoRoll(
         val noteWidthPx = note.durationRelative * pxPerBeat
         drawNote(
             note,
-            minPitchMidi,
-            maxPitchMidi,
+            dimensions,
             startX,
-            canvasHeightPx,
             noteHeightPx,
             noteWidthPx
         )
@@ -124,17 +117,15 @@ fun DrawScope.drawPianoRoll(
 
 fun DrawScope.drawNote(
     note: DisplayNote,
-    minMidi: Float,
-    maxMidi: Float,
+    dimensions: LessonCanvasDimensions,
     startX: Float,
-    canvasHeight: Float,
     noteHeight: Float,
     noteWidth: Float,
 ){
 
     val colour = if (note.isCurrentNote) {Color(0xFFFFF08D)
     } else {Color(0xFF8DC0FF)}
-    val centreY = midiToY(note.pitchMidi, minMidi, maxMidi,canvasHeight)
+    val centreY = midiToY(note.pitchMidi, dimensions)
 
     drawRoundRect(
         colour,
@@ -151,41 +142,42 @@ fun DrawScope.drawNote(
 /**
  * Generate octave dividers for pitch display
  *
- * @param minMidi
- * @param maxMidi
+ * @param dimensions the dimensions of the canvas
  * @param colour (colour of midi lines on screen)
- * @param canvasWidthPx
- * @param canvasHeightPx
  */
 fun DrawScope.drawOctaveBoundaries(
-    minMidi: Float,
-    maxMidi: Float,
-    canvasWidthPx: Float,
-    canvasHeightPx: Float,
+    dimensions: LessonCanvasDimensions,
     colour: Color = Color(0xFF343A40)
 ){
 
-    val firstMidiLine = ceil(minMidi / 12f).toInt() * 12
+
+    val firstMidiLine = ceil(dimensions.minPitchMidi / 12f).toInt() * 12
 
     var midiLine = firstMidiLine
 
-    while(midiLine <= maxMidi){
+    while(midiLine <= dimensions.maxPitchMidi){
         val yCoord = midiToY(
             midiLine.toFloat(),
-            minMidi,
-            maxMidi,
-            canvasHeightPx
+            dimensions
         )
 
         drawLine(
             colour,
             Offset(0f,yCoord),
-            Offset(canvasWidthPx, yCoord),
+            Offset(dimensions.canvasWidthPx, yCoord),
             strokeWidth = 1f
         )
 
         midiLine += 12 // note: 12 semitones in an octave
     }
+}
+
+fun DrawScope.drawCurrentPitch(
+    pitchMidi: Float,
+    dimensions: LessonCanvasDimensions
+){
+
+
 }
 
 
@@ -206,21 +198,17 @@ fun hzToMidi(pitchHz: Float): Float {
  * Used in representing time, frequency as cartesian coordinates
  *
  * @param pitchMidi
- * @param minMidi
- * @param maxMidi
- * @param height the height of the screen / canvas / graph
+ * @param dimensions the dimensions of the canvas
  */
 fun midiToY(
     pitchMidi: Float,
-    minMidi: Float,
-    maxMidi: Float,
-    height: Float
+    dimensions: LessonCanvasDimensions
 ): Float {
-    val normalized = ((pitchMidi - minMidi) / (maxMidi - minMidi))
+    val normalized = ((pitchMidi - dimensions.minPitchMidi) / (dimensions.maxPitchMidi - dimensions.minPitchMidi))
         .coerceIn(0f, 1f)
 
     // Higher pitches appear at the top of the graph.
-    return height * (1f - normalized)
+    return dimensions.canvasHeightPx * (1f - normalized)
 }
 
 fun startBeatToStartX(startBeat: Float, headBeat: Float, headPx: Float, canvasWidth: Float, canvasWidthBeats: Float): Float{
@@ -230,3 +218,18 @@ fun startBeatToStartX(startBeat: Float, headBeat: Float, headPx: Float, canvasWi
 
     return headPx * (distanceFromHeadBeats * pxPerBeat)
 }
+
+/**
+ * Object to store lesson canvas dimensions required by multiple draw functions
+ *
+ * @param minPitchMidi
+ * @param maxPitchMidi
+ * @param canvasWidthPx
+ * @param canvasHeightPx
+ */
+data class LessonCanvasDimensions(
+    val minPitchMidi: Float,
+    val maxPitchMidi: Float,
+    val canvasWidthPx: Float,
+    val canvasHeightPx: Float
+)
