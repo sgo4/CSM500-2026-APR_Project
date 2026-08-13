@@ -6,7 +6,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.sawears.desktop.DefaultAppContainer
 import com.sawears.desktop.ui.lesson.lessonMainScreen
 
 

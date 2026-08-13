@@ -35,12 +35,10 @@ import kotlin.math.ln
 @Composable
 fun lessonCanvas(
     viewModel: LessonViewModel,
+    lessonState: LessonUiState,
     durationSeconds: Float,
     pitchDisplayMarginMidi: Float = 5f
 ){
-
-    val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
-
     val pitchSamples = remember {
         mutableListOf<PitchResult>()
     }
@@ -69,52 +67,14 @@ fun lessonCanvas(
                 ){
                 pitchSamples.removeAt(0)
             }
-            //                while (
-//                    lessonState.pendingPitchSamples.isNotEmpty() &&
-//                    lessonState.pendingPitchSamples.first().timeStampNanos < oldestAllowed
-//                ){
-//                    lessonState.pendingPitchSamples.removeAt(0)
-//                }
 
             if (!lessonState.paused) {
                 viewModel.updateAnimationClock(frameDeltaMillis)
-//                while (true) {
-//                    withFrameNanos { frameNanos ->
-//                        if (previousFrameNanos != 0L){
-//                            val frameDeltaMillis = (frameNanos - previousFrameNanos) / 1_000_000
-//                            viewModel.updateAnimationClock(frameDeltaMillis)
-//                        }
-//                        previousFrameNanos = frameNanos
-//                    }
-//                }
             }
             viewModel.updateClock(frameNanos)
             renderVersion++ // trigger recomposition
         }
     }
-//    // collect pitch predictions for tracker curve
-//    LaunchedEffect(lessonState.pitchCurveInput, durationSeconds){
-//
-//        while (lessonState.recordAudio){
-//            val drainedSamples = ArrayList<PitchResult>()
-//            withFrameNanos{ frameNanos ->
-//                drainedSamples.clear()
-//                lessonState.pitchCurveInput.drainInto(lessonState.pendingPitchSamples)
-//                if (drainedSamples.isNotEmpty()){
-//                    lessonState.pendingPitchSamples.addAll(drainedSamples)
-//                }
-//
-//                val oldestAllowed = frameNanos - (durationSeconds * 1_000_000_000).toLong()
-//
-//                while (
-//                    lessonState.pendingPitchSamples.isNotEmpty() &&
-//                    lessonState.pendingPitchSamples.first().timeStampNanos < oldestAllowed
-//                ){
-//                    lessonState.pendingPitchSamples.removeAt(0)
-//                }
-//            }
-//        }
-//    }
 
 
 

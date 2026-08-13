@@ -58,9 +58,11 @@ fun lessonMainScreen(container: AppContainer){
             }
         }
 
-        when {
-            !viewModel.loading ->   {lessonCanvas(
+    when {
+        !viewModel.loading ->   {
+            lessonCanvas(
                 viewModel,
+                lessonState,
                 20f,
                 5f
             )}
