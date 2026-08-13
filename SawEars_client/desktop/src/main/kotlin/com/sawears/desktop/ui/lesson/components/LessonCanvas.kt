@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
@@ -39,44 +40,47 @@ fun lessonCanvas(
     durationSeconds: Float,
     pitchDisplayMarginMidi: Float = 5f
 ){
+
     val pitchSamples = remember {
         mutableListOf<PitchResult>()
     }
 
-    var renderVersion by remember {
-        mutableIntStateOf(0)
-    }
-    LaunchedEffect(Unit) {
+    // keep track of time elapsed during animation rendering (factoring in play / pause)
+    var elapsedNanos by remember { mutableLongStateOf(0L) }
+    // keep track of total elapsed time
+    var frameNanos by remember {mutableLongStateOf(0L)}
+
+    LaunchedEffect(lessonState.paused, lessonState.recordAudio) {
+
         var previousFrameNanos = withFrameNanos { it }
+
         while (isActive){
 
-            val frameNanos = withFrameNanos { it }
+            val currentFrameNanos = withFrameNanos { it }
 
+            val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
 
+            previousFrameNanos = currentFrameNanos
+            frameNanos = currentFrameNanos
 
-            val frameDeltaMillis = (frameNanos - previousFrameNanos) / 1_000_000
-
-            previousFrameNanos = frameNanos
+            if (!lessonState.paused){
+                elapsedNanos += frameDeltaNanos
+            }
 
             lessonState.pitchCurveInput.drainInto(pitchSamples)
             // remove outdated samples
-            val oldestAllowed = frameNanos - (durationSeconds * 1_000_000_000).toLong()
+            // TODO use a proper deque / ring buffer structure here
+            val oldestAllowed = System.nanoTime() - (durationSeconds * 1_000_000_000).toLong()
+
             while (
                 pitchSamples.isNotEmpty() &&
                         pitchSamples.first().timeStampNanos < oldestAllowed
+
                 ){
                 pitchSamples.removeAt(0)
             }
-
-            if (!lessonState.paused) {
-                viewModel.updateAnimationClock(frameDeltaMillis)
-            }
-            viewModel.updateClock(frameNanos)
-            renderVersion++ // trigger recomposition
         }
     }
-
-
 
     Canvas(Modifier.fillMaxSize()){
         val player = lessonState.player?: return@Canvas
@@ -110,24 +114,30 @@ fun lessonCanvas(
         drawOctaveBoundaries(
             dimensions
         )
+
         drawPianoRoll(
             lessonState,
+            elapsedNanos,
             dimensions
         )
 
         drawPitchCurve(
             pitchSamples,
-            dimensions
+            dimensions,
+            frameNanos
         )
     }
 }
 
 fun DrawScope.drawPianoRoll(
     lessonState: LessonUiState,
+    elapsedNanos: Long,
     dimensions: LessonCanvasDimensions
 ){
+
+    val elapsedMillis = elapsedNanos / 1_000_000
     val player = lessonState.player?: return
-    val notesInView = player.notesInView(lessonState.frameMillis)
+    val notesInView = player.notesInView(elapsedMillis)
     // calculate noteheight as canvas height / range of displayable notes
     val noteHeightPx = dimensions.canvasHeightPx / (dimensions.maxPitchMidi - dimensions.minPitchMidi)
     // calculate startX
@@ -238,13 +248,6 @@ fun midiToY(
     return dimensions.canvasHeightPx * (1f - normalized)
 }
 
-//fun startBeatToStartX(startBeat: Float, headBeat: Float, headPx: Float, canvasWidth: Float, canvasWidthBeats: Float): Float{
-//
-//    val distanceFromHeadBeats = startBeat - headBeat
-//    val pxPerBeat = canvasWidthBeats / canvasWidth
-//
-//    return headPx * (distanceFromHeadBeats * pxPerBeat)
-//}
 
 /**
  * Object to store lesson canvas dimensions required by multiple draw functions

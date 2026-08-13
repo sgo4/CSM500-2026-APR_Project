@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 fun DrawScope.drawPitchCurve(
     samples: List<PitchResult>,
     dimensions: LessonCanvasDimensions,
+    frameNanos: Long,
     colour: Color = Color(0xFF405061)
 ){
-//    println("draw pitch curve")
+
     val path = Path()
     var segmentStarted = false
-
 
     for (sample in samples){
 
@@ -35,7 +35,7 @@ fun DrawScope.drawPitchCurve(
             continue
         }
 
-        val pitchMidi = hzToMidi(sample.frequencyHz!!.toFloat()) + 30
+        val pitchMidi = hzToMidi(sample.frequencyHz!!.toFloat())
 
         // break path if pitch outside displayable range
         if (pitchMidi !in dimensions.minPitchMidi .. dimensions.maxPitchMidi){
@@ -55,6 +55,7 @@ fun DrawScope.drawPitchCurve(
             path.lineTo(xCoord, yCoord)
         }
     }
+
 	drawPath(
         path=path,
         color=colour,

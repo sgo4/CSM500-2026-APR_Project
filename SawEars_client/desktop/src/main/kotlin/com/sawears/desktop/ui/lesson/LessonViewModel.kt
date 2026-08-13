@@ -57,11 +57,15 @@ class LessonViewModel(
             while (isActive){
                 val frame = audioInputSource.readFrame() ?: break
                 val pitchResult =
+                    // TODO get actual value from estimator
                     PitchResult(
-                        estimator.estimate(frame).frequencyHz,
+                        (700..800).random().toDouble(),
                         System.nanoTime().toDouble()
                     )
-//                println("capture=${_state.value.clockNanos / 1_000_000_0f}")
+//                    PitchResult(
+//                        estimator.estimate(frame).frequencyHz,
+//                        System.nanoTime().toDouble()
+//                    )
                 pitchResult.frequencyHz?.let{
                     if (it > 0){
                         _state
@@ -149,22 +153,6 @@ class LessonViewModel(
 
     }
 
-    fun updateAnimationClock(frameDeltaMillis: Long){
-        _state.update {
-            it.copy(
-                frameMillis = it.frameMillis + frameDeltaMillis
-            )
-        }
-    }
-
-    fun updateClock(frameNanos: Long){
-        _state.update {
-            it.copy(
-                clockNanos = frameNanos
-            )
-        }
-    }
-
     fun toggleLessonPlay(){
         _state.update {
             it.copy(
@@ -190,8 +178,6 @@ data class LessonUiState(
     val song: Song? = null,
     val player: LessonPlayer? = null,
     val paused: Boolean = true,
-    var frameMillis: Long = 0L, // unpaused running time
-    var clockNanos: Long = System.nanoTime(), // absolute clock time
     val audioPaused: Boolean = true,
     val songTitle: String? = null,
     val pitchCurveInput: PitchCurveInput = PitchCurveInput(),
@@ -235,24 +221,24 @@ class LessonPlayer(
      *
      * @param currentTime
      */
-    private fun updatePlayBackHead(currentTime: Long){
+    private fun updatePlayBackHead(currentTimeMillis: Long){
         if (systemTimeMillis == null){
-            systemTimeMillis = currentTime
+            systemTimeMillis = currentTimeMillis
         }
-        val elapsedTimeMs = currentTime - systemTimeMillis!!
+        val elapsedTimeMs = currentTimeMillis - systemTimeMillis!!
         val elapsedTimeBeats = elapsedTimeMs / (60_000f / tempo)
         playBackHeadBeats += elapsedTimeBeats
-        systemTimeMillis = currentTime
+        systemTimeMillis = currentTimeMillis
     }
 
     /**
      * Calculate which notes are in view (fully or partially) at current time
      *
-     * @param currentTime
+     * @param currentTimeMillis
      */
-    fun notesInView(currentTime: Long): List<DisplayNote>{
+    fun notesInView(currentTimeMillis: Long): List<DisplayNote>{
 
-        updatePlayBackHead(currentTime) // move playback head appropriate distance for time elapsed
+        updatePlayBackHead(currentTimeMillis) // move playback head appropriate distance for time elapsed
 
         while (currentNoteIdx < noteTransitions.size && playBackHeadBeats >= noteTransitions[currentNoteIdx]){
             currentNoteIdx ++ // update current note idx

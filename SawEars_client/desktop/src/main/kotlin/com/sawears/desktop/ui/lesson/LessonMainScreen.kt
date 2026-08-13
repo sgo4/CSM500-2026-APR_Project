@@ -31,6 +31,7 @@ fun lessonMainScreen(container: AppContainer){
             viewModel.loadSong("somewhereovertherainbow")
         }
     }
+    println(lessonState.recordAudio)
 
     Column(modifier = Modifier.fillMaxSize()){
         Text("Main Screen")
