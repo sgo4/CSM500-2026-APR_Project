@@ -23,9 +23,13 @@ fun lessonMainScreen(container: AppContainer){
 
     val viewModel = viewModel { LessonViewModel(container) }
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
-
+    if (!lessonState.recordAudio) {
+        viewModel.startPitchPrediction()
+    }
     LaunchedEffect(Unit) {
-        viewModel.loadSong("somewhereovertherainbow")
+        if (lessonState.song == null) {
+            viewModel.loadSong("somewhereovertherainbow")
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()){
@@ -57,7 +61,7 @@ fun lessonMainScreen(container: AppContainer){
         when {
             !viewModel.loading ->   {lessonCanvas(
                 viewModel,
-                20.0,
+                20f,
                 5f
             )}
         }

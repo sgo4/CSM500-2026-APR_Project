@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -16,6 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.desktop.ui.lesson.DisplayNote
 import com.sawears.desktop.ui.lesson.LessonUiState
 import com.sawears.desktop.ui.lesson.LessonViewModel
+import com.sawears.model.pitch.PitchResult
+import kotlinx.coroutines.isActive
 import kotlin.math.ceil
 import kotlin.math.ln
 
@@ -30,26 +35,88 @@ import kotlin.math.ln
 @Composable
 fun lessonCanvas(
     viewModel: LessonViewModel,
-    durationSeconds: Double,
+    durationSeconds: Float,
     pitchDisplayMarginMidi: Float = 5f
 ){
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(lessonState.paused) {
-        if (!lessonState.paused) {
-            var previousFrameNanos = 0L
-            while (true) {
-                withFrameNanos { frameNanos ->
-                    if (previousFrameNanos != 0L){
-                        val frameDeltaMillis = (frameNanos - previousFrameNanos) / 1_000_000
-                        viewModel.updateClock(frameDeltaMillis)
-                    }
-                    previousFrameNanos = frameNanos
-                }
+    val pitchSamples = remember {
+        mutableListOf<PitchResult>()
+    }
+
+    var renderVersion by remember {
+        mutableIntStateOf(0)
+    }
+    LaunchedEffect(Unit) {
+        var previousFrameNanos = withFrameNanos { it }
+        while (isActive){
+
+            val frameNanos = withFrameNanos { it }
+
+
+
+            val frameDeltaMillis = (frameNanos - previousFrameNanos) / 1_000_000
+
+            previousFrameNanos = frameNanos
+
+            lessonState.pitchCurveInput.drainInto(pitchSamples)
+            // remove outdated samples
+            val oldestAllowed = frameNanos - (durationSeconds * 1_000_000_000).toLong()
+            while (
+                pitchSamples.isNotEmpty() &&
+                        pitchSamples.first().timeStampNanos < oldestAllowed
+                ){
+                pitchSamples.removeAt(0)
             }
+            //                while (
+//                    lessonState.pendingPitchSamples.isNotEmpty() &&
+//                    lessonState.pendingPitchSamples.first().timeStampNanos < oldestAllowed
+//                ){
+//                    lessonState.pendingPitchSamples.removeAt(0)
+//                }
+
+            if (!lessonState.paused) {
+                viewModel.updateAnimationClock(frameDeltaMillis)
+//                while (true) {
+//                    withFrameNanos { frameNanos ->
+//                        if (previousFrameNanos != 0L){
+//                            val frameDeltaMillis = (frameNanos - previousFrameNanos) / 1_000_000
+//                            viewModel.updateAnimationClock(frameDeltaMillis)
+//                        }
+//                        previousFrameNanos = frameNanos
+//                    }
+//                }
+            }
+            viewModel.updateClock(frameNanos)
+            renderVersion++ // trigger recomposition
         }
     }
+//    // collect pitch predictions for tracker curve
+//    LaunchedEffect(lessonState.pitchCurveInput, durationSeconds){
+//
+//        while (lessonState.recordAudio){
+//            val drainedSamples = ArrayList<PitchResult>()
+//            withFrameNanos{ frameNanos ->
+//                drainedSamples.clear()
+//                lessonState.pitchCurveInput.drainInto(lessonState.pendingPitchSamples)
+//                if (drainedSamples.isNotEmpty()){
+//                    lessonState.pendingPitchSamples.addAll(drainedSamples)
+//                }
+//
+//                val oldestAllowed = frameNanos - (durationSeconds * 1_000_000_000).toLong()
+//
+//                while (
+//                    lessonState.pendingPitchSamples.isNotEmpty() &&
+//                    lessonState.pendingPitchSamples.first().timeStampNanos < oldestAllowed
+//                ){
+//                    lessonState.pendingPitchSamples.removeAt(0)
+//                }
+//            }
+//        }
+//    }
+
+
 
     Canvas(Modifier.fillMaxSize()){
         val player = lessonState.player?: return@Canvas
@@ -71,7 +138,9 @@ fun lessonCanvas(
             minPitchMidi,
             maxPitchMidi,
             canvasWidthPx,
-            canvasHeightPx
+            canvasHeightPx,
+            player.playBackHeadPosition,
+            durationSeconds
         )
         // canvas height must be >= range of displayable notes otherwise they won't fit on screen
         if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
@@ -83,6 +152,11 @@ fun lessonCanvas(
         )
         drawPianoRoll(
             lessonState,
+            dimensions
+        )
+
+        drawPitchCurve(
+            pitchSamples,
             dimensions
         )
     }
@@ -150,7 +224,6 @@ fun DrawScope.drawOctaveBoundaries(
     colour: Color = Color(0xFF343A40)
 ){
 
-
     val firstMidiLine = ceil(dimensions.minPitchMidi / 12f).toInt() * 12
 
     var midiLine = firstMidiLine
@@ -172,13 +245,7 @@ fun DrawScope.drawOctaveBoundaries(
     }
 }
 
-fun DrawScope.drawCurrentPitch(
-    pitchMidi: Float,
-    dimensions: LessonCanvasDimensions
-){
 
-
-}
 
 
 /**
@@ -211,13 +278,13 @@ fun midiToY(
     return dimensions.canvasHeightPx * (1f - normalized)
 }
 
-fun startBeatToStartX(startBeat: Float, headBeat: Float, headPx: Float, canvasWidth: Float, canvasWidthBeats: Float): Float{
-
-    val distanceFromHeadBeats = startBeat - headBeat
-    val pxPerBeat = canvasWidthBeats / canvasWidth
-
-    return headPx * (distanceFromHeadBeats * pxPerBeat)
-}
+//fun startBeatToStartX(startBeat: Float, headBeat: Float, headPx: Float, canvasWidth: Float, canvasWidthBeats: Float): Float{
+//
+//    val distanceFromHeadBeats = startBeat - headBeat
+//    val pxPerBeat = canvasWidthBeats / canvasWidth
+//
+//    return headPx * (distanceFromHeadBeats * pxPerBeat)
+//}
 
 /**
  * Object to store lesson canvas dimensions required by multiple draw functions
@@ -226,10 +293,13 @@ fun startBeatToStartX(startBeat: Float, headBeat: Float, headPx: Float, canvasWi
  * @param maxPitchMidi
  * @param canvasWidthPx
  * @param canvasHeightPx
+ * @param playBackHeadPosition position of playback head as fraction of screen size
  */
 data class LessonCanvasDimensions(
     val minPitchMidi: Float,
     val maxPitchMidi: Float,
     val canvasWidthPx: Float,
-    val canvasHeightPx: Float
+    val canvasHeightPx: Float,
+    val playBackHeadPosition: Float,
+    val durationSeconds: Float
 )

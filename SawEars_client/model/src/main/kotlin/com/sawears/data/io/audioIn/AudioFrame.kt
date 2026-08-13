@@ -8,5 +8,5 @@ package com.sawears.data.io.audioIn
  */
 class AudioFrame(
     val samples: FloatArray,
-    val timeStampNanos: Double
+    val timeStampNanos: Long
 )

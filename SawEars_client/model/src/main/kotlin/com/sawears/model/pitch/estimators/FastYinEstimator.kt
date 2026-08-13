@@ -23,6 +23,6 @@ class FastYinEstimator(
             estimator
                 .getPitch(frame.samples)
                 .pitch.toDouble(),
-            frame.timeStampNanos)
+            frame.timeStampNanos.toDouble())
     }
 }

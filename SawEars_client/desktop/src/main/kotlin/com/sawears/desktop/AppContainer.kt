@@ -1,14 +1,20 @@
 package com.sawears.desktop
 
+import com.sawears.model.pitch.estimators.FastYinEstimator
 import com.sawears.data.MidiJsonRepository
+import com.sawears.data.io.audioIn.AudioInputSource
+import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
 import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayer
+import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.useCases.LoadSong
 
 interface AppContainer {
     val loadSong: LoadSong
     val audioPlayer: AudioPlayer
+    val estimator: PitchEstimator
+    val audioInputSource: AudioInputSource
 }
 
 /**
@@ -26,4 +32,11 @@ class DefaultAppContainer : AppContainer {
     override val audioPlayer = WindowsAudioPlayer(
         SineWaveOutputSource()
     )
+
+    override val estimator = FastYinEstimator(
+        44_100f,
+        1024
+    )
+
+    override val audioInputSource = WindowsMicAudioInputSource()
 }

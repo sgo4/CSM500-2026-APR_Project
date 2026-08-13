@@ -6,14 +6,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.sawears.desktop.ui.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
+import com.sawears.model.pitch.PitchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
+
 
 /**
  * Experimental working class for a view model holding lesson state
@@ -29,7 +32,10 @@ class LessonViewModel(
     val loadSong = container.loadSong
     val audioPlayer = container.audioPlayer
     private var playbackJob: Job? = null
+    private var pitchCaptureJob: Job? = null
+    val estimator = container.estimator
     var lessonPlayer: LessonPlayer? = null
+    val audioInputSource = container.audioInputSource
     private val _state = MutableStateFlow(LessonUiState())
     val lessonState = _state.asStateFlow()
     var loading by mutableStateOf(false)
@@ -37,6 +43,47 @@ class LessonViewModel(
 
     var error by mutableStateOf<String?>(null)
         private set
+
+    fun startPitchPrediction(){
+        println("starting pitch pred")
+        pitchCaptureJob?.cancel()
+        _state.update {
+            it.copy(
+                recordAudio = true
+            )
+        }
+
+        pitchCaptureJob = viewModelScope.launch(Dispatchers.IO){
+            while (isActive){
+                val frame = audioInputSource.readFrame() ?: break
+                val pitchResult =
+                    PitchResult(
+                        estimator.estimate(frame).frequencyHz,
+                        System.nanoTime().toDouble()
+                    )
+//                println("capture=${_state.value.clockNanos / 1_000_000_0f}")
+                pitchResult.frequencyHz?.let{
+                    if (it > 0){
+                        _state
+                            .value
+                            .pitchCurveInput
+                            .submitPitch(
+                                pitchResult
+                            )
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun stopPitchPrediction(){
+        _state.update {
+            it.copy(
+                recordAudio = false
+            )
+        }
+    }
 
     fun loadSong(title: String) {
         viewModelScope.launch {
@@ -89,7 +136,7 @@ class LessonViewModel(
         }
 
 
-        playbackJob = viewModelScope.launch(Dispatchers.Default) {
+        playbackJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive && !_state.value.audioPaused) {
                 val windowLength = audioPlayer.writeWindow()
 
@@ -102,10 +149,18 @@ class LessonViewModel(
 
     }
 
-    fun updateClock(frameDeltaMillis: Long){
+    fun updateAnimationClock(frameDeltaMillis: Long){
         _state.update {
             it.copy(
                 frameMillis = it.frameMillis + frameDeltaMillis
+            )
+        }
+    }
+
+    fun updateClock(frameNanos: Long){
+        _state.update {
+            it.copy(
+                clockNanos = frameNanos
             )
         }
     }
@@ -120,6 +175,7 @@ class LessonViewModel(
 
     override fun onCleared(){
         audioPlayer.close() // close and drain audio line
+        audioInputSource.close() // close audioinput source
         super.onCleared()
     }
 }
@@ -134,9 +190,13 @@ data class LessonUiState(
     val song: Song? = null,
     val player: LessonPlayer? = null,
     val paused: Boolean = true,
-    var frameMillis: Long = 0L,
+    var frameMillis: Long = 0L, // unpaused running time
+    var clockNanos: Long = System.nanoTime(), // absolute clock time
     val audioPaused: Boolean = true,
-    val songTitle: String? = null
+    val songTitle: String? = null,
+    val pitchCurveInput: PitchCurveInput = PitchCurveInput(),
+    val recordAudio: Boolean = false,
+    val pendingPitchSamples: ArrayList<PitchResult> = ArrayList()
 )
 
 /**
