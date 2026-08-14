@@ -22,8 +22,11 @@ import com.sawears.desktop.ui.lesson.LessonUiState
 import com.sawears.desktop.ui.lesson.LessonViewModel
 import com.sawears.model.pitch.PitchResult
 import kotlinx.coroutines.isActive
+import kotlin.compareTo
 import kotlin.math.ceil
 import kotlin.math.ln
+import kotlin.text.toLong
+import kotlin.times
 
 
 /**
@@ -45,6 +48,15 @@ fun lessonCanvas(
         mutableListOf<PitchResult>()
     }
 
+    var pitchCurveTime by remember {
+        mutableLongStateOf(System.nanoTime())
+    }
+
+    var pitchOffset by remember {
+        mutableLongStateOf(0)
+    }
+
+
     // keep track of time elapsed during animation rendering (factoring in play / pause)
     var elapsedNanos by remember { mutableLongStateOf(0L) }
     // keep track of total elapsed time
@@ -54,11 +66,14 @@ fun lessonCanvas(
 
         var previousFrameNanos = withFrameNanos { it }
 
+
+
         while (isActive){
 
             val currentFrameNanos = withFrameNanos { it }
 
             val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
+
 
             previousFrameNanos = currentFrameNanos
             frameNanos = currentFrameNanos
@@ -66,18 +81,24 @@ fun lessonCanvas(
             if (!lessonState.paused){
                 elapsedNanos += frameDeltaNanos
             }
-
+            // add latest pitch samples
             lessonState.pitchCurveInput.drainInto(pitchSamples)
-            // remove outdated samples
-            // TODO use a proper deque / ring buffer structure here
-            val oldestAllowed = System.nanoTime() - (durationSeconds * 1_000_000_000).toLong()
 
-            while (
-                pitchSamples.isNotEmpty() &&
-                        pitchSamples.first().timeStampNanos < oldestAllowed
+            // TODO use a proper deque / ring buffer structure here
+            if (!pitchSamples.isEmpty()){
+                // calculate an offset between youngest sample and current time,
+                // in order to treat youngest sample as age=0
+                pitchCurveTime = System.nanoTime()
+                pitchOffset = (pitchCurveTime - pitchSamples.last().timeStampNanos).toLong()
+                val oldestAllowed = System.nanoTime() - (durationSeconds * 1_000_000_000).toLong() - pitchOffset
+
+                while (
+                    pitchSamples.isNotEmpty() &&
+                    pitchSamples.first().timeStampNanos < oldestAllowed
 
                 ){
-                pitchSamples.removeAt(0)
+                    pitchSamples.removeAt(0)
+                }
             }
         }
     }
@@ -97,6 +118,9 @@ fun lessonCanvas(
         val minPitchMidi = player.song.songMinMidi - pitchDisplayMarginMidi
         val maxPitchMidi = player.song.songMaxMidi + pitchDisplayMarginMidi
 
+        // calculate how many seconds into the past to show pitch samples based on playbackhead
+        val pitchCurveDurationSeconds = durationSeconds * player.playBackHeadPosition
+
         // combine dimension-related information into single object
         val dimensions = LessonCanvasDimensions(
             minPitchMidi,
@@ -104,7 +128,8 @@ fun lessonCanvas(
             canvasWidthPx,
             canvasHeightPx,
             player.playBackHeadPosition,
-            durationSeconds
+            durationSeconds,
+            pitchCurveDurationSeconds
         )
         // canvas height must be >= range of displayable notes otherwise they won't fit on screen
         if (canvasHeightPx < (maxPitchMidi-minPitchMidi)){
@@ -124,7 +149,9 @@ fun lessonCanvas(
         drawPitchCurve(
             pitchSamples,
             dimensions,
-            frameNanos
+            pitchCurveTime,
+            pitchOffset
+
         )
     }
 }
@@ -264,5 +291,6 @@ data class LessonCanvasDimensions(
     val canvasWidthPx: Float,
     val canvasHeightPx: Float,
     val playBackHeadPosition: Float,
-    val durationSeconds: Float
+    val durationSeconds: Float,
+    val pitchCurveDurationSeconds: Float
 )

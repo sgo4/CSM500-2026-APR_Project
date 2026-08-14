@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.sawears.desktop.ui.lesson.components.PitchCurveInput
+import com.sawears.desktop.ui.lesson.components.PlaybackClock
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchResult
@@ -29,6 +30,8 @@ import kotlinx.coroutines.isActive
 class LessonViewModel(
     container: AppContainer
 ): ViewModel() {
+
+    val playbackClock = container.playbackClock
     val loadSong = container.loadSong
     val audioPlayer = container.audioPlayer
     private var playbackJob: Job? = null
@@ -44,6 +47,8 @@ class LessonViewModel(
     var error by mutableStateOf<String?>(null)
         private set
 
+
+
     fun startPitchPrediction(){
         println("starting pitch pred")
         pitchCaptureJob?.cancel()
@@ -56,16 +61,7 @@ class LessonViewModel(
         pitchCaptureJob = viewModelScope.launch(Dispatchers.IO){
             while (isActive){
                 val frame = audioInputSource.readFrame() ?: break
-                val pitchResult =
-                    // TODO get actual value from estimator
-                    PitchResult(
-                        (700..800).random().toDouble(),
-                        System.nanoTime().toDouble()
-                    )
-//                    PitchResult(
-//                        estimator.estimate(frame).frequencyHz,
-//                        System.nanoTime().toDouble()
-//                    )
+                val pitchResult = estimator.estimate(frame)
                 pitchResult.frequencyHz?.let{
                     if (it > 0){
                         _state

@@ -7,7 +7,9 @@ import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
 import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayer
+import com.sawears.desktop.ui.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
+import com.sawears.model.pitch.estimators.FixedSineEstimator
 import com.sawears.model.useCases.LoadSong
 
 interface AppContainer {
@@ -15,6 +17,7 @@ interface AppContainer {
     val audioPlayer: AudioPlayer
     val estimator: PitchEstimator
     val audioInputSource: AudioInputSource
+    val playbackClock: PlaybackClock
 }
 
 /**
@@ -33,10 +36,19 @@ class DefaultAppContainer : AppContainer {
         SineWaveOutputSource()
     )
 
-    override val estimator = FastYinEstimator(
+//    override val estimator = FastYinEstimator(
+//        44_100f,
+//        1024
+//    )
+    override val estimator = FixedSineEstimator(
         44_100f,
-        1024
+        1024,
+        frequency=2f,
+        minPitcHz = 600,
+        maxPitchHz = 1000
     )
 
     override val audioInputSource = WindowsMicAudioInputSource()
+
+    override val playbackClock = PlaybackClock()
 }

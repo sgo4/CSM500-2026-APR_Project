@@ -57,6 +57,7 @@ fun lessonMainScreen(container: AppContainer){
                         Text("Pause Audio")
                     }
             }
+
         }
 
     when {
