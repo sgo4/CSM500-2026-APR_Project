@@ -5,6 +5,8 @@ plugins {
 
     kotlin("plugin.serialization") version "2.2.0"
     id("org.jetbrains.dokka") version "2.2.0"
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room) version "3.0.1"
 
 }
 
@@ -37,6 +39,7 @@ dependencies {
     implementation("be.tarsos.dsp:core:2.5")
     implementation("be.tarsos.dsp:jvm:2.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation(libs.androidx.room3.compiler)
 }
 
 tasks.test {
