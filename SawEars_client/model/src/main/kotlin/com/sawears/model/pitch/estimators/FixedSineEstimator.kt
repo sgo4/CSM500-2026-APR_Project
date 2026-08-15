@@ -7,7 +7,7 @@ import kotlin.math.PI
 import kotlin.math.sin
 
 /**
- * A pitch estiator that generates mock results roughly following a sine wave
+ * A pitch estimator that generates mock results roughly following a sine wave
  * Useful for testing / debugging purposes where some usable output is needed
  * without worrying about accuracy
  */
