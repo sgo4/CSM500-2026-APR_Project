@@ -34,18 +34,10 @@ fun DrawScope.drawPitchCurve(
     val path = Path()
     var segmentStarted = false
 
-    var i = 0 // TODO remove debug code
     for (sample in samples){
 
         // ignore samples older than display range
         val ageSeconds = (systemTime - (sample.timeStampNanos+timeOffset)).toFloat() / 1_000_000_000f
-
-        // TODO remove debug code
-        // this checks that the offset works correctly
-        if (i == samples.size - 1){
-            assert(ageSeconds == 0f)
-        }
-        i++
 
         if (ageSeconds !in 0f..dimensions.pitchCurveDurationSeconds){
             continue
@@ -56,7 +48,7 @@ fun DrawScope.drawPitchCurve(
             continue
         }
 
-        val pitchMidi = hzToMidi(sample.frequencyHz!!.toFloat())
+        val pitchMidi = hzToMidi(sample.frequencyHz.toFloat())
 
         // break path if pitch outside displayable range
         if (pitchMidi !in dimensions.minPitchMidi .. dimensions.maxPitchMidi){

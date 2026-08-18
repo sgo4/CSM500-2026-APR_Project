@@ -6,25 +6,28 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.sawears.ui.lesson.lessonMainScreen
+import com.sawears.data.database.createDatabase
+import com.sawears.data.database.getDatabaseBuilder
+import com.sawears.ui.lesson.LessonMainScreen
+import kotlinx.coroutines.runBlocking
 
-fun SawEarsApp() = application {
 
-    val container = WindowsAppContainer()
+fun SawEarsApp(container: AppContainer) = application {
 
     Window(
         onCloseRequest = ::exitApplication,
-        title = "Real-time pitch graph"
+        title = "SawEars"
     ) {
         MaterialTheme {
             Surface(Modifier.fillMaxSize()) {
-                lessonMainScreen(container)
+                LessonMainScreen(container)
             }
         }
     }
 }
 
-fun main(){
+fun main() = runBlocking {
     println("starting")
-    SawEarsApp()
+    val container = WindowsAppContainer.create()
+    SawEarsApp(container)
 }

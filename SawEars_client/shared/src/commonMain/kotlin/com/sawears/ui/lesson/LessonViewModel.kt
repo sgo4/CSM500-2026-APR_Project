@@ -25,33 +25,91 @@ import kotlinx.coroutines.isActive
  * Time
  * Tempo
  * Current pitch
+ * // TODO finish KDOC
  */
 class LessonViewModel(
     container: AppContainer
 ): ViewModel() {
 
-    val playbackClock = container.playbackClock
-
-    val pitchCurveInput = PitchCurveInput()
-    val loadSong = container.loadSong
-    val audioPlayer = container.audioPlayer
-    private var playbackJob: Job? = null
-    private var pitchCaptureJob: Job? = null
-    val estimator = container.estimator
-    var lessonPlayer: LessonPlayer? = null
-    val audioInputSource = container.audioInputSource
+    // state
     private val _state = MutableStateFlow(LessonUiState())
     val lessonState = _state.asStateFlow()
+
+    private val songDao = container.db.songDao()
+
+    // TODO should this be more specific? More than one thing may need to load.
     var loading by mutableStateOf(false)
         private set
 
+    // TODO is this necessary / the best way of handling things?
     var error by mutableStateOf<String?>(null)
         private set
 
+    // player class to help with managing animations etc.
+    var lessonPlayer: LessonPlayer? = null
+        private set
+    // TODO figure out if you want to use a playback clock
+    val playbackClock = container.playbackClock
+
+    private val loadSong = container.loadSong // repository for loading songs
+
+    // audio in
+    private var pitchCaptureJob: Job? = null
+    val audioInputSource = container.audioInputSource
+
+    // audio out
+    val audioPlayer = container.audioPlayer
+    private var playbackJob: Job? = null
+
+    // pitch tracking
+    val estimator = container.estimator
+    val pitchCurveInput = PitchCurveInput() // buffer to hold pitch estimates for pitch graph
 
 
+    /**
+     * TODO this is just to prove that the db is working. Logic should be improved.
+     */
+    suspend fun getResourcePath(title: String): String? {
+        val matches = songDao.searchByTitleExact(title)
+        if (matches.size == 1){
+            return matches[0].resourcePath
+        }
+        return null
+    }
+    /**
+     * Load a song based on provided resource path
+     *
+     * @param resourcePath (as retrieved from index database)
+     */
+    suspend fun loadSong(resourcePath: String) {
+
+        viewModelScope.launch {
+            loading = true
+            error = null
+
+            try {
+                val song = loadSong.load(resourcePath)!! // load the resource
+                lessonPlayer = LessonPlayer(song) // create lesson player for song
+                audioPlayer.audioSource.loadInput(song) // load song into audio player
+                _state.update {
+                    it.copy(
+                        song= song,
+                        player = lessonPlayer
+                    )
+                }
+            } catch (exception: Exception) {
+                error = exception.message ?: "Failed to load data"
+            } finally {
+                loading = false
+            }
+
+        }
+    }
+
+    /**
+     * Open an audio channel and start generating pitch estimates
+     */
     fun startPitchPrediction(){
-        println("starting pitch pred")
         pitchCaptureJob?.cancel()
         _state.update {
             it.copy(
@@ -70,41 +128,21 @@ class LessonViewModel(
                 }
             }
         }
-
     }
 
+    /**
+     * Close audio channel and halt pitch prediction
+     */
     fun stopPitchPrediction(){
         _state.update {
             it.copy(
                 recordAudio = false
             )
         }
+        pitchCaptureJob?.cancel()
     }
 
-    fun loadSong(title: String) {
 
-        viewModelScope.launch {
-            loading = true
-            error = null
-
-            try {
-                val song = loadSong.load("files/midijson/$title.json")!!
-                lessonPlayer = LessonPlayer(song)
-                setPlayBackSong(song)
-                _state.update {
-                    it.copy(
-                        song= song,
-                        player = lessonPlayer
-                    )
-                }
-            } catch (exception: Exception) {
-                error = exception.message ?: "Failed to load data"
-            } finally {
-                loading = false
-            }
-
-        }
-    }
 
     fun toggleAudioPause(){
 
@@ -119,10 +157,6 @@ class LessonViewModel(
             audioPlayer.play()
         }
 
-    }
-
-    fun setPlayBackSong(song: Song){
-        audioPlayer.audioSource.loadInput(song)
     }
 
     fun playAudio(){
@@ -159,16 +193,13 @@ class LessonViewModel(
         audioPlayer.close() // close and drain audio line
         audioInputSource.close() // close audioinput source
         pitchCurveInput.close()
-        super.onCleared()
+        stopPitchPrediction()
     }
 }
-data class DisplayNote(
-    val pitchMidi: Float,
-    val durationRelative: Float,
-    val startsOnBeat: Float,
-    val isCurrentNote: Boolean
-)
 
+/**
+ * State holder for main lesson screen
+ */
 data class LessonUiState(
     val song: Song? = null,
     val player: LessonPlayer? = null,
@@ -180,7 +211,20 @@ data class LessonUiState(
 )
 
 /**
- * ViewModel representation of a song, keeping track of playback head, elapses time
+ * UI layer representation of a single note including information about its
+ * position in the melody
+ */
+data class DisplayNote(
+    val pitchMidi: Float,
+    val durationRelative: Float,
+    val startsOnBeat: Float,
+    val isCurrentNote: Boolean
+)
+
+
+
+/**
+ * Player class that controlls the main animations
  */
 class LessonPlayer(
     val song: Song,

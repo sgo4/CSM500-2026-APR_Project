@@ -19,7 +19,7 @@ import com.sawears.ui.lesson.components.lessonCanvas
  * Main lesson screen
  */
 @Composable
-fun lessonMainScreen(container: AppContainer){
+fun LessonMainScreen(container: AppContainer){
 
     val viewModel = viewModel { LessonViewModel(container) }
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
@@ -28,14 +28,15 @@ fun lessonMainScreen(container: AppContainer){
     }
     LaunchedEffect(Unit) {
         if (lessonState.song == null) {
-            viewModel.loadSong("somewhereovertherainbow")
+            val path = viewModel.getResourcePath("Somewhere Over the Rainbow")
+            println(path)
+            viewModel.loadSong(path!!) // TODO add a real search select feature
         }
     }
-    println(lessonState.recordAudio)
 
     Column(modifier = Modifier.fillMaxSize()){
         Text("Main Screen")
-        Text(lessonState.player?.song?.title?: "")
+        Text(lessonState.player?.song?.title?: "Loading...")
 
         Row(modifier = Modifier.fillMaxWidth()){
             Button(

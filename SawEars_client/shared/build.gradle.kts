@@ -52,29 +52,20 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
         }
 		
-		val jvmCommonMain by creating {
-			dependsOn(commonMain.get())
-			
-			dependencies{
-				implementation("be.tarsos.dsp:core:2.5")
-			}
-		}
+
 		
-		val androidMain by getting {
-			dependsOn(jvmCommonMain)
-			
-			dependencies {
+		androidMain.dependencies{
+            implementation("be.tarsos.dsp:core:2.5")
             implementation(libs.compose.uiToolingPreview)
-            implementation(libs.compose.uiTooling)		
-			}
-		}
-		
-		val jvmMain by getting {
-			dependsOn(jvmCommonMain)
-		}
-		
+            implementation(libs.compose.uiTooling)
+        }
+
+        jvmMain.dependencies{
+            implementation("be.tarsos.dsp:core:2.5")
+        }
     }
 }
 

@@ -1,9 +1,9 @@
 package com.sawears.ui
 import com.sawears.model.Note
 import com.sawears.model.Song
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.sawears.desktop.ui.lesson.LessonPlayer
+import com.sawears.ui.lesson.LessonPlayer
 
 
 class LessonViewModelTest {

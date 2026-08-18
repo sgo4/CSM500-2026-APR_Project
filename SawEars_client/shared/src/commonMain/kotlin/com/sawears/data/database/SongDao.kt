@@ -16,11 +16,30 @@ interface SongDao {
     @Upsert
     suspend fun upsert(song: SongEntity)
 
+    @Upsert
+    suspend fun upsert(composer: ComposerEntity)
+
+    @Upsert
+    suspend fun upsert(songComposer: SongComposerLookupEntity)
+
     @Query("SELECT count(*) FROM SongEntity")
     suspend fun count(): Int
 
+    /**
+     * Get the current list of all songs
+     */
     @Query("SELECT * FROM SongEntity")
     fun getAll(): Flow<List<SongEntity>>
+
+    /**
+     * Search for exact title. Title may not be unique.
+     */
+    @Query("""
+        SELECT * FROM SongEntity
+        WHERE title = :title
+    """
+    )
+    suspend fun searchByTitleExact(title: String): List<SongEntity>
 
     /**
      * Search for songs matching a specific title (fuzzy)
@@ -28,11 +47,11 @@ interface SongDao {
     @Query("""
         SELECT * 
         FROM SongEntity
-        WHERE title LIKE '%' || :title || '%'
+        WHERE title LIKE '%' || :titleStem || '%' COLLATE NOCASE
         ORDER BY title
     """
     )
-    fun searchSongsByTitle(title: String): Flow<List<SongEntity>>
+    fun searchSongsByTitleFuzzy(titleStem: String): Flow<List<SongEntity>>
 
     @Query(
         """
@@ -43,8 +62,21 @@ interface SongDao {
             INNER JOIN ComposerEntity
             ON ComposerEntity.id = SongComposerLookupEntity.composerId
             WHERE ComposerEntity.name = :composer
-            ORDER BY SongEntity.year
+            ORDER BY SongEntity.title
         """
     )
     fun getSongsByComposer(composer: String): Flow<List<SongEntity>>
+
+    @Query(
+        """
+    SELECT ComposerEntity.*
+    FROM ComposerEntity
+    INNER JOIN SongComposerLookupEntity
+        ON ComposerEntity.id = SongComposerLookupEntity.composerId
+    WHERE SongComposerLookupEntity.songId = :songId
+    ORDER BY ComposerEntity.name
+    """
+    )
+    fun getComposersForSong(songId: Int): Flow<List<ComposerEntity>>
+
 }
