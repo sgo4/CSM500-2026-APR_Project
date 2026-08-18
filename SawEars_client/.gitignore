@@ -38,6 +38,9 @@ Thumbs.db
 app/build/
 */build/
 
+# Room schemas
+*shared/schemas*
+
 # Proguard configuration files
 proguard-rules.pro
 
