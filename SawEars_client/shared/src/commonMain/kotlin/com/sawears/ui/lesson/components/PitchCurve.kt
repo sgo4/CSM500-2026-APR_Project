@@ -29,8 +29,6 @@ fun DrawScope.drawPitchCurve(
     colour: Color = Color(0xFF405061)
 ){
 
-    // remove outdated samples
-
     val path = Path()
     var segmentStarted = false
 

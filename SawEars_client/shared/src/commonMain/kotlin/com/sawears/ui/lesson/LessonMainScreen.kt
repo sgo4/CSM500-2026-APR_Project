@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sawears.AppContainer
-import com.sawears.ui.lesson.components.lessonCanvas
+import com.sawears.ui.lesson.components.LessonCanvas
 
 /**
  * Main lesson screen
@@ -23,9 +24,18 @@ fun LessonMainScreen(container: AppContainer){
 
     val viewModel = viewModel { LessonViewModel(container) }
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
-    if (!lessonState.recordAudio) {
-        viewModel.startPitchPrediction()
+
+    // TODO evaluate where in the flow to actually start recording
+    DisposableEffect(viewModel){
+        if (!lessonState.recordAudio) {
+            viewModel.startPitchPrediction()
+        }
+
+        onDispose {
+            viewModel.stopPitchPrediction()
+        }
     }
+
     LaunchedEffect(Unit) {
         if (lessonState.song == null) {
             val path = viewModel.getResourcePath("Somewhere Over the Rainbow")
@@ -63,7 +73,7 @@ fun LessonMainScreen(container: AppContainer){
 
     when {
         !viewModel.loading ->   {
-            lessonCanvas(
+            LessonCanvas(
                 viewModel,
                 lessonState,
                 20f,

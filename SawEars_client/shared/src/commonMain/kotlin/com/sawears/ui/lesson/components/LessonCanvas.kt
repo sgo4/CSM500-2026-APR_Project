@@ -33,14 +33,14 @@ import kotlin.math.ln
  * @param pitchDisplayMarginMidi margin around song's range to display, as a %
  */
 @Composable
-fun lessonCanvas(
+fun LessonCanvas(
     viewModel: LessonViewModel,
     lessonState: LessonUiState,
     durationSeconds: Float,
     pitchDisplayMarginMidi: Float = 5f
 ){
     val pitchSamples = remember {
-        mutableListOf<PitchResult>()
+        ArrayDeque<PitchResult>()
     }
 
     var pitchCurveTime by remember {
@@ -57,7 +57,7 @@ fun lessonCanvas(
     // keep track of total elapsed time
     var frameNanos by remember {mutableLongStateOf(0L)}
 
-    LaunchedEffect(lessonState.paused, lessonState.recordAudio) {
+    LaunchedEffect(lessonState.paused) {
 
         var previousFrameNanos = withFrameNanos { it }
 
@@ -79,20 +79,20 @@ fun lessonCanvas(
             // add latest pitch samples
             viewModel.pitchCurveInput.drainInto(pitchSamples)
 
-            // TODO use a proper deque / ring buffer structure here
-            if (!pitchSamples.isEmpty()){
+            if (!pitchSamples.isEmpty()) {
                 // calculate an offset between youngest sample and current time,
                 // in order to treat youngest sample as age=0
                 pitchCurveTime = System.nanoTime()
                 pitchOffset = (pitchCurveTime - pitchSamples.last().timeStampNanos).toLong()
-                val oldestAllowed = System.nanoTime() - (durationSeconds * 1_000_000_000).toLong() - pitchOffset
+                val oldestAllowed =
+                    System.nanoTime() - (durationSeconds * 1_000_000_000).toLong() - pitchOffset
 
                 while (
                     pitchSamples.isNotEmpty() &&
                     pitchSamples.first().timeStampNanos < oldestAllowed
 
-                ){
-                    pitchSamples.removeAt(0)
+                ) {
+                    pitchSamples.removeFirst()
                 }
             }
         }
