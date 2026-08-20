@@ -5,7 +5,7 @@ import javax.sound.sampled.AudioSystem
 
 
 /**
- * Windows implementation of a simple sine wave generator, for test purposes
+ * Windows implementation of audio player class
  */
 class WindowsAudioPlayer(
     override val audioSource: AudioOutputSource
@@ -64,7 +64,7 @@ class WindowsAudioPlayer(
         line.stop()
     }
 
-    override fun drain() {
+    private fun drain() {
         line.drain()
     }
 

@@ -1,8 +1,21 @@
 package com.sawears.data.io.audioOut
 
+/**
+ * Interface for an audio player which converts PCM values to sound output
+ * on a given platform.
+ */
 interface AudioPlayer {
+
+    /**
+     * A source of PCM samples
+     */
     val audioSource: AudioOutputSource
 
+    /**
+     * Write a window of audio to be played
+     *
+     * @return number of bytes written
+     */
     fun writeWindow(): Int
 
     /**
@@ -25,11 +38,6 @@ interface AudioPlayer {
      */
     fun stop()
 
-    /**
-     * Play unplayed audio
-     */
-    fun drain()
-	
 	/**
 	 * Close the player (platform specific implementation)
 	 */

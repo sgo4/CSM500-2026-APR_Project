@@ -190,7 +190,7 @@ class LessonViewModel(
     }
 
     override fun onCleared(){
-        audioPlayer.close() // close and drain audio line
+        audioPlayer.close() // close audio line
         audioInputSource.close() // close audioinput source
         pitchCurveInput.close()
         stopPitchPrediction()
