@@ -55,14 +55,14 @@ constructor(
         )
 
         require(minimumBufferBytes > 0) {
-            "Unsupported audio configuration: sampleRate=$sampleRate, channelConfig=$channelConfig,  encoding=$encoding"
+            "Unsupported audio configuration: sampleRate=$sampleRate, channelConfig={$channelConfig.toString()},  encoding={$encoding.toString()}"
         }
 
         val frameBytes = frameSize * 2
         val requestedBufferBytes = max(minimumBufferBytes, frameBytes * 4)
 
         recorder = AudioRecord.Builder()
-            .setAudioSource(MediaRecorder.AudioSource.MIC)
+            .setAudioSource(MediaRecorder.AudioSource.UNPROCESSED) //use unprocessed audio if available to avoid interference from android audio processing
             .setAudioFormat(
                 AudioFormat.Builder()
                     .setEncoding(encoding)
