@@ -16,7 +16,7 @@ class WindowsMicAudioInputSource(
     override val frameSize: Int = 1024,
     override val sampleRate: Int = 44_100,
     mixerName: String? = null
-) : AudioInputSource, Closeable {
+) : AudioInputSource {
 
     init {
         require(frameSize > 0) {
@@ -93,7 +93,7 @@ class WindowsMicAudioInputSource(
 
             // Signed 16-bit little-endian PCM.
             val pcm16 = (high shl 8) or low
-
+            // normalise samples
             samples[sampleIndex] = pcm16 / 32768.0f
         }
 
