@@ -54,9 +54,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
         }
-		
 
-		
 		androidMain.dependencies{
             implementation("be.tarsos.dsp:core:2.5")
             implementation(libs.compose.uiToolingPreview)
