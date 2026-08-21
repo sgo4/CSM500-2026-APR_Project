@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.sawears.AppContainer
+import com.sawears.data.database.AppDatabase
+import com.sawears.data.io.audioIn.AudioInputSource
 import com.sawears.ui.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
@@ -55,7 +57,7 @@ class LessonViewModel(
 
     // audio in
     private var pitchCaptureJob: Job? = null
-    val audioInputSource = container.audioInputSource
+    val audioInputSource: AudioInputSource? = null
 
     // audio out
     val audioPlayer = container.audioPlayer
@@ -110,6 +112,9 @@ class LessonViewModel(
      * Open an audio channel and start generating pitch estimates
      */
     fun startPitchPrediction(){
+        if (audioInputSource == null){
+            return
+        }
         pitchCaptureJob?.cancel()
         _state.update {
             it.copy(
@@ -191,7 +196,7 @@ class LessonViewModel(
 
     override fun onCleared(){
         audioPlayer.close() // close audio line
-        audioInputSource.close() // close audioinput source
+        audioInputSource?.close() // close audioinput source
         pitchCurveInput.close()
         stopPitchPrediction()
     }

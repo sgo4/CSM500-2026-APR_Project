@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sawears.AppContainer
+import com.sawears.data.database.AppDatabase
 import com.sawears.ui.lesson.components.LessonCanvas
 
 /**

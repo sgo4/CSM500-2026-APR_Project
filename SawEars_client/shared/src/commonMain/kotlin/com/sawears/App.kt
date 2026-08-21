@@ -24,6 +24,7 @@ import sawears.shared.generated.resources.compose_multiplatform
 @Composable
 fun App(container: AppContainer) {
     MaterialTheme {
-        LessonMainScreen(container)
+        Text("Hello world")
+//        LessonMainScreen(container)
     }
 }

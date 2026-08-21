@@ -46,7 +46,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 			implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-            implementation(libs.androidx.room3.runtime)
+            api(libs.androidx.room3.runtime)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.coroutines.core)
         }

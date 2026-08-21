@@ -28,18 +28,15 @@ expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase
 }
 
+
 /**
- * Common code to create db on app startup
+ * Function to seed startup data
  *
- * @param builder a platform specific builder class
+ * @param db a built room database to seed
  */
-suspend fun createDatabase(
-    builder: RoomDatabase.Builder<AppDatabase>
+suspend fun seedDatabase(
+    db: AppDatabase
 ): AppDatabase {
-    // build db
-    val db = builder
-        .setDriver(BundledSQLiteDriver())
-        .build()
 
     // seed data if needed
     val SEEDVERSION = 1

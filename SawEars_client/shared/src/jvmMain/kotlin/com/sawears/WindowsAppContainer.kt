@@ -2,8 +2,9 @@ package com.sawears
 
 import com.sawears.data.MidiJsonRepository
 import com.sawears.data.database.AppDatabase
-import com.sawears.data.database.createDatabase
+import com.sawears.data.database.AppDatabaseFactory
 import com.sawears.data.database.getDatabaseBuilder
+import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayer
@@ -14,18 +15,15 @@ import com.sawears.model.useCases.LoadSong
 
 
 /**
- * Simple dependency injection container to supply classes to application.
- *
- * Could be replaced with more advanced DI through hilt etc. but not necessary at
- * this stage as dependencies are fairly simple.
+ * Windows dependency injection container. For now manual DI is used
+ * as dependencies are fairly simple.
  */
 class WindowsAppContainer private constructor(): AppContainer {
 
-    // class that handles loading songs from a repository
     override val loadSong: LoadSong = LoadSong(
         MidiJsonRepository()
     )
-    // audio player class
+
     override val audioPlayer = WindowsAudioPlayer(
         SineWaveOutputSource()
     )
@@ -42,17 +40,21 @@ class WindowsAppContainer private constructor(): AppContainer {
         maxPitchHz = 1000
     )
 
-    override val audioInputSource = WindowsMicAudioInputSource()
+    override val audioInputSourceFactory = AudioInputSourceFactory {
+        WindowsMicAudioInputSource()
+    }
 
     override val playbackClock = PlaybackClock()
 
+    override val databaseFactory = AppDatabaseFactory()
+
     private lateinit var _db: AppDatabase
 
-    override val db: AppDatabase
+    val db: AppDatabase
         get() = _db
 
     private suspend fun initialize() {
-        _db = createDatabase(getDatabaseBuilder())
+        _db = databaseFactory.create(getDatabaseBuilder())
     }
 
     companion object {

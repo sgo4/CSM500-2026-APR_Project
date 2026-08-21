@@ -17,7 +17,7 @@ class AndroidAudioPlayer(
     private val buffer = ShortArray(windowSize)
 
     // android specific channel / encoding configurations
-    private val channelConfig = AudioFormat.CHANNEL_IN_MONO
+    private val channelConfig = AudioFormat.CHANNEL_OUT_MONO
     private val encoding = AudioFormat.ENCODING_PCM_16BIT
     private val format = AudioFormat.Builder()
         .setSampleRate(sampleRate)
@@ -36,32 +36,14 @@ class AndroidAudioPlayer(
         windowSize * Short.SIZE_BYTES * 4
     )
 
-    private val track = AudioTrack.Builder()
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-        )
-        .setAudioFormat(format)
-        .setBufferSizeInBytes(internalBufferSize)
-        .setTransferMode(AudioTrack.MODE_STREAM)
-        .build()
+    private var _track: AudioTrack? = null
 
-    init {
-        require(minimumBufferSize > 0) {
-            "Unsupported audio configuration: sampleRate=$sampleRate, channelConfig={$channelConfig.toString()},  encoding={$encoding.toString()}"
-        }
-
-        require(track.state == AudioTrack.STATE_INITIALIZED){
-            track.release()
-            "Failed to initialize AudioTrack"
-        }
-    }
 
     // Implementation detail: android audio record is capable of providing samples as Shorts, so no need
     // to manually convert bytes or worry about endianness as in the desktop implementation
     override fun writeWindow(): Int {
+
+        val track = getTrack()
 
         val length = audioSource.readIntoBuffer(buffer)
 
@@ -82,26 +64,55 @@ class AndroidAudioPlayer(
         return length
     }
 
+    /*
+    Get or create an audio track
+     */
+    private fun getTrack(): AudioTrack {
+        _track?.let { return it }
+        require(minimumBufferSize > 0) {
+            "Unsupported audio configuration: sampleRate=$sampleRate, channelConfig={$channelConfig.toString()},  encoding={$encoding.toString()}"
+        }
+        val track = AudioTrack.Builder()
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+            .setAudioFormat(format)
+            .setBufferSizeInBytes(internalBufferSize)
+            .setTransferMode(AudioTrack.MODE_STREAM)
+            .build()
+
+        require(track.state == AudioTrack.STATE_INITIALIZED){
+            track.release()
+            "Failed to initialize AudioTrack"
+        }
+        _track = track
+
+        return track
+    }
+
     override fun play(){
-        track.play()
+        _track?.play()
     }
 
     override fun pause(){
-        track.pause()
+        _track?.pause()
     }
 
     override fun flush() {
-        track.flush()
+        _track?.flush()
     }
 
     override fun stop(){
-        track.pause()
-        track.flush()
-        track.stop()
+        _track?.pause()
+        _track?.flush()
+        _track?.stop()
     }
 
     override fun close(){
-        track.stop() // finish playing before closing
-        track.release()
+        _track?.stop() // finish playing before closing
+        _track?.release()
     }
 }
