@@ -4,6 +4,11 @@ import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 
 
+import javax.sound.sampled.AudioFormat
+import javax.sound.sampled.AudioSystem
+import javax.sound.sampled.SourceDataLine
+
+
 /**
  * Windows implementation of audio player class
  */
@@ -22,12 +27,8 @@ class WindowsAudioPlayer(
         true,
         false
     )
-    private val line = AudioSystem.getSourceDataLine(format)
+    private var _line: SourceDataLine? = null
     val internalBufferSize = byteWindow.size * 4
-
-    init {
-        line.open(format, internalBufferSize)
-    }
 
     override fun writeWindow(): Int {
 
@@ -48,24 +49,24 @@ class WindowsAudioPlayer(
     }
 
     override fun play(){
-        line.start()
+        _line?.start()
     }
 
     override fun pause(){
-        line.stop()
+        _line?.stop()
     }
 
     override fun flush() {
-        line.flush()
+        _line?.flush()
     }
 
     override fun stop(){
-        line.flush()
-        line.stop()
+        _line?.flush()
+        _line?.stop()
     }
 
     private fun drain() {
-        line.drain()
+        _line?.drain()
     }
 
     /*
@@ -75,6 +76,7 @@ class WindowsAudioPlayer(
         bytes: ByteArray,
         length: Int
     ) {
+        val line = getAudioLine()
 
         var offset = 0
 
@@ -97,15 +99,21 @@ class WindowsAudioPlayer(
         }
     }
 
+    /*
+    Get open line or initialize one (allows for lazy initialization)
+     */
+    private fun getAudioLine(): SourceDataLine {
+        _line?.let{ return it }
 
-
-
-
-
+        val line = AudioSystem.getSourceDataLine(format)
+        line.open(format, internalBufferSize)
+        _line = line
+        return line
+    }
 
     override fun close(){
-        line.drain()
-        line.stop()
-        line.close()
+        _line?.drain()
+        _line?.stop()
+        _line?.close()
     }
 }
