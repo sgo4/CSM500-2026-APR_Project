@@ -51,7 +51,7 @@ androidx-room3-runtime = {  module = "androidx.room3:room3-runtime", version.ref
 androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3"}
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref="navigation" }
-kotlinx-serialization = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = serialization}
+kotlinx-serialization = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
