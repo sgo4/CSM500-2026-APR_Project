@@ -65,7 +65,6 @@ object AppProviderModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         buildAndroidDatabase(context)
-
 }
 
 @Module

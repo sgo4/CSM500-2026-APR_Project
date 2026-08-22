@@ -32,10 +32,16 @@ fun SawEarsApp(container: AppContainer) = application {
 
 /**
  * Main application entry point. Creates dependencies and starts application.
+ *
+ * Design notes:
+ * - Since most features rely on a working database, datab
  */
 fun main() = runBlocking {
-    println("starting")
-    val container = WindowsAppContainer.create()
+
+    // initialize app container
+    val container = WindowsAppContainer()
+    // seed database (if needed)
     seedDatabase(container.db)
+    // launch app
     SawEarsApp(container)
 }
