@@ -19,6 +19,8 @@ moko = "0.20.1"
 room3 = "3.0.1"
 sqlite = "2.7.0"
 ksp = "2.3.10"
+navigation = "2.9.2"
+serialization = "1.11.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -48,6 +50,8 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 androidx-room3-runtime = {  module = "androidx.room3:room3-runtime", version.ref = "room3" }
 androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3"}
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref="navigation" }
+kotlinx-serialization = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = serialization}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
