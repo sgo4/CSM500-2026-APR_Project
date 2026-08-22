@@ -8,6 +8,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.sawears.data.database.seedDatabase
 import com.sawears.ui.lesson.LessonMainScreen
+import com.sawears.ui.navigation.NavigationRoot
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -24,7 +25,7 @@ fun SawEarsApp(container: AppContainer) = application {
     ) {
         MaterialTheme {
             Surface(Modifier.fillMaxSize()) {
-                LessonMainScreen(container)
+                NavigationRoot(container)
             }
         }
     }

@@ -10,8 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.sawears.data.database.seedDatabase
-import com.sawears.ui.lesson.ErrorScreen
-import com.sawears.ui.lesson.LoadingScreen
+import com.sawears.ui.navigation.NavigationRoot
+import com.sawears.ui.screens.home.ErrorScreen
+import com.sawears.ui.screens.home.LoadingScreen
 import com.sawears.ui.screens.permissions.PermissionsRoute
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -45,8 +46,8 @@ class MainActivity : ComponentActivity() {
             when {
                 initializationError.isNotEmpty() ->
                     ErrorScreen(initializationError)
-                // once db initalized, proceed to permissions flow
-                initialized -> PermissionsRoute { App(container) }
+                // once db initalized, proceed to app via permissions route
+                initialized -> PermissionsRoute { NavigationRoot(container) }
                 else -> LoadingScreen()
             }
         }

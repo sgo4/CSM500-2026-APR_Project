@@ -49,7 +49,8 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.kotlinx.serialization)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.navigation.compose)
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
