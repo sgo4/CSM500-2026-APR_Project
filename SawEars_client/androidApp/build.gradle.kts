@@ -16,9 +16,16 @@ dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.uiToolingPreview)
+    implementation(libs.androidx.lifecycle.viewmodelCompose)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
 	implementation(libs.hilt.android)
 	ksp(libs.hilt.compiler)
     debugImplementation(libs.compose.uiTooling)
+    implementation(libs.moko.permissions)
+    implementation(libs.moko.permissions.compose)
+    implementation(libs.moko.permissions.microphone)
 }
 
 android {

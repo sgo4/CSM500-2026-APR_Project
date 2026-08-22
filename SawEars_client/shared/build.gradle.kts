@@ -37,17 +37,17 @@ kotlin {
     sourceSets {
 
         commonMain.dependencies {
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.androidx.room3.runtime)
+			implementation(libs.androidx.sqlite.bundled)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-			implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-            api(libs.androidx.room3.runtime)
-            implementation(libs.androidx.sqlite.bundled)
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
             implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {

@@ -4,17 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.autofill.ContentDataType.Companion.Text
-import androidx.compose.ui.tooling.preview.Preview
 import com.sawears.data.database.seedDatabase
 import com.sawears.ui.lesson.ErrorScreen
 import com.sawears.ui.lesson.LoadingScreen
+import com.sawears.ui.screens.permissions.PermissionsRoute
+import com.sawears.ui.screens.permissions.exampleContent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,7 +47,7 @@ class MainActivity : ComponentActivity() {
                 initializationError.isNotEmpty() ->
                     ErrorScreen(initializationError)
                 
-                initialized -> App(container)
+                initialized -> PermissionsRoute { App(container) }
                 else -> LoadingScreen()
             }
         }
