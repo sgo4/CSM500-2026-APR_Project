@@ -57,7 +57,9 @@ class LessonViewModel(
 
     // audio in
     private var pitchCaptureJob: Job? = null
-    val audioInputSource: AudioInputSource? = null
+
+    private val audioInputSourceFactory = container.audioInputSourceFactory
+    private var _audioInputSource: AudioInputSource? = null
 
     // audio out
     val audioPlayer = container.audioPlayer
@@ -112,9 +114,9 @@ class LessonViewModel(
      * Open an audio channel and start generating pitch estimates
      */
     fun startPitchPrediction(){
-        if (audioInputSource == null){
-            return
-        }
+
+        val audioInputSource = getAudioInputSource()
+
         pitchCaptureJob?.cancel()
         _state.update {
             it.copy(
@@ -133,6 +135,19 @@ class LessonViewModel(
                 }
             }
         }
+    }
+
+    /*
+     * Get or create an audio input source
+     */
+    private fun getAudioInputSource(): AudioInputSource{
+        _audioInputSource?.let { return it }
+
+        val audioInputSource = audioInputSourceFactory.create()
+
+        _audioInputSource = audioInputSource
+
+        return audioInputSource
     }
 
     /**
@@ -196,7 +211,7 @@ class LessonViewModel(
 
     override fun onCleared(){
         audioPlayer.close() // close audio line
-        audioInputSource?.close() // close audioinput source
+        _audioInputSource?.close() // close audioinput source
         pitchCurveInput.close()
         stopPitchPrediction()
     }

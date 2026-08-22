@@ -13,7 +13,6 @@ import com.sawears.data.database.seedDatabase
 import com.sawears.ui.lesson.ErrorScreen
 import com.sawears.ui.lesson.LoadingScreen
 import com.sawears.ui.screens.permissions.PermissionsRoute
-import com.sawears.ui.screens.permissions.exampleContent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -46,7 +45,7 @@ class MainActivity : ComponentActivity() {
             when {
                 initializationError.isNotEmpty() ->
                     ErrorScreen(initializationError)
-                
+                // once db initalized, proceed to permissions flow
                 initialized -> PermissionsRoute { App(container) }
                 else -> LoadingScreen()
             }

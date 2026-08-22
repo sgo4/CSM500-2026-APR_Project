@@ -25,6 +25,6 @@ import sawears.shared.generated.resources.compose_multiplatform
 fun App(container: AppContainer) {
     MaterialTheme {
         Text("Hello world")
-//        LessonMainScreen(container)
+        LessonMainScreen(container)
     }
 }
