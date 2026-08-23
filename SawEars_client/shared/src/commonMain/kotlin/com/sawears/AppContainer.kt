@@ -3,6 +3,7 @@ package com.sawears
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
+import com.sawears.data.settings.SettingsRepository
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.useCases.LoadSong
@@ -11,6 +12,12 @@ import com.sawears.model.useCases.LoadSong
  * Common interface for dependency injection container
  */
 interface AppContainer {
+
+    /**
+     * Stores global settings
+     */
+    val settingsRepository: SettingsRepository
+
     /**
      * Class that loads a song from memory
      */

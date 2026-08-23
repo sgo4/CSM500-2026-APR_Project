@@ -11,6 +11,9 @@ import com.sawears.data.io.audioOut.AndroidAudioInputSourceFactory
 import com.sawears.data.io.audioOut.AndroidAudioPlayer
 import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.SineWaveOutputSource
+import com.sawears.data.settings.DataStoreSettingsRepository
+import com.sawears.data.settings.SettingsRepository
+import com.sawears.data.settings.createDataStore
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.estimators.FixedSineEstimator
 import com.sawears.model.useCases.LoadSong
@@ -36,6 +39,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppProviderModule {
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(
+        @ApplicationContext context: Context
+    ): SettingsRepository = DataStoreSettingsRepository(createDataStore(context))
 
     @Provides
     @Singleton
@@ -82,4 +91,5 @@ abstract class AppBindingsModule {
     abstract fun bindAppContainer(
         implementation: AndroidAppContainer
     ): AppContainer
+
 }

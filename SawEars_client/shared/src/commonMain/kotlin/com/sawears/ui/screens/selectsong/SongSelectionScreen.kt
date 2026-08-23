@@ -1,6 +1,5 @@
 package com.sawears.ui.screens.selectsong
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
@@ -8,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.ui.tooling.preview.Preview
 import com.sawears.data.database.SongEntity
-import com.sawears.ui.shared.ContentWithTopBar
+import com.sawears.ui.shared.components.ContentWithTopBar
 
 /**
  * Screen to search and select a song from the database

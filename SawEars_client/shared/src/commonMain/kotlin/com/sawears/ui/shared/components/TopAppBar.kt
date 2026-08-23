@@ -1,4 +1,4 @@
-package com.sawears.ui.shared
+package com.sawears.ui.shared.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable

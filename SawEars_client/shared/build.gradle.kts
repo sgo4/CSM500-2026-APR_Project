@@ -38,6 +38,7 @@ kotlin {
 
         commonMain.dependencies {
             implementation(libs.compose.material.icons.core)
+            implementation(libs.androidx.datastore)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             api(libs.androidx.room3.runtime)
@@ -52,6 +53,8 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
+            api(libs.androidx.datastore.preferences.core)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

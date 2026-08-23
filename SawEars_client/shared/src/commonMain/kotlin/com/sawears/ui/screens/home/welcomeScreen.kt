@@ -8,9 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.sawears.AppContainer
-import com.sawears.ui.shared.ContentWithTopBar
-import java.awt.Button
+import com.sawears.ui.shared.components.ContentWithTopBar
 
 
 @Composable

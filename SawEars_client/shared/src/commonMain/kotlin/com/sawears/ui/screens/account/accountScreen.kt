@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.sawears.ui.shared.ContentWithTopBar
+import com.sawears.ui.shared.components.ContentWithTopBar
 
 /**
  * Placeholder account management screen.

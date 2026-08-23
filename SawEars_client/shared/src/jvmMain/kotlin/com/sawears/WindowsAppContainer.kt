@@ -6,6 +6,8 @@ import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayer
+import com.sawears.data.settings.DataStoreSettingsRepository
+import com.sawears.data.settings.createDataStore
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.estimators.FixedSineEstimator
 import com.sawears.model.useCases.LoadSong
@@ -17,6 +19,10 @@ import com.sawears.model.useCases.LoadSong
  * as dependencies are fairly simple.
  */
 class WindowsAppContainer(): AppContainer {
+
+    override val settingsRepository = DataStoreSettingsRepository(
+        createDataStore()
+    )
 
     override val loadSong: LoadSong = LoadSong(
         MidiJsonRepository()
