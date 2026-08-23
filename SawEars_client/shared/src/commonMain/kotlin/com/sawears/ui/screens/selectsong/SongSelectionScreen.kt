@@ -22,6 +22,7 @@ fun SongSelectionScreen(
     onSelectSong: (String) -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
+    onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ){
 
@@ -38,7 +39,8 @@ fun SongSelectionScreen(
         },
         title = "Song Selection",
         onClickMenu = onClickMenu,
-        onClickAccount = onClickAccount
+        onClickAccount = onClickAccount,
+        onClickSettings = onClickSettings
     )
 }
 
@@ -69,7 +71,8 @@ fun SongSelectionScreenPreview(){
         },
         title = "Song Selection",
         onClickMenu = {},
-        onClickAccount = {}
+        onClickAccount = {},
+        onClickSettings = {}
     )
 
 }

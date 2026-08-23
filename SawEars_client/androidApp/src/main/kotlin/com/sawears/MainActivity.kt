@@ -14,6 +14,7 @@ import com.sawears.ui.navigation.NavigationRoot
 import com.sawears.ui.screens.home.ErrorScreen
 import com.sawears.ui.screens.home.LoadingScreen
 import com.sawears.ui.screens.permissions.PermissionsRoute
+import com.sawears.ui.theme.SawEarsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -42,13 +43,14 @@ class MainActivity : ComponentActivity() {
                     initializationError = error.toString()
                 }
             }
-
-            when {
-                initializationError.isNotEmpty() ->
-                    ErrorScreen(initializationError)
-                // once db initalized, proceed to app via permissions route
-                initialized -> PermissionsRoute { NavigationRoot(container) }
-                else -> LoadingScreen()
+            SawEarsTheme {
+                when {
+                    initializationError.isNotEmpty() ->
+                        ErrorScreen(initializationError)
+                    // once db initalized, proceed to app via permissions route
+                    initialized -> PermissionsRoute { NavigationRoot(container) }
+                    else -> LoadingScreen()
+                }
             }
         }
     }

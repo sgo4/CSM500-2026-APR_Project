@@ -7,10 +7,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 
 import com.sawears.ui.navigation.NavigationRoot
+import com.sawears.ui.theme.SawEarsTheme
 
 @Composable
 fun App(container: AppContainer) {
-    MaterialTheme {
+    SawEarsTheme {
         Scaffold {
             innerPadding ->
             NavigationRoot(

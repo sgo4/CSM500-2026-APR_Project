@@ -20,6 +20,7 @@ import com.sawears.ui.shared.components.ContentWithTopBar
 fun AccountScreen(
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
+    onClickSettings: () -> Unit,
     onBack: () -> Unit
 ){
 
@@ -50,12 +51,13 @@ fun AccountScreen(
         },
         title = "Account",
         onClickMenu = onClickMenu,
-        onClickAccount = onClickAccount
+        onClickAccount = onClickAccount,
+        onClickSettings = onClickSettings
     )
 }
 
 @Preview
 @Composable
 fun AccountScreenPreview(){
-    AccountScreen({},{},{})
+    AccountScreen({},{},{}, {})
 }

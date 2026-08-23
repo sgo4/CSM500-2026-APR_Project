@@ -17,6 +17,8 @@ sealed interface Route: NavKey {
     data object AccountScreen: Route, NavKey
 
     @Serializable
+    data object SettingsScreen: Route, NavKey
+    @Serializable
     data object SongSelectionScreen: Route, NavKey
 
     @Serializable

@@ -12,6 +12,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -29,7 +30,8 @@ fun ContentWithTopBar(
     content: @Composable (PaddingValues) -> Unit,
     title: String,
     onClickMenu: () -> Unit,
-    onClickAccount: () -> Unit
+    onClickAccount: () -> Unit,
+    onClickSettings: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -58,6 +60,12 @@ fun ContentWithTopBar(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onClickSettings){
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
                     IconButton(onClick = onClickAccount) {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
@@ -85,9 +93,10 @@ fun ExampleContent(){
 fun ContentWithTopBarPreview(){
     ContentWithTopBar(
         content = {ExampleContent()},
-        title = "Sawears\nMain Menu",
+        title = "Sawears",
         onClickAccount = {},
-        onClickMenu = {}
+        onClickMenu = {},
+        onClickSettings = {}
     )
 }
 

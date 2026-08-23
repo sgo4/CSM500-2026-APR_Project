@@ -20,6 +20,8 @@ import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
 import com.sawears.ui.screens.selectsong.SongSelectionScreen
 import com.sawears.ui.screens.selectsong.SongSelectionViewModel
+import com.sawears.ui.screens.settings.SettingsScreen
+import com.sawears.ui.screens.settings.SettingsViewModel
 
 /**
  * Root for app navigation
@@ -58,7 +60,8 @@ fun NavigationRoot(
                                 )
                             },
                             onClickMenu = { openMenu() },
-                            onClickAccount = { openAccountSettings(backStack) }
+                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
                     }
                 }
@@ -66,7 +69,8 @@ fun NavigationRoot(
                     NavEntry(key){
                         AccountScreen(
                             onClickMenu = { openMenu() },
-                            onClickAccount = { openAccountSettings(backStack) },
+                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickSettings = { backStack.add(Route.SettingsScreen) },
                             onBack = { onBack(backStack) }
                         )
                     }
@@ -89,7 +93,8 @@ fun NavigationRoot(
                                 )
                             },
                             onClickMenu = { openMenu() },
-                            onClickAccount = { openAccountSettings(backStack)},
+                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
                     }
                 }
@@ -104,6 +109,25 @@ fun NavigationRoot(
                         LessonMainScreen(
                             viewModel,
                             key.resourcePath
+                        )
+                    }
+                }
+                is Route.SettingsScreen -> {
+                    NavEntry(key){
+                        val viewModel = viewModel {
+                            SettingsViewModel(
+                                container.settingsRepository
+                            )
+                        }
+
+                        val settings = viewModel.settings.collectAsStateWithLifecycle()
+                        SettingsScreen(
+                            settings=settings.value,
+                            onUpdateMin=viewModel::updateRangeMin,
+                            onUpdateMax=viewModel::updateRangeMax,
+                            onClickAccount = {backStack.add(Route.AccountScreen)},
+                            onClickMenu = {openMenu()},
+                            onClickSettings = { backStack.add(Route.SettingsScreen) }
                         )
                     }
                 }
@@ -127,12 +151,5 @@ fun onBack(
  * Common open menu action
  */
 fun openMenu(){
-
-}
-
-/**
- * Common account settings navigation function
- */
-fun openAccountSettings(backStack: NavBackStack<NavKey>){
-    backStack.add(Route.AccountScreen)
+    //TODO
 }

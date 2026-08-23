@@ -16,6 +16,7 @@ fun MainScreen(
     onOpenLesson: () -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
+    onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ){
     ContentWithTopBar(
@@ -34,7 +35,8 @@ fun MainScreen(
         },
         title = "SawEars - Home",
         onClickMenu = onClickMenu,
-        onClickAccount = onClickAccount
+        onClickAccount = onClickAccount,
+        onClickSettings = onClickSettings
     )
 
 
