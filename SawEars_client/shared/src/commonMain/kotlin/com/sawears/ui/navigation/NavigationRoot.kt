@@ -1,7 +1,11 @@
 package com.sawears.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -9,9 +13,12 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.sawears.AppContainer
 import com.sawears.ui.lesson.LessonMainScreen
+import com.sawears.ui.lesson.LessonViewModel
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
+import com.sawears.ui.screens.selectsong.SongSelectionScreen
+import com.sawears.ui.screens.selectsong.SongSelectionViewModel
 
 /**
  * Root for app navigation
@@ -46,18 +53,45 @@ fun NavigationRoot(
                         MainScreen(
                             onOpenLesson = {
                                 backStack.add(
-                                    Route.LessonScreen(container)
+                                    Route.SongSelectionScreen
+                                )
+                            }
+                        )
+                    }
+                }
+                is Route.SongSelectionScreen -> {
+                    NavEntry(key){
+
+                        val viewModel = viewModel {SongSelectionViewModel(
+                            container.db.songDao()
+                        )}
+                        val state by viewModel.state.collectAsStateWithLifecycle()
+                        SongSelectionScreen(
+                            state,
+                            onSelectSong = {
+                                backStack.add(
+                                    Route.LessonScreen(it)
                                 )
                             }
                         )
                     }
                 }
                 is Route.LessonScreen -> {
+
+                    val route = key
+
                     NavEntry(key){
+                        val viewModel = viewModel {
+                            LessonViewModel(
+                                container
+                            )
+                        }
                         LessonMainScreen(
-                            container
+                            viewModel,
+                            route.resourcePath
                         )
                     }
+
                 }
                 else -> error("Unknown nav key")
             }

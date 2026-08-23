@@ -4,7 +4,10 @@ import androidx.room3.ConstructedBy
 import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.RoomDatabaseConstructor
+import androidx.room3.migration.Migration
+import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import androidx.sqlite.execSQL
 
 @Database(
     entities = [
@@ -97,5 +100,4 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
         )
     )
 }
-
 

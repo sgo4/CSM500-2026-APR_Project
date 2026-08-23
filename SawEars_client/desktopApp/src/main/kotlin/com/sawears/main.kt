@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.sawears.data.database.seedDatabase
-import com.sawears.ui.lesson.LessonMainScreen
 import com.sawears.ui.navigation.NavigationRoot
 import kotlinx.coroutines.runBlocking
 
@@ -35,7 +34,7 @@ fun SawEarsApp(container: AppContainer) = application {
  * Main application entry point. Creates dependencies and starts application.
  *
  * Design notes:
- * - Since most features rely on a working database, datab
+ * - Since most features rely on a working database, database construction occurs before app is opened
  */
 fun main() = runBlocking {
 
@@ -45,4 +44,5 @@ fun main() = runBlocking {
     seedDatabase(container.db)
     // launch app
     SawEarsApp(container)
+
 }

@@ -14,16 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sawears.AppContainer
-import com.sawears.data.database.AppDatabase
 import com.sawears.ui.lesson.components.LessonCanvas
 
 /**
  * Main lesson screen
  */
 @Composable
-fun LessonMainScreen(container: AppContainer){
+fun LessonMainScreen(
+   viewModel: LessonViewModel,
+   songPath: String
+){
 
-    val viewModel = viewModel { LessonViewModel(container) }
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
 
     // TODO evaluate where in the flow to actually start recording
@@ -39,9 +40,9 @@ fun LessonMainScreen(container: AppContainer){
 
     LaunchedEffect(Unit) {
         if (lessonState.song == null) {
-            val path = viewModel.getResourcePath("Somewhere Over the Rainbow")
+            val path = songPath
             println(path)
-            viewModel.loadSong(path!!) // TODO add a real search select feature
+            viewModel.loadSong(path)
         }
     }
 

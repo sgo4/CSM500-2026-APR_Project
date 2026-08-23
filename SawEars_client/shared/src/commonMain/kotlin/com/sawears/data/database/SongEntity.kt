@@ -43,5 +43,5 @@ data class SongEntity (
     val title: String,
     val year: Int,
     val description: String,
-    val resourcePath: String? = null
+    val resourcePath: String
 )

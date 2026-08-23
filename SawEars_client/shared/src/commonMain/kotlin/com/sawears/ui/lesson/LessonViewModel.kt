@@ -1,5 +1,6 @@
 package com.sawears.ui.lesson
 
+
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +31,7 @@ import kotlinx.coroutines.isActive
  * // TODO finish KDOC
  */
 class LessonViewModel(
-    container: AppContainer
+    container: AppContainer // TODO just pass in the actual classes needed
 ): ViewModel() {
 
     // state
@@ -217,18 +218,6 @@ class LessonViewModel(
     }
 }
 
-/**
- * State holder for main lesson screen
- */
-data class LessonUiState(
-    val song: Song? = null,
-    val player: LessonPlayer? = null,
-    val paused: Boolean = true,
-    val audioPaused: Boolean = true,
-    val songTitle: String? = null,
-    val recordAudio: Boolean = false,
-    val pendingPitchSamples: ArrayList<PitchResult> = ArrayList()
-)
 
 /**
  * UI layer representation of a single note including information about its
