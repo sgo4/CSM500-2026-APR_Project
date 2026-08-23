@@ -1,4 +1,4 @@
-package com.sawears.ui.lesson.components
+package com.sawears.ui.screens.lesson.components
 
 
 import androidx.compose.ui.graphics.Color

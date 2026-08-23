@@ -5,7 +5,7 @@ import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.useCases.LoadSong
-import com.sawears.ui.lesson.components.PlaybackClock
+import com.sawears.ui.screens.lesson.components.PlaybackClock
 import javax.inject.Inject
 
 /**

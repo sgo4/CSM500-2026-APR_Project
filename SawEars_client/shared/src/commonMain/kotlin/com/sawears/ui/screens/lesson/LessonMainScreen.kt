@@ -1,4 +1,4 @@
-package com.sawears.ui.lesson
+package com.sawears.ui.screens.lesson
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,12 +12,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sawears.AppContainer
-import com.sawears.ui.lesson.components.LessonCanvas
+import com.sawears.ui.screens.lesson.components.LessonCanvas
 
 /**
  * Main lesson screen
+ *
+ * @param viewModel
+ * @param songPath path to resource in memory (taken from index database)
  */
 @Composable
 fun LessonMainScreen(

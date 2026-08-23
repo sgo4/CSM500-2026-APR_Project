@@ -1,13 +1,12 @@
 package com.sawears
 
 import com.sawears.data.MidiJsonRepository
-import com.sawears.data.database.AppDatabase
 import com.sawears.data.database.buildWindowsDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayer
-import com.sawears.ui.lesson.components.PlaybackClock
+import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.estimators.FixedSineEstimator
 import com.sawears.model.useCases.LoadSong
 

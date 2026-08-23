@@ -1,19 +1,20 @@
 package com.sawears.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.sawears.AppContainer
-import com.sawears.ui.lesson.LessonMainScreen
-import com.sawears.ui.lesson.LessonViewModel
+import com.sawears.ui.screens.lesson.LessonMainScreen
+import com.sawears.ui.screens.lesson.LessonViewModel
+import com.sawears.ui.screens.account.AccountScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
@@ -55,7 +56,18 @@ fun NavigationRoot(
                                 backStack.add(
                                     Route.SongSelectionScreen
                                 )
-                            }
+                            },
+                            onClickMenu = { openMenu() },
+                            onClickAccount = { openAccountSettings(backStack) }
+                        )
+                    }
+                }
+                is Route.AccountScreen -> {
+                    NavEntry(key){
+                        AccountScreen(
+                            onClickMenu = { openMenu() },
+                            onClickAccount = { openAccountSettings(backStack) },
+                            onBack = { onBack(backStack) }
                         )
                     }
                 }
@@ -75,13 +87,13 @@ fun NavigationRoot(
                                 backStack.add(
                                     Route.LessonScreen(it)
                                 )
-                            }
+                            },
+                            onClickMenu = { openMenu() },
+                            onClickAccount = { openAccountSettings(backStack)},
                         )
                     }
                 }
                 is Route.LessonScreen -> {
-
-                    val route = key
 
                     NavEntry(key){
                         val viewModel = viewModel {
@@ -91,13 +103,36 @@ fun NavigationRoot(
                         }
                         LessonMainScreen(
                             viewModel,
-                            route.resourcePath
+                            key.resourcePath
                         )
                     }
-
                 }
                 else -> error("Unknown nav key")
             }
         }
     )
+}
+
+
+/**
+ * Common back button function
+ */
+fun onBack(
+    backStack: NavBackStack<NavKey>
+){
+    backStack.removeLastOrNull()
+}
+
+/**
+ * Common open menu action
+ */
+fun openMenu(){
+
+}
+
+/**
+ * Common account settings navigation function
+ */
+fun openAccountSettings(backStack: NavBackStack<NavKey>){
+    backStack.add(Route.AccountScreen)
 }

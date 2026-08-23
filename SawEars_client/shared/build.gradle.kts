@@ -37,6 +37,7 @@ kotlin {
     sourceSets {
 
         commonMain.dependencies {
+            implementation(libs.compose.material.icons.core)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             api(libs.androidx.room3.runtime)

@@ -1,4 +1,4 @@
-package com.sawears.ui.lesson
+package com.sawears.ui.screens.lesson
 
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchResult

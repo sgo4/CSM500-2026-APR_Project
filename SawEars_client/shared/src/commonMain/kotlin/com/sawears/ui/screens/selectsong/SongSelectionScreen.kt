@@ -1,24 +1,14 @@
 package com.sawears.ui.screens.selectsong
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
+import com.sawears.data.database.SongEntity
+import com.sawears.ui.shared.ContentWithTopBar
 
 /**
  * Screen to search and select a song from the database
@@ -31,40 +21,56 @@ fun SongSelectionScreen(
     state: SongSelectionState,
     onSearch: (String) -> Unit,
     onSelectSong: (String) -> Unit,
-    modifier: Modifier = Modifier.fillMaxSize()
+    onClickMenu: () -> Unit,
+    onClickAccount: () -> Unit,
+    modifier: Modifier = Modifier
 ){
 
     val textFieldState = rememberTextFieldState()
+    ContentWithTopBar(
+        content = { innerPadding ->
+            SongSelectionSearchBar(
+                textFieldState = textFieldState,
+                onSearch = onSearch,
+                onSelectItem = onSelectSong,
+                searchResults = state.songs,
+                modifier = Modifier.padding(innerPadding)
+            )
+        },
+        title = "Song Selection",
+        onClickMenu = onClickMenu,
+        onClickAccount = onClickAccount
+    )
+}
 
-    SongSelectionSearchBar(
-        textFieldState = textFieldState,
-        onSearch = onSearch,
-        onSelectItem = onSelectSong,
-        searchResults = state.songs
+@Preview
+@Composable
+fun SongSelectionScreenPreview(){
+    val state = SongSelectionState()
+    val onSearch = {string: String -> Unit}
+    val onSelectSong = {string: String -> Unit}
+
+    ContentWithTopBar(
+        content = { innerPadding ->
+            SongSelectionSearchBar(
+                textFieldState = TextFieldState(),
+                onSearch = onSearch,
+                onSelectItem = onSelectSong,
+                searchResults = listOf(
+                    SongEntity(
+                        id=1,
+                        title="Never Gonne Give You Up",
+                        year=1987,
+                        description="Never Gonne Let You Down",
+                        resourcePath="./"
+                    )
+                ),
+                modifier = Modifier.padding(innerPadding)
+            )
+        },
+        title = "Song Selection",
+        onClickMenu = {},
+        onClickAccount = {}
     )
 
-//    LazyColumn(
-//        contentPadding = PaddingValues(16.dp),
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.spacedBy(16.dp)
-//    ){
-//        items(state.songs){ song ->
-//            Row(
-//                modifier = modifier.fillMaxWidth()
-//            ){
-//                Column(
-//                    modifier = Modifier.weight(1f)
-//                ){
-//                    Text(
-//                        text = "${song.title} ${song.year}", // TODO work out how to stitch composers back in
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clickable {
-//                                onSelectSong(song.resourcePath)
-//                            }
-//                    )
-//                }
-//            }
-//        }
-//    }
 }

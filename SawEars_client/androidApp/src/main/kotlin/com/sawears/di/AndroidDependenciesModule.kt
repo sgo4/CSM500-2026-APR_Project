@@ -14,7 +14,7 @@ import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.estimators.FixedSineEstimator
 import com.sawears.model.useCases.LoadSong
-import com.sawears.ui.lesson.components.PlaybackClock
+import com.sawears.ui.screens.lesson.components.PlaybackClock
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

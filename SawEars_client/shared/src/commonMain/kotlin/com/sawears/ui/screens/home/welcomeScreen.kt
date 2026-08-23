@@ -9,27 +9,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.sawears.AppContainer
+import com.sawears.ui.shared.ContentWithTopBar
 import java.awt.Button
 
 
 @Composable
 fun MainScreen(
     onOpenLesson: () -> Unit,
+    onClickMenu: () -> Unit,
+    onClickAccount: () -> Unit,
     modifier: Modifier = Modifier
 ){
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Text("Main screen")
-        Button(
-            onClick = onOpenLesson
-        ) {
-            Text("Start lesson")
-        }
-    }
+    ContentWithTopBar(
+        content = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Button(
+                    onClick = onOpenLesson
+                ) {
+                    Text("Start lesson")
+                }
+            }
+        },
+        title = "SawEars - Home",
+        onClickMenu = onClickMenu,
+        onClickAccount = onClickAccount
+    )
+
 
 }
 @Composable

@@ -1,4 +1,4 @@
-package com.sawears.ui.lesson
+package com.sawears.ui.screens.lesson
 
 
 import androidx.lifecycle.ViewModel
@@ -7,12 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.sawears.AppContainer
-import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSource
-import com.sawears.ui.lesson.components.PitchCurveInput
+import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
-import com.sawears.model.pitch.PitchResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -88,27 +86,25 @@ class LessonViewModel(
      */
     suspend fun loadSong(resourcePath: String) {
 
-        viewModelScope.launch {
-            loading = true
-            error = null
+        loading = true
+        error = null
 
-            try {
-                val song = loadSong.load(resourcePath)!! // load the resource
-                lessonPlayer = LessonPlayer(song) // create lesson player for song
-                audioPlayer.audioSource.loadInput(song) // load song into audio player
-                _state.update {
-                    it.copy(
-                        song= song,
-                        player = lessonPlayer
-                    )
-                }
-            } catch (exception: Exception) {
-                error = exception.message ?: "Failed to load data"
-            } finally {
-                loading = false
+        try {
+            val song = loadSong.load(resourcePath)!! // load the resource
+            lessonPlayer = LessonPlayer(song) // create lesson player for song
+            audioPlayer.audioSource.loadInput(song) // load song into audio player
+            _state.update {
+                it.copy(
+                    song= song,
+                    player = lessonPlayer
+                )
             }
-
+        } catch (exception: Exception) {
+            error = exception.message ?: "Failed to load data"
+        } finally {
+            loading = false
         }
+
     }
 
     /**

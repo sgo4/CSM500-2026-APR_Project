@@ -3,7 +3,7 @@ package com.sawears
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
-import com.sawears.ui.lesson.components.PlaybackClock
+import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.useCases.LoadSong
 

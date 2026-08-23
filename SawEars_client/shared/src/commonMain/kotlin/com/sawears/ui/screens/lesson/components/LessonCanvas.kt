@@ -1,4 +1,4 @@
-package com.sawears.ui.lesson.components
+package com.sawears.ui.screens.lesson.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,9 +15,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import com.sawears.ui.lesson.DisplayNote
-import com.sawears.ui.lesson.LessonUiState
-import com.sawears.ui.lesson.LessonViewModel
+import com.sawears.ui.screens.lesson.DisplayNote
+import com.sawears.ui.screens.lesson.LessonUiState
+import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.model.pitch.PitchResult
 import kotlinx.coroutines.isActive
 import kotlin.math.ceil
