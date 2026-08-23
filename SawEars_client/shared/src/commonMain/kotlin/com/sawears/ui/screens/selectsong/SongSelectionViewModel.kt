@@ -4,6 +4,7 @@ package com.sawears.ui.screens.selectsong
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.database.SongDao
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 /**
@@ -16,13 +17,21 @@ class SongSelectionViewModel(
     private val dao: SongDao
 ): ViewModel() {
 
+    private val _searchQuery = MutableStateFlow("")
     private val _state = MutableStateFlow(SongSelectionState())
-    private val _results = dao
-        .getAll()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _results = _searchQuery
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                dao.getAll()
+            } else {
+                dao.searchSongsByTitleFuzzy(query)
+            }
+        }
         .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            emptyList()
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
         )
     val state: StateFlow<SongSelectionState> = combine(_state, _results){ state, results ->
         state.copy(
@@ -34,4 +43,10 @@ class SongSelectionViewModel(
         initialValue = SongSelectionState()
     )
 
+    /**
+     * Fuzzy search by title (e.g. "ever" will match both "Never Gonna Give You Up" and "Together Forever")
+     */
+    fun searchTitleFuzzy(title: String){
+        _searchQuery.value = title
+    }
 }

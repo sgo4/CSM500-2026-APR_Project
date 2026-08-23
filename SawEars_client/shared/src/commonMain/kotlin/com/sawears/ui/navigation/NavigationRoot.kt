@@ -68,6 +68,9 @@ fun NavigationRoot(
                         val state by viewModel.state.collectAsStateWithLifecycle()
                         SongSelectionScreen(
                             state,
+                            onSearch = { query ->
+                                viewModel.searchTitleFuzzy(query)
+                            },
                             onSelectSong = {
                                 backStack.add(
                                     Route.LessonScreen(it)
