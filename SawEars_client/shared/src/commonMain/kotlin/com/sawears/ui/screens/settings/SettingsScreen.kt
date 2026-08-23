@@ -34,6 +34,7 @@ fun SettingsScreen(
     settings: AppSettings,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
+    onUpdateDifficulty: (Int) -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
@@ -45,6 +46,7 @@ fun SettingsScreen(
                 settings,
                 onUpdateMin,
                 onUpdateMax,
+                onUpdateDifficulty,
                 modifier = Modifier.padding(innerPadding)
             )
         },
@@ -69,6 +71,7 @@ fun SettingsScreenContent(
     settings: AppSettings,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
+    onUpdateDifficulty: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -83,7 +86,7 @@ fun SettingsScreenContent(
             ){
                 NumericStepper(
                     value = settings.rangeMinMidi,
-                    onValueChange = onUpdateMin, // TODO
+                    onValueChange = onUpdateMin,
                     min = 0,
                     max = maxOf(127,settings.rangeMaxMidi)
                     )
@@ -101,95 +104,24 @@ fun SettingsScreenContent(
                 )
             }
         }
+        SettingsGroup(
+            "Lesson Settings"
+        ){
+            SettingRow(
+                label="Difficulty",
+                tooltip="Controls how sensitive the app is to changes in pitch (1=easiest, 5=hardest). "
+                        + "At higher difficulties you will need to meet the target pitch very precisely. " +
+                        "At lower difficulties a wider range of pitches will be accepted."
+            ){
+                NumericStepper(
+                    value = settings.difficulty,
+                    onValueChange = onUpdateDifficulty,
+                    min = 0,
+                    max = 5
+                )
+            }
+
+        }
     }
 
-}
-
-/**
- * A group of related settings shown together (e.g. saw range settings)
- *
- * Each group has its own subsection on screen.
- *
- * @param groupTitle header for the group (e.g. "Sound settings")
- * @param content rows for individual settings
- */
-@Composable
-fun SettingsGroup(
-    groupTitle: String,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
-){
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ){
-        Text(
-            text = groupTitle,
-            style = MaterialTheme.typography.titleSmallEmphasized,
-            modifier = modifier.padding(bottom = 8.dp)
-        )
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            content = content
-        )
-
-        HorizontalDivider(
-            modifier = Modifier.padding(top = 16.dp)
-        )
-    }
-}
-
-/**
- * Composable representing a single settings as a two column row
- *
- * Column 1 = Setting label (e.g. volume)
- * Column 2 = means of editing that setting, e.g. an input field
- *
- * @param label the name of the setting to be changed
- * @param content settings controls
- */
-@Composable
-fun SettingRow(
-    label: String,
-    tooltip: String,
-    content: @Composable RowScope.() -> Unit
-){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-
-        Text(
-            text = label,
-            modifier = Modifier
-                .weight(0.35f)
-                .padding(end = 24.dp)
-        )
-        Tooltip(
-            heading= label,
-            text = tooltip
-        )
-        Row(
-            modifier = Modifier.weight(0.65f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            content = content
-        )
-
-    }
-}
-
-@Preview
-@Composable
-fun SettingsScreenPreview(){
-    SettingsScreen(
-        settings = AppSettings(),
-        {Int -> },
-        {Int -> },
-        {},
-        {},
-        {}
-    )
 }

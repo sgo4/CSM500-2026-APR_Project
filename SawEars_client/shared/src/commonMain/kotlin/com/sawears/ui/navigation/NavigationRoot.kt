@@ -125,6 +125,7 @@ fun NavigationRoot(
                             settings=settings.value,
                             onUpdateMin=viewModel::updateRangeMin,
                             onUpdateMax=viewModel::updateRangeMax,
+                            onUpdateDifficulty = viewModel::updateDifficulty,
                             onClickAccount = {backStack.add(Route.AccountScreen)},
                             onClickMenu = {openMenu()},
                             onClickSettings = { backStack.add(Route.SettingsScreen) }

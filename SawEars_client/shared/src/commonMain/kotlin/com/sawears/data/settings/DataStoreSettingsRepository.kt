@@ -16,9 +16,11 @@ class DataStoreSettingsRepository(
 
     private val RANGE_MIN_KEY = intPreferencesKey("range_min")
     private val RANGE_MAX_KEY = intPreferencesKey("range_max")
+    private val DIFFICULTY_KEY = intPreferencesKey("difficulty")
 
     private val rangeMinDefault = 20
     private val rangeMaxDefault = 90
+    private val defaultDifficulty = 3
 
     override val settings: Flow<AppSettings> =
         dataStore.data.map { preferences ->
@@ -26,13 +28,17 @@ class DataStoreSettingsRepository(
                 rangeMinMidi = preferences[RANGE_MIN_KEY]
                     ?: rangeMinDefault,
                 rangeMaxMidi = preferences[RANGE_MAX_KEY]
-                    ?: rangeMaxDefault
+                    ?: rangeMaxDefault,
+                difficulty = preferences[DIFFICULTY_KEY]
+                    ?: defaultDifficulty
             )
 
         }
 
     /**
      * Set minimum range, used in calculating transpositions
+     *
+     * @param pitchMidi
      */
     override suspend fun setRangeMinMidi(pitchMidi: Int){
         dataStore.edit { preferences ->
@@ -42,6 +48,8 @@ class DataStoreSettingsRepository(
 
     /**
      * Set max range, used in calculating transpositions
+     *
+     * @param pitchMidi
      */
     override suspend fun setRangeMaxMidi(pitchMidi: Int){
         dataStore.edit { preferences ->
@@ -50,11 +58,16 @@ class DataStoreSettingsRepository(
     }
 
     /**
-     * Set full range, used in calculating transpositions
+     * Set difficulty for Lesson settings
+     *
+     * @param difficulty
      */
-    override suspend fun setRangeMidi(minMidi: Int, maxMidi: Int){
-        require(minMidi < maxMidi){
-            "Range minimum must be lower than range maximum"
+    override suspend fun setDifficulty(difficulty: Int){
+
+        dataStore.edit { preferences ->
+            preferences[DIFFICULTY_KEY] = difficulty
         }
+
     }
+
 }

@@ -8,5 +8,7 @@ interface SettingsRepository {
 
     suspend fun setRangeMinMidi(pitchMidi: Int)
     suspend fun setRangeMaxMidi(pitchMidi: Int)
-    suspend fun setRangeMidi(minMidi: Int, maxMidi: Int)
+    suspend fun setDifficulty(difficulty: Int)
+
+
 }

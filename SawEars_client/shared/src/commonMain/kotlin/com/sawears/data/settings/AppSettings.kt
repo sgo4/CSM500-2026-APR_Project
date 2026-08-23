@@ -10,11 +10,13 @@ import androidx.datastore.preferences.core.Preferences
  *
  * @property rangeMinMidi the lowest note the instrument can play
  * @property rangeMaxMidi the highest note the instrument can play
+ * @property difficulty how challenging the lesson mode is (1=easiest, 5=most difficult)
  */
 data class AppSettings(
     // set very wide range as default, will be overwritten by more sensible values later in the flow
     val rangeMinMidi: Int = 0,
-    val rangeMaxMidi: Int = 1000
+    val rangeMaxMidi: Int = 1000,
+    val difficulty: Int = 3
 )
 
 /**

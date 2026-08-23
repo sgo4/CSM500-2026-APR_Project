@@ -35,4 +35,10 @@ class SettingsViewModel(
         }
     }
 
+    fun updateDifficulty(difficulty: Int){
+        viewModelScope.launch {
+            settingsRepository.setDifficulty(difficulty)
+        }
+    }
+
 }
