@@ -94,7 +94,7 @@ class AndroidAudioPlayer(
     }
 
     override fun play(){
-        _track?.play()
+        getTrack().play()
     }
 
     override fun pause(){

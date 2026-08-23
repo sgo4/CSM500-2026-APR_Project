@@ -45,7 +45,7 @@ class WindowsAudioPlayer(
     }
 
     override fun play(){
-        _line?.start()
+        getAudioLine().start()
     }
 
     override fun pause(){
