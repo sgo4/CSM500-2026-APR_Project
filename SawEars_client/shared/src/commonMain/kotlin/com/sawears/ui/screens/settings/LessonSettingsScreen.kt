@@ -2,11 +2,7 @@ package com.sawears.ui.screens.settings
 
 
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -39,7 +35,7 @@ import com.sawears.ui.shared.components.Tooltip
  * @param onUpdateMax function to change range max
  * @param onUpdateDifficulty
  * @param onUpdateTempo change song tempo
- * @param onUpdateMode
+ * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
  * @param onClickMenu
  * @param onClickAccount
  */
