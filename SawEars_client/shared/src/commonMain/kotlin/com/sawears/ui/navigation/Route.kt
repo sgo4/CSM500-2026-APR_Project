@@ -2,6 +2,7 @@ package com.sawears.ui.navigation
 
 import androidx.navigation3.runtime.NavKey
 import com.sawears.AppContainer
+import com.sawears.ui.screens.lessonsettings.LessonSettings
 import kotlinx.serialization.Serializable
 
 /**
@@ -18,6 +19,9 @@ sealed interface Route: NavKey {
 
     @Serializable
     data object SettingsScreen: Route, NavKey
+
+    @Serializable
+    data class LessonSettingsScreen(val lessonId: Int): Route, NavKey
     @Serializable
     data object SongSelectionScreen: Route, NavKey
 

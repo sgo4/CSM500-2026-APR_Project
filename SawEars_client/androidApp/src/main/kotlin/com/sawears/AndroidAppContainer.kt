@@ -3,6 +3,8 @@ package com.sawears
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
+import com.sawears.data.settings.EphemeralLocalSettingsRepository
+import com.sawears.data.settings.LocalSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.useCases.LoadSong
@@ -15,6 +17,7 @@ import javax.inject.Inject
 class AndroidAppContainer
 @Inject constructor (
     override val settingsRepository: SettingsRepository,
+    override val localSettingsRepository: LocalSettingsRepository,
     override val loadSong: LoadSong,
     override val audioPlayer: AudioPlayer,
     override val estimator: PitchEstimator,

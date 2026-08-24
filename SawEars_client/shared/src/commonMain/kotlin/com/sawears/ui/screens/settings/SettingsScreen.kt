@@ -79,6 +79,7 @@ fun SettingsScreenContent(
             .fillMaxWidth()
             .padding(16.dp)
     ){
+
         SettingsGroup("Instrument settings"){
             SettingRow(
                 label="Range min",
@@ -119,6 +120,17 @@ fun SettingsScreenContent(
                     min = 0,
                     max = 5
                 )
+            }
+            SettingRow(
+                label="Lesson Mode",
+                tooltip="""
+                    Control the default lesson mode
+                    
+                    Practice: The lesson will wait for you to produce the correct note before proceeding, allowing you to practice the song at your own pace.
+                    Performance: The lesson will continue at the tempo you set, like a karaoke performance.
+                """.trimIndent()
+            ){
+
             }
 
         }

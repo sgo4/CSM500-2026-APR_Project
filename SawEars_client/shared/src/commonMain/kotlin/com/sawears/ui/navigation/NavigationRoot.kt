@@ -18,8 +18,11 @@ import com.sawears.ui.screens.account.AccountScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
+import com.sawears.ui.screens.lessonsettings.LessonSettings
+import com.sawears.ui.screens.lessonsettings.LessonSettingsViewModel
 import com.sawears.ui.screens.selectsong.SongSelectionScreen
 import com.sawears.ui.screens.selectsong.SongSelectionViewModel
+import com.sawears.ui.screens.settings.LessonSettingsScreen
 import com.sawears.ui.screens.settings.SettingsScreen
 import com.sawears.ui.screens.settings.SettingsViewModel
 
@@ -47,6 +50,9 @@ fun NavigationRoot(
         },
         Route.MainScreen
     )
+
+
+
     NavDisplay(
         backStack = backStack,
         entryProvider = { key ->
@@ -126,6 +132,33 @@ fun NavigationRoot(
                             onUpdateMin=viewModel::updateRangeMin,
                             onUpdateMax=viewModel::updateRangeMax,
                             onUpdateDifficulty = viewModel::updateDifficulty,
+                            onClickAccount = {backStack.add(Route.AccountScreen)},
+                            onClickMenu = {openMenu()},
+                            onClickSettings = { backStack.add(Route.SettingsScreen) }
+                        )
+                    }
+                }
+                is Route.LessonSettingsScreen ->{
+                    NavEntry(key){
+
+                        val viewModel = viewModel {
+                            LessonSettingsViewModel(
+                                key.lessonId,
+                                container.localSettingsRepository,
+                                container.settingsRepository
+                            )
+                        }
+
+                        val settings = viewModel.localSettings.collectAsStateWithLifecycle()
+
+
+                        LessonSettingsScreen(
+                            settings = settings.value,
+                            onUpdateMin = viewModel::updateRangeMin,
+                            onUpdateMax= viewModel::updateRangeMax,
+                            onUpdateDifficulty = viewModel::updateDifficulty,
+                            onUpdateTempo = viewModel::updateTempo,
+                            onUpdateMode = viewModel::updateMode,
                             onClickAccount = {backStack.add(Route.AccountScreen)},
                             onClickMenu = {openMenu()},
                             onClickSettings = { backStack.add(Route.SettingsScreen) }

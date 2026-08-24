@@ -11,8 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +34,7 @@ import com.sawears.ui.shared.components.Tooltip
 /**
  * Screen for manipulating global application settings
  *
- * @param settings
+ * @param settings lesson scoped settings
  * @param onUpdateMin function to change range min
  * @param onUpdateMax function to change range max
  * @param onUpdateDifficulty
@@ -38,8 +45,7 @@ import com.sawears.ui.shared.components.Tooltip
  */
 @Composable
 fun LessonSettingsScreen(
-    settings: AppSettings, // TODO rather than having two separate settings' we can combine them in viewmodel and expose single settings
-    localSettings: LessonSettings,
+    settings: LessonSettings,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
@@ -54,7 +60,6 @@ fun LessonSettingsScreen(
         content = { innerPadding ->
             LessonSettingsScreenContent(
                 settings,
-                localSettings,
                 onUpdateMin,
                 onUpdateMax,
                 onUpdateDifficulty,
@@ -81,8 +86,7 @@ fun LessonSettingsScreen(
  */
 @Composable
 fun LessonSettingsScreenContent(
-    settings: AppSettings,
-    localSettings: LessonSettings,
+    settings: LessonSettings,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
@@ -101,10 +105,10 @@ fun LessonSettingsScreenContent(
                 tooltip="Set the lowest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range."
             ){
                 NumericStepper(
-                    value = settings.rangeMinMidi,
+                    value = settings.rangeMin,
                     onValueChange = onUpdateMin,
                     min = 0,
-                    max = maxOf(127,settings.rangeMaxMidi)
+                    max = maxOf(127,settings.rangeMax)
                 )
             }
 
@@ -113,10 +117,10 @@ fun LessonSettingsScreenContent(
                 tooltip="Set the highest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range."
             ){
                 NumericStepper(
-                    value = settings.rangeMaxMidi,
+                    value = settings.rangeMax,
                     onValueChange = onUpdateMax,
                     min = 0,
-                    max = maxOf(127,settings.rangeMaxMidi)
+                    max = maxOf(127,settings.rangeMax)
                 )
             }
         }
@@ -140,7 +144,29 @@ fun LessonSettingsScreenContent(
                 label="Mode",
                 tooltip="Change mode" // TODO expand
             ){
-                // TODO implement mode change logic
+                // set component options based on all available modes
+                val options = LessonMode.entries.map { it.name }
+                // keep track of which option is selected
+                var selectedIndex by remember { mutableIntStateOf(0) }
+
+                // Component adapted from:
+                // https://developer.android.com/develop/ui/compose/components/segmented-button
+                SingleChoiceSegmentedButtonRow {
+                    options.forEachIndexed { index, label ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = options.size
+                            ),
+                            onClick = { onUpdateMode(
+                                    enumValueOf(options.get(index)) // update mode based on option index
+                                ) },
+                            selected = index == selectedIndex,
+                            label = { Text(label) }
+                        )
+                    }
+                }
+
             }
         }
         SettingsGroup("Song"){
@@ -149,7 +175,7 @@ fun LessonSettingsScreenContent(
                 tooltip="Control lesson tempo in BPM"
             ){
                 NumericStepper(
-                    value = localSettings.tempo,
+                    value = settings.tempo,
                     onValueChange = onUpdateTempo,
                     min = 0,
                     max = 5
@@ -159,5 +185,24 @@ fun LessonSettingsScreenContent(
         // TODO transposition can also go here
     }
 
+}
+
+
+@Preview
+@Composable
+internal fun LessonSettingsScreenPreview(
+
+){
+    LessonSettingsScreen(
+        LessonSettings(90,3, LessonMode.PERFORMANCE,0,1000),
+        {Int -> },
+        {Int ->},
+        {Int -> },
+        {Int -> },
+        { LessonMode -> },
+        {},
+        {},
+        {}
+    )
 }
 

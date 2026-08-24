@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.map
 
 /**
@@ -17,10 +19,12 @@ class DataStoreSettingsRepository(
     private val RANGE_MIN_KEY = intPreferencesKey("range_min")
     private val RANGE_MAX_KEY = intPreferencesKey("range_max")
     private val DIFFICULTY_KEY = intPreferencesKey("difficulty")
+    private val MODE_KEY = stringPreferencesKey("mode")
 
     private val rangeMinDefault = 20
     private val rangeMaxDefault = 90
     private val defaultDifficulty = 3
+    private val defaultMode = LessonMode.PRACTICE
 
     override val settings: Flow<AppSettings> =
         dataStore.data.map { preferences ->
@@ -30,7 +34,8 @@ class DataStoreSettingsRepository(
                 rangeMaxMidi = preferences[RANGE_MAX_KEY]
                     ?: rangeMaxDefault,
                 difficulty = preferences[DIFFICULTY_KEY]
-                    ?: defaultDifficulty
+                    ?: defaultDifficulty,
+                mode = enumValueOf(preferences[MODE_KEY] ?: defaultMode.name)
             )
 
         }
@@ -68,6 +73,21 @@ class DataStoreSettingsRepository(
             preferences[DIFFICULTY_KEY] = difficulty
         }
 
+    }
+
+    /**
+     * Set lesson mode
+     *
+     * Implementation note:
+     * Enum needs to be converted to string for storage. The reverse conversion
+     * occurs when dataStore values are read into settings.
+     *
+     * @param mode enum value representing defaul lesson mode
+     */
+    override suspend fun setMode(mode: LessonMode){
+        dataStore.edit { preferences ->
+            preferences[MODE_KEY] = mode.name
+        }
     }
 
 }

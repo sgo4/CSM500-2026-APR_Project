@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.SettingsRepository
+import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -12,8 +13,10 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for managing settings
  *
+ * Open so it can be subclassed by other view models that access settings
+ *
  */
-class SettingsViewModel(
+open class SettingsViewModel(
     private val settingsRepository: SettingsRepository
 ): ViewModel() {
 
@@ -23,21 +26,29 @@ class SettingsViewModel(
         initialValue = AppSettings()
     )
 
-    fun updateRangeMin(pitchMidi: Int){
+
+
+    open fun updateRangeMin(pitchMidi: Int){
         viewModelScope.launch {
             settingsRepository.setRangeMinMidi(pitchMidi)
         }
     }
 
-    fun updateRangeMax(pitchMidi: Int){
+    open fun updateRangeMax(pitchMidi: Int){
         viewModelScope.launch {
             settingsRepository.setRangeMaxMidi(pitchMidi)
         }
     }
 
-    fun updateDifficulty(difficulty: Int){
+    open fun updateDifficulty(difficulty: Int){
         viewModelScope.launch {
             settingsRepository.setDifficulty(difficulty)
+        }
+    }
+
+    open fun updateMode(mode: LessonMode){
+        viewModelScope.launch{
+            settingsRepository.setMode(mode)
         }
     }
 

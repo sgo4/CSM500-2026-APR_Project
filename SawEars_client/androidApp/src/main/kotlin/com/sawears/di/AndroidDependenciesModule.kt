@@ -12,6 +12,8 @@ import com.sawears.data.io.audioOut.AndroidAudioPlayer
 import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.settings.DataStoreSettingsRepository
+import com.sawears.data.settings.EphemeralLocalSettingsRepository
+import com.sawears.data.settings.LocalSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.data.settings.createDataStore
 import com.sawears.model.pitch.PitchEstimator
@@ -45,6 +47,11 @@ object AppProviderModule {
     fun provideSettingsRepository(
         @ApplicationContext context: Context
     ): SettingsRepository = DataStoreSettingsRepository(createDataStore(context))
+
+    @Provides
+    @Singleton
+    fun provideLocalSettingsRepository(): LocalSettingsRepository =
+        EphemeralLocalSettingsRepository()
 
     @Provides
     @Singleton
