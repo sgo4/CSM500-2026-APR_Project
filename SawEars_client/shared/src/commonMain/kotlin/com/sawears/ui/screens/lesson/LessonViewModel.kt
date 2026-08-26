@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.sawears.AppContainer
 import com.sawears.data.io.audioIn.AudioInputSource
+import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
@@ -31,25 +32,30 @@ import kotlinx.coroutines.isActive
  */
 class LessonViewModel(
     container: AppContainer, // TODO just pass in the actual classes needed
-    val lessonSettings: LessonSettings
+    val lessonId: Int,
+    val lessonSettingsRepository: LessonSettingsRepository
 ): ViewModel() {
 
+    init {
+        println("Initializing lesson viewmodel") // TODO delete debug text
+    }
 
+    // TODO observe lesson settings from central repository
+    val st = lessonSettingsRepository.settingsFor(lessonId)
 
     // state
-    private val _state = MutableStateFlow(LessonUiState(lessonSettings.song))
+    private val _state = MutableStateFlow(LessonUiState())
     val lessonState = _state.asStateFlow()
 
-    // TODO should this be more specific? More than one thing may need to load.
-    var loading by mutableStateOf(false)
-        private set
+    private val _settings = MutableStateFlow(lessonSettings)
+    val settings = _settings.asStateFlow()
 
     // TODO is this necessary / the best way of handling things?
     var error by mutableStateOf<String?>(null)
         private set
 
     // player class to help with managing animations etc.
-    var lessonPlayer: LessonPlayer = LessonPlayer(lessonSettings.song)
+    var lessonPlayer: LessonPlayer = LessonPlayer(lessonSettings.song, lessonSettings.tempo)
     // TODO figure out if you want to use a playback clock
     val playbackClock = container.playbackClock
 
@@ -67,6 +73,10 @@ class LessonViewModel(
     val estimator = container.estimator
     val pitchCurveInput = PitchCurveInput() // buffer to hold pitch estimates for pitch graph
 
+    init {
+        // preload audioplayer with song ready for playback
+        audioPlayer.audioSource.loadInput(settings.value.song)
+    }
     /**
      * Open an audio channel and start generating pitch estimates
      */
@@ -193,7 +203,7 @@ data class DisplayNote(
  */
 class LessonPlayer(
     val song: Song,
-    defaultTempo: Int = 90,
+    val tempoBpm: Int,
     val canvasWidthBeats: Float = 5f,
     val playBackHeadPosition: Float = 0.5f
 ){
@@ -205,7 +215,6 @@ class LessonPlayer(
     var currentWindowEndBeats = currentWindowStartBeats + canvasWidthBeats
     var latestConsumedNoteIdx = -1
     var consumedNotesBeats = 0f
-    var tempo = song.tempo?: defaultTempo
     val pastBeats = canvasWidthBeats * playBackHeadPosition
     val futureBeats = canvasWidthBeats * (1-playBackHeadPosition)
 
@@ -222,14 +231,14 @@ class LessonPlayer(
     /*
      * Update the position of the playback head in beats elapsed based on time elapses
      *
-     * @param currentTime
+     * @param currentTimeMillis
      */
     private fun updatePlayBackHead(currentTimeMillis: Long){
         if (systemTimeMillis == null){
             systemTimeMillis = currentTimeMillis
         }
         val elapsedTimeMs = currentTimeMillis - systemTimeMillis!!
-        val elapsedTimeBeats = elapsedTimeMs / (60_000f / tempo)
+        val elapsedTimeBeats = elapsedTimeMs / (60_000f / tempoBpm)
         playBackHeadBeats += elapsedTimeBeats
         systemTimeMillis = currentTimeMillis
     }

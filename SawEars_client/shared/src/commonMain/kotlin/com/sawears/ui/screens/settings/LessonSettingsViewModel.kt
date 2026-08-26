@@ -28,7 +28,7 @@ class LessonSettingsViewModel(
     private val autoTranspose: Boolean = true
 ): SettingsViewModel(settingsRepository) {
 
-    val localSettings: StateFlow<LessonSettings> = lessonSettingsRepository
+    val lessonSettings: StateFlow<LessonSettings> = lessonSettingsRepository
         .settingsFor(lessonId)
         .stateIn(
         scope = viewModelScope,
@@ -43,10 +43,11 @@ class LessonSettingsViewModel(
      * @param tempoBpm
      */
     fun updateTempo(tempoBpm: Int){
+
         // update setting (local only)
        lessonSettingsRepository.set(
            lessonId,
-           localSettings.value.copy(
+           lessonSettings.value.copy(
                tempo = tempoBpm
            )
        )
@@ -67,16 +68,16 @@ class LessonSettingsViewModel(
     override fun updateRangeMin(pitchMidi: Int){
 
         // handle auto transposition if configured
-        var song: Song = localSettings.value.song
+        var song: Song = lessonSettings.value.song
         if (autoTranspose){
             try {
                 song = song
                     .adaptForRange(
                         pitchMidi,
-                        localSettings.value.rangeMax
+                        lessonSettings.value.rangeMax
                     )
             } catch (e: TranspositionException){
-                error("Range ${localSettings.value.rangeMin} - ${localSettings.value.rangeMax} is not large enough for selected song.")
+                error("$e. Range ${lessonSettings.value.rangeMin} - ${lessonSettings.value.rangeMax} is not large enough for selected song.")
 
             }
         }
@@ -84,7 +85,7 @@ class LessonSettingsViewModel(
         // update setting locally
         lessonSettingsRepository.set(
             lessonId,
-            localSettings.value.copy(
+            lessonSettings.value.copy(
                 song = song,
                 rangeMin = pitchMidi
             )
@@ -109,16 +110,16 @@ class LessonSettingsViewModel(
      */
     override fun updateRangeMax(pitchMidi: Int){
         // handle auto transposition if configured
-        var song: Song = localSettings.value.song
+        var song: Song = lessonSettings.value.song
         if (autoTranspose){
             try {
                 song = song
                     .adaptForRange(
-                        pitchMidi,
-                        localSettings.value.rangeMax
+                        lessonSettings.value.rangeMin,
+                        pitchMidi
                     )
             } catch (e: TranspositionException){
-                error("Range ${localSettings.value.rangeMin} - ${localSettings.value.rangeMax} is not large enough for selected song.")
+                error("$e. Range ${lessonSettings.value.rangeMin} - ${lessonSettings.value.rangeMax} is not large enough for selected song.")
 
             }
         }
@@ -126,7 +127,7 @@ class LessonSettingsViewModel(
         // update setting locally
         lessonSettingsRepository.set(
             lessonId,
-            localSettings.value.copy(
+            lessonSettings.value.copy(
                 song = song,
                 rangeMax = pitchMidi
             )
@@ -148,7 +149,7 @@ class LessonSettingsViewModel(
         // update setting locally
         lessonSettingsRepository.set(
             lessonId,
-            localSettings.value.copy(
+            lessonSettings.value.copy(
                 difficulty = difficulty
             )
         )
@@ -164,7 +165,7 @@ class LessonSettingsViewModel(
         // update setting locally
         lessonSettingsRepository.set(
             lessonId,
-            localSettings.value.copy(
+            lessonSettings.value.copy(
                 mode = mode
             )
         )

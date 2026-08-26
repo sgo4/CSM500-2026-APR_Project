@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.model.Song
 import com.sawears.ui.screens.lesson.components.LessonCanvas
+import com.sawears.ui.screens.lessonsettings.LessonSettings
 
 /**
  * Main lesson screen
@@ -28,6 +29,7 @@ fun LessonMainScreen(
 ){
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
 
     // TODO evaluate where in the flow to actually start recording
     DisposableEffect(viewModel){
@@ -41,7 +43,7 @@ fun LessonMainScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()){
-        Text(lessonState.song.title)
+        debugText(settings)
 
         Row(modifier = Modifier.fillMaxWidth()){
             Button(
@@ -74,4 +76,14 @@ fun LessonMainScreen(
         )
 
     }
+}
+
+/*
+Debug text // TODO remove from final version
+ */
+@Composable
+private fun debugText(lessonSettings: LessonSettings){
+    Text(
+        "${lessonSettings.song} || tempo=${lessonSettings.tempo}"
+    )
 }

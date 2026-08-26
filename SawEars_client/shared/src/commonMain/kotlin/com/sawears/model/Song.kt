@@ -18,7 +18,7 @@ data class Song(
     val title: String,
     val composers: List<String>,
     val year: Int?,
-    val tempo: Int?,
+    var tempo: Int?,
     val description: String?,
     val notes: List<Note>
 ) {
@@ -81,6 +81,10 @@ data class Song(
         val transpositionDistance = targetRangeCentre - songRangeCentre
         // return new Song object with melody transposed
         return transpose(transpositionDistance)
+    }
+
+    override fun toString(): String{
+        return "title=$title range=($songMinMidi, $songMaxMidi)"
     }
 }
 

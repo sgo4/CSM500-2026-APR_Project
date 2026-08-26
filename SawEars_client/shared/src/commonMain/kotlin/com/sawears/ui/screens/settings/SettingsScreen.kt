@@ -7,15 +7,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
+import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.shared.components.ContentWithTopBar
 import com.sawears.ui.shared.components.NumericStepper
 import com.sawears.ui.shared.components.Tooltip
@@ -26,6 +35,9 @@ import com.sawears.ui.shared.components.Tooltip
  * @param settings
  * @param onUpdateMin function to change range min
  * @param onUpdateMax function to change range max
+ * @param onUpdateDifficulty
+ * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
+ * @param onClickDone return to home screen
  * @param onClickMenu
  * @param onClickAccount
  */
@@ -35,9 +47,10 @@ fun SettingsScreen(
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
+    onUpdateMode: (LessonMode) -> Unit,
+    onClickDone: () -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
-    onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ){
     ContentWithTopBar(
@@ -47,13 +60,15 @@ fun SettingsScreen(
                 onUpdateMin,
                 onUpdateMax,
                 onUpdateDifficulty,
+                onUpdateMode,
+                onClickDone,
                 modifier = Modifier.padding(innerPadding)
             )
         },
         title = "Settings",
         onClickMenu = onClickMenu,
         onClickAccount = onClickAccount,
-        onClickSettings = onClickSettings
+        onClickSettings = { } // we're already on the settings page so this function doesn't need to do anything
     )
 
 }
@@ -62,9 +77,11 @@ fun SettingsScreen(
  * Content for settings screen.
  * Shows groups of related settings in sections.
  *
- * @param settings
+ * @param settings app wide settings state
  * @param onUpdateMin function to change range min
  * @param onUpdateMax function to change range max
+ * @param onUpdateDifficulty
+ * @param onClickDone
  */
 @Composable
 fun SettingsScreenContent(
@@ -72,6 +89,8 @@ fun SettingsScreenContent(
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
+    onUpdateMode: (LessonMode) -> Unit,
+    onClickDone: () -> Unit,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -89,7 +108,7 @@ fun SettingsScreenContent(
                     value = settings.rangeMinMidi,
                     onValueChange = onUpdateMin,
                     min = 0,
-                    max = maxOf(127,settings.rangeMaxMidi)
+                    max = maxOf(127,settings.rangeMaxMidi) // 127 = max midi value
                     )
             }
 
@@ -101,7 +120,7 @@ fun SettingsScreenContent(
                     value = settings.rangeMaxMidi,
                     onValueChange = onUpdateMax,
                     min = 0,
-                    max = maxOf(127,settings.rangeMaxMidi)
+                    max = maxOf(127,settings.rangeMaxMidi) // 127 = max midi value
                 )
             }
         }
@@ -122,7 +141,7 @@ fun SettingsScreenContent(
                 )
             }
             SettingRow(
-                label="Lesson Mode",
+                label="Mode",
                 tooltip="""
                     Control the default lesson mode
                     
@@ -130,7 +149,36 @@ fun SettingsScreenContent(
                     Performance: The lesson will continue at the tempo you set, like a karaoke performance.
                 """.trimIndent()
             ){
+                // set component options based on all available modes
+                val options = LessonMode.entries.map { it.name }
+                // keep track of which option is selected
+                var selectedIndex by remember { mutableIntStateOf(0) }
 
+                // Component adapted from:
+                // https://developer.android.com/develop/ui/compose/components/segmented-button
+                SingleChoiceSegmentedButtonRow {
+                    options.forEachIndexed { index, label ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = options.size
+                            ),
+                            onClick = {
+                                onUpdateMode(enumValueOf(options[index])) // update mode based on option index
+                                selectedIndex = index // update selection
+                            },
+                            selected = index == selectedIndex,
+                            label = { Text(label) }
+                        )
+                    }
+                }
+
+            }
+            // Done button, sends the user home
+            Button(
+                onClick = onClickDone
+            ){
+                Text("Done")
             }
 
         }

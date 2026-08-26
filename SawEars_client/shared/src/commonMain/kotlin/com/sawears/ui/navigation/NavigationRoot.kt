@@ -99,7 +99,7 @@ fun NavigationRoot(
                                             Route.LessonSettingsScreen(event.lessonId)
                                         )
                                     }
-                                    is SongSelectionEvent.ShowError -> {
+                                    is SongSelectionEvent.Error -> {
                                         println(event.message) // TODO implement error path
                                     }
                                 }
@@ -153,17 +153,15 @@ fun NavigationRoot(
                             onUpdateMin=viewModel::updateRangeMin,
                             onUpdateMax=viewModel::updateRangeMax,
                             onUpdateDifficulty = viewModel::updateDifficulty,
+                            onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
                             onClickAccount = {backStack.add(Route.AccountScreen)},
-                            onClickMenu = {openMenu()},
-                            onClickSettings = { backStack.add(Route.SettingsScreen) }
+                            onClickMenu = {openMenu()}
                         )
                     }
                 }
                 is Route.LessonSettingsScreen ->{
 
-
                     NavEntry(key){
-
 
                         val viewModel = viewModel {
                             LessonSettingsViewModel(
@@ -175,7 +173,7 @@ fun NavigationRoot(
 
 
 
-                        val settings = viewModel.localSettings.collectAsStateWithLifecycle()
+                        val settings = viewModel.lessonSettings.collectAsStateWithLifecycle()
 
 
                         LessonSettingsScreen(

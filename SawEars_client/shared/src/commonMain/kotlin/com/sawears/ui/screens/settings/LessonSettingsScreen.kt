@@ -195,8 +195,6 @@ fun LessonSettingsScreenContent(
                 )
             }
         }
-        // TODO transposition can also go here
-
         // Done button, sends the user to the lesson
         Button(
             onClick = {onClickDone(lessonId)}
