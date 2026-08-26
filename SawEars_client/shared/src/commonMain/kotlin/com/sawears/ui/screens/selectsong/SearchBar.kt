@@ -37,7 +37,7 @@ import com.sawears.data.database.SongEntity
 fun SongSelectionSearchBar(
     textFieldState: TextFieldState,
     onSearch: (String) -> Unit,
-    onSelectItem: (String) -> Unit,
+    onSelectSong: (Int, String) -> Unit,
     searchResults: List<SongEntity>,
     modifier: Modifier = Modifier
 ) {
@@ -76,10 +76,10 @@ fun SongSelectionSearchBar(
             LazyColumn {
                 items(searchResults) { result ->
                     ListItem(
-                        headlineContent = { Text("${result.title} (${result.year}") },
+                        headlineContent = { Text("${result.title} (${result.year})") },
                         modifier = Modifier
                             .clickable {
-                                onSelectItem(result.resourcePath)
+                                onSelectSong(result.id, result.resourcePath)
                             }
                             .fillMaxWidth()
                     )

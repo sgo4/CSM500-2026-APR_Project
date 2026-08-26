@@ -2,9 +2,7 @@ package com.sawears.data.database
 
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
-import androidx.room3.ColumnTypeConverter
 import androidx.room3.Index
-import kotlinx.serialization.json.Json
 
 
 /**

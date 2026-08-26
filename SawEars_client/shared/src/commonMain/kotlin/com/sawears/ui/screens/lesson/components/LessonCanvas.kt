@@ -19,6 +19,7 @@ import com.sawears.ui.screens.lesson.DisplayNote
 import com.sawears.ui.screens.lesson.LessonUiState
 import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.model.pitch.PitchResult
+import com.sawears.ui.screens.lesson.LessonPlayer
 import kotlinx.coroutines.isActive
 import kotlin.math.ceil
 import kotlin.math.ln
@@ -99,7 +100,7 @@ fun LessonCanvas(
     }
 
     Canvas(Modifier.fillMaxSize()){
-        val player = lessonState.player?: return@Canvas
+        val player = viewModel.lessonPlayer?: return@Canvas
 
         // set up canvas dimensions
         val canvasWidthPx = size.width
@@ -137,6 +138,7 @@ fun LessonCanvas(
 
         drawPianoRoll(
             lessonState,
+            viewModel.lessonPlayer,
             elapsedNanos,
             dimensions
         )
@@ -153,12 +155,12 @@ fun LessonCanvas(
 
 fun DrawScope.drawPianoRoll(
     lessonState: LessonUiState,
+    player: LessonPlayer,
     elapsedNanos: Long,
     dimensions: LessonCanvasDimensions
 ){
 
     val elapsedMillis = elapsedNanos / 1_000_000
-    val player = lessonState.player?: return
     val notesInView = player.notesInView(elapsedMillis)
     // calculate noteheight as canvas height / range of displayable notes
     val noteHeightPx = dimensions.canvasHeightPx / (dimensions.maxPitchMidi - dimensions.minPitchMidi)

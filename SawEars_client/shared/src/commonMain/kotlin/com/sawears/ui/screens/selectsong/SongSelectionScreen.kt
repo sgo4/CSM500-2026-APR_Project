@@ -19,7 +19,7 @@ import com.sawears.ui.shared.components.ContentWithTopBar
 fun SongSelectionScreen(
     state: SongSelectionState,
     onSearch: (String) -> Unit,
-    onSelectSong: (String) -> Unit,
+    onSelectSong: (Int, String) -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
@@ -32,7 +32,7 @@ fun SongSelectionScreen(
             SongSelectionSearchBar(
                 textFieldState = textFieldState,
                 onSearch = onSearch,
-                onSelectItem = onSelectSong,
+                onSelectSong = onSelectSong,
                 searchResults = state.songs,
                 modifier = Modifier.padding(innerPadding)
             )
@@ -49,14 +49,14 @@ fun SongSelectionScreen(
 fun SongSelectionScreenPreview(){
     val state = SongSelectionState()
     val onSearch = {string: String -> Unit}
-    val onSelectSong = {string: String -> Unit}
+    val onSelectSong = {lessonId: Int, resourcePath: String -> Unit}
 
     ContentWithTopBar(
         content = { innerPadding ->
             SongSelectionSearchBar(
                 textFieldState = TextFieldState(),
                 onSearch = onSearch,
-                onSelectItem = onSelectSong,
+                onSelectSong = onSelectSong,
                 searchResults = listOf(
                     SongEntity(
                         id=1,

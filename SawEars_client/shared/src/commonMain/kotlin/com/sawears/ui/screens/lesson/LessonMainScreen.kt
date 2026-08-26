@@ -12,18 +12,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sawears.model.Song
 import com.sawears.ui.screens.lesson.components.LessonCanvas
 
 /**
  * Main lesson screen
  *
  * @param viewModel
- * @param songPath path to resource in memory (taken from index database)
+ * @param lessonId
  */
 @Composable
 fun LessonMainScreen(
    viewModel: LessonViewModel,
-   songPath: String
+   lessonId: Int
 ){
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
@@ -39,17 +40,8 @@ fun LessonMainScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (lessonState.song == null) {
-            val path = songPath
-            println(path)
-            viewModel.loadSong(path)
-        }
-    }
-
     Column(modifier = Modifier.fillMaxSize()){
-        Text("Main Screen")
-        Text(lessonState.player?.song?.title?: "Loading...")
+        Text(lessonState.song.title)
 
         Row(modifier = Modifier.fillMaxWidth()){
             Button(
@@ -74,14 +66,12 @@ fun LessonMainScreen(
 
         }
 
-    when {
-        !viewModel.loading ->   {
-            LessonCanvas(
-                viewModel,
-                lessonState,
-                20f,
-                5f
-            )}
-        }
+        LessonCanvas(
+            viewModel,
+            lessonState,
+            20f,
+            5f
+        )
+
     }
 }

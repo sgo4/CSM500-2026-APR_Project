@@ -11,6 +11,7 @@ import com.sawears.data.io.audioIn.AudioInputSource
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
+import com.sawears.ui.screens.lessonsettings.LessonSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,14 +30,15 @@ import kotlinx.coroutines.isActive
  * // TODO finish KDOC
  */
 class LessonViewModel(
-    container: AppContainer // TODO just pass in the actual classes needed
+    container: AppContainer, // TODO just pass in the actual classes needed
+    val lessonSettings: LessonSettings
 ): ViewModel() {
 
-    // state
-    private val _state = MutableStateFlow(LessonUiState())
-    val lessonState = _state.asStateFlow()
 
-    private val songDao = container.db.songDao()
+
+    // state
+    private val _state = MutableStateFlow(LessonUiState(lessonSettings.song))
+    val lessonState = _state.asStateFlow()
 
     // TODO should this be more specific? More than one thing may need to load.
     var loading by mutableStateOf(false)
@@ -47,12 +49,9 @@ class LessonViewModel(
         private set
 
     // player class to help with managing animations etc.
-    var lessonPlayer: LessonPlayer? = null
-        private set
+    var lessonPlayer: LessonPlayer = LessonPlayer(lessonSettings.song)
     // TODO figure out if you want to use a playback clock
     val playbackClock = container.playbackClock
-
-    private val loadSong = container.loadSong // repository for loading songs
 
     // audio in
     private var pitchCaptureJob: Job? = null
@@ -67,45 +66,6 @@ class LessonViewModel(
     // pitch tracking
     val estimator = container.estimator
     val pitchCurveInput = PitchCurveInput() // buffer to hold pitch estimates for pitch graph
-
-
-    /**
-     * TODO this is just to prove that the db is working. Logic should be improved.
-     */
-    suspend fun getResourcePath(title: String): String? {
-        val matches = songDao.searchByTitleExact(title)
-        if (matches.size == 1){
-            return matches[0].resourcePath
-        }
-        return null
-    }
-    /**
-     * Load a song based on provided resource path
-     *
-     * @param resourcePath (as retrieved from index database)
-     */
-    suspend fun loadSong(resourcePath: String) {
-
-        loading = true
-        error = null
-
-        try {
-            val song = loadSong.load(resourcePath)!! // load the resource
-            lessonPlayer = LessonPlayer(song) // create lesson player for song
-            audioPlayer.audioSource.loadInput(song) // load song into audio player
-            _state.update {
-                it.copy(
-                    song= song,
-                    player = lessonPlayer
-                )
-            }
-        } catch (exception: Exception) {
-            error = exception.message ?: "Failed to load data"
-        } finally {
-            loading = false
-        }
-
-    }
 
     /**
      * Open an audio channel and start generating pitch estimates

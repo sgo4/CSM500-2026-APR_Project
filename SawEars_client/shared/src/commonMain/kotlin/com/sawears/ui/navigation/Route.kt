@@ -26,6 +26,6 @@ sealed interface Route: NavKey {
     data object SongSelectionScreen: Route, NavKey
 
     @Serializable
-    data class LessonScreen(val resourcePath: String): Route, NavKey
+    data class LessonScreen(val lessonId: Int): Route, NavKey
 
 }

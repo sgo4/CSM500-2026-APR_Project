@@ -1,6 +1,7 @@
 package com.sawears
 
 import com.sawears.data.MidiJsonRepository
+import com.sawears.data.SongRepository
 import com.sawears.data.database.buildWindowsDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
@@ -12,7 +13,6 @@ import com.sawears.data.settings.LocalSettingsRepository
 import com.sawears.data.settings.createDataStore
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.estimators.FixedSineEstimator
-import com.sawears.model.useCases.LoadSong
 
 
 
@@ -29,9 +29,7 @@ class WindowsAppContainer(): AppContainer {
     override val localSettingsRepository: LocalSettingsRepository
         = EphemeralLocalSettingsRepository()
 
-    override val loadSong: LoadSong = LoadSong(
-        MidiJsonRepository()
-    )
+    override val songRepository: SongRepository = MidiJsonRepository()
 
     override val audioPlayer = WindowsAudioPlayer(
         SineWaveOutputSource()

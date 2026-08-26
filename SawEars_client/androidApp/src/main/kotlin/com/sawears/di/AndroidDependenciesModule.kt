@@ -4,6 +4,7 @@ import android.content.Context
 import com.sawears.AndroidAppContainer
 import com.sawears.AppContainer
 import com.sawears.data.MidiJsonRepository
+import com.sawears.data.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.database.buildAndroidDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
@@ -55,7 +56,7 @@ object AppProviderModule {
 
     @Provides
     @Singleton
-    fun provideLoadSong(): LoadSong = LoadSong(MidiJsonRepository())
+    fun provideSongRepository(): SongRepository = MidiJsonRepository()
 
 
     @Provides

@@ -4,6 +4,7 @@ package com.sawears.ui.screens.lessonsettings
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.settings.LocalSettingsRepository
 import com.sawears.data.settings.SettingsRepository
+import com.sawears.model.Song
 import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -130,8 +131,8 @@ class LessonSettingsViewModel(
 /**
  * Class to hold local lesson settings
  */
-@Serializable
 data class LessonSettings(
+    val song: Song,
     val tempo: Int,
     val difficulty: Int,
     val mode: LessonMode,
@@ -139,7 +140,7 @@ data class LessonSettings(
     val rangeMax: Int
 )
 
-@Serializable
+
 enum class LessonMode {
     PRACTICE,
     PERFORMANCE

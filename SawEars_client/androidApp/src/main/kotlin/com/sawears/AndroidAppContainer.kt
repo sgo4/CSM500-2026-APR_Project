@@ -1,5 +1,6 @@
 package com.sawears
 
+import com.sawears.data.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
@@ -18,7 +19,7 @@ class AndroidAppContainer
 @Inject constructor (
     override val settingsRepository: SettingsRepository,
     override val localSettingsRepository: LocalSettingsRepository,
-    override val loadSong: LoadSong,
+    override val songRepository: SongRepository,
     override val audioPlayer: AudioPlayer,
     override val estimator: PitchEstimator,
     override val audioInputSourceFactory: AudioInputSourceFactory,

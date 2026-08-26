@@ -77,15 +77,15 @@ fun SettingRow(
         Text(
             text = label,
             modifier = Modifier
-                .weight(0.35f)
-                .padding(end = 24.dp)
+                .weight(0.22f)
+                .padding(end = 14.dp)
         )
         Tooltip(
             heading= label,
             text = tooltip
         )
         Row(
-            modifier = Modifier.weight(0.65f),
+            modifier = Modifier.weight(0.78f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             content = content

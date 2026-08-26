@@ -1,7 +1,10 @@
 package com.sawears.ui.navigation
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,11 +18,13 @@ import com.sawears.AppContainer
 import com.sawears.ui.screens.lesson.LessonMainScreen
 import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.ui.screens.account.AccountScreen
+import com.sawears.ui.screens.home.ErrorScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 import com.sawears.ui.screens.lessonsettings.LessonSettingsViewModel
+import com.sawears.ui.screens.selectsong.SongSelectionEvent
 import com.sawears.ui.screens.selectsong.SongSelectionScreen
 import com.sawears.ui.screens.selectsong.SongSelectionViewModel
 import com.sawears.ui.screens.settings.LessonSettingsScreen
@@ -85,18 +90,35 @@ fun NavigationRoot(
                     NavEntry(key){
 
                         val viewModel = viewModel {SongSelectionViewModel(
-                            container.db.songDao()
+                            container.db.songDao(),
+                            songRepository = container.songRepository,
+                            lessonSettingsRepository = container.localSettingsRepository,
+                            globalSettingsRepository = container.settingsRepository
                         )}
+                        LaunchedEffect(viewModel) {
+                            viewModel.events.collect { event ->
+                                when (event) {
+                                    is SongSelectionEvent.OpenLessonSettings -> {
+                                        backStack.add(
+                                            Route.LessonSettingsScreen(event.lessonId)
+                                        )
+                                    }
+                                    is SongSelectionEvent.ShowError -> {
+                                        println(event.message) // TODO implement error path
+                                    }
+                                }
+
+
+                            }
+                        }
                         val state by viewModel.state.collectAsStateWithLifecycle()
                         SongSelectionScreen(
                             state,
                             onSearch = { query ->
                                 viewModel.searchTitleFuzzy(query)
                             },
-                            onSelectSong = {
-                                backStack.add(
-                                    Route.LessonScreen(it)
-                                )
+                            onSelectSong = { songId, resourcePath ->
+                                viewModel.selectSong(songId, resourcePath)
                             },
                             onClickMenu = { openMenu() },
                             onClickAccount = { backStack.add(Route.AccountScreen) },
@@ -106,15 +128,18 @@ fun NavigationRoot(
                 }
                 is Route.LessonScreen -> {
 
+
                     NavEntry(key){
                         val viewModel = viewModel {
                             LessonViewModel(
-                                container
+                                container, // TODO viewmodel shouldn't just take whole container
+                                container.localSettingsRepository.get(key.lessonId)!!
                             )
                         }
+
                         LessonMainScreen(
                             viewModel,
-                            key.resourcePath
+                            key.lessonId
                         )
                     }
                 }
@@ -139,7 +164,10 @@ fun NavigationRoot(
                     }
                 }
                 is Route.LessonSettingsScreen ->{
+
+
                     NavEntry(key){
+
 
                         val viewModel = viewModel {
                             LessonSettingsViewModel(
@@ -149,16 +177,24 @@ fun NavigationRoot(
                             )
                         }
 
+
+
                         val settings = viewModel.localSettings.collectAsStateWithLifecycle()
 
 
                         LessonSettingsScreen(
+                            lessonId = key.lessonId,
                             settings = settings.value,
                             onUpdateMin = viewModel::updateRangeMin,
                             onUpdateMax= viewModel::updateRangeMax,
                             onUpdateDifficulty = viewModel::updateDifficulty,
                             onUpdateTempo = viewModel::updateTempo,
                             onUpdateMode = viewModel::updateMode,
+                            onClickDone = {
+                                backStack.add(
+                                    Route.LessonScreen(key.lessonId)
+                                )
+                            },
                             onClickAccount = {backStack.add(Route.AccountScreen)},
                             onClickMenu = {openMenu()},
                             onClickSettings = { backStack.add(Route.SettingsScreen) }

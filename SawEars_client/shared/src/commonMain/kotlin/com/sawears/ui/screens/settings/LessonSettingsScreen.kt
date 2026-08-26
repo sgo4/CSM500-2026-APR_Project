@@ -5,6 +5,9 @@ package com.sawears.ui.screens.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -21,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
+import com.sawears.model.Song
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 import com.sawears.ui.shared.components.ContentWithTopBar
@@ -41,12 +45,14 @@ import com.sawears.ui.shared.components.Tooltip
  */
 @Composable
 fun LessonSettingsScreen(
+    lessonId: Int,
     settings: LessonSettings,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
     onUpdateTempo: (Int) -> Unit,
     onUpdateMode: (LessonMode) -> Unit,
+    onClickDone: (Int) -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
@@ -55,12 +61,14 @@ fun LessonSettingsScreen(
     ContentWithTopBar(
         content = { innerPadding ->
             LessonSettingsScreenContent(
+                lessonId,
                 settings,
                 onUpdateMin,
                 onUpdateMax,
                 onUpdateDifficulty,
                 onUpdateTempo,
                 onUpdateMode,
+                onClickDone,
                 modifier = Modifier.padding(innerPadding)
             )
         },
@@ -82,18 +90,21 @@ fun LessonSettingsScreen(
  */
 @Composable
 fun LessonSettingsScreenContent(
+    lessonId: Int,
     settings: LessonSettings,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
     onUpdateTempo: (Int) -> Unit,
     onUpdateMode: (LessonMode) -> Unit,
+    onClickDone: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ){
         SettingsGroup("Instrument"){
             SettingRow(
@@ -138,7 +149,12 @@ fun LessonSettingsScreenContent(
             }
             SettingRow(
                 label="Mode",
-                tooltip="Change mode" // TODO expand
+                tooltip="""
+                    Control the default lesson mode
+                    
+                    Practice: The lesson will wait for you to produce the correct note before proceeding, allowing you to practice the song at your own pace.
+                    Performance: The lesson will continue at the tempo you set, like a karaoke performance.
+                """.trimIndent()
             ){
                 // set component options based on all available modes
                 val options = LessonMode.entries.map { it.name }
@@ -154,9 +170,10 @@ fun LessonSettingsScreenContent(
                                 index = index,
                                 count = options.size
                             ),
-                            onClick = { onUpdateMode(
-                                    enumValueOf(options.get(index)) // update mode based on option index
-                                ) },
+                            onClick = {
+                                onUpdateMode(enumValueOf(options[index])) // update mode based on option index
+                                selectedIndex = index // update selection
+                                 },
                             selected = index == selectedIndex,
                             label = { Text(label) }
                         )
@@ -174,11 +191,18 @@ fun LessonSettingsScreenContent(
                     value = settings.tempo,
                     onValueChange = onUpdateTempo,
                     min = 0,
-                    max = 5
+                    max = 500 // set max higher than anyone would reasonably need to set the tempo
                 )
             }
         }
         // TODO transposition can also go here
+
+        // Done button, sends the user to the lesson
+        Button(
+            onClick = {onClickDone(lessonId)}
+        ){
+            Text("Done")
+        }
     }
 
 }
@@ -188,14 +212,27 @@ fun LessonSettingsScreenContent(
 @Composable
 internal fun LessonSettingsScreenPreview(
 
+
 ){
+
     LessonSettingsScreen(
-        LessonSettings(90,3, LessonMode.PERFORMANCE,0,1000),
+        0,
+        LessonSettings(
+            Song(
+                "",
+                listOf(""),
+                null,
+                null,
+                null,
+                listOf()),
+            90,
+            3, LessonMode.PERFORMANCE,0,1000),
         {Int -> },
         {Int ->},
         {Int -> },
         {Int -> },
         { LessonMode -> },
+        {Int -> },
         {},
         {},
         {}
