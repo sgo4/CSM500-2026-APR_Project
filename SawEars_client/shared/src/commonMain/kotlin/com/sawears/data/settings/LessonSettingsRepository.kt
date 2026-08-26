@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 
 
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.update
  * Interface for local lesson settings repository. Intended for lesson specific,
  * sesson scoped settings such as tempo.
  */
-interface LocalSettingsRepository {
+interface LessonSettingsRepository {
     val settings: StateFlow<Map<Int, LessonSettings>>
     fun get(lessonId: Int): LessonSettings?
     fun settingsFor(lessonId: Int): Flow<LessonSettings>
@@ -26,7 +25,7 @@ interface LocalSettingsRepository {
 /**
  * Repository for ephermeral lesson scoped settings
  */
-class EphemeralLocalSettingsRepository: LocalSettingsRepository {
+class EphemeralLessonSettingsRepository: LessonSettingsRepository {
 
     private val _settings =
         MutableStateFlow<Map<Int, LessonSettings>>(emptyMap())

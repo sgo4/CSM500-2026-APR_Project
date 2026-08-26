@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.SongRepository
 import com.sawears.data.database.SongDao
-import com.sawears.data.settings.LocalSettingsRepository
+import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.model.Song
+import com.sawears.model.TranspositionException
 import com.sawears.model.useCases.RegisterLesson
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class SongSelectionViewModel(
     private val dao: SongDao,
     private val songRepository: SongRepository,
-    private val lessonSettingsRepository: LocalSettingsRepository,
+    private val lessonSettingsRepository: LessonSettingsRepository,
     private val globalSettingsRepository: SettingsRepository
 
 ): ViewModel() {
@@ -78,7 +78,7 @@ class SongSelectionViewModel(
             var song = songRepository.load(resourcePath)
 
             if (song == null){
-                _events.send(SongSelectionEvent.ShowError("Could not load song with id $songId from path $resourcePath"))
+                _events.send(SongSelectionEvent.Error("Could not load song with id $songId from path $resourcePath"))
                 return@launch
             }
 
@@ -88,14 +88,20 @@ class SongSelectionViewModel(
             If autotransposition flag set, transpose song to fit range defined in global settings as soon as it's loaded
              */
             if (autoTranspose){
-                song = song.adaptForRange(
-                    globalSettings.rangeMinMidi,
-                    globalSettings.rangeMaxMidi
-                )
+                try {
+                    song = song.adaptForRange(
+                        globalSettings.rangeMinMidi,
+                        globalSettings.rangeMaxMidi
+                    )
+                } catch (e: TranspositionException){
+                    _events.send(SongSelectionEvent.Error("$e. Try adjusting instrument range in settings or pick a song with a smaller range"))
+                }
             }
 
-
-
+            /*
+            Register lesson with lesson settings repository (this allows a specific lesson to be mapped
+            to corresponding details such as settings)
+             */
             RegisterLesson(
                 globalSettings,
                 lessonSettingsRepository
@@ -111,12 +117,15 @@ class SongSelectionViewModel(
     }
 }
 
+/**
+ * Events broadcast to inform wider program of outcome of suspend operations
+ */
 sealed interface SongSelectionEvent {
     data class OpenLessonSettings(
         val lessonId: Int
     ) : SongSelectionEvent
 
-    data class ShowError(
+    data class Error(
         val message: String
     ) : SongSelectionEvent
 }

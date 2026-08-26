@@ -2,18 +2,14 @@ package com.sawears.ui.screens.lessonsettings
 
 
 import androidx.lifecycle.viewModelScope
-import com.sawears.data.settings.LocalSettingsRepository
+import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.Song
 import com.sawears.model.TranspositionException
 import com.sawears.ui.screens.settings.SettingsViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.serialization.Serializable
 
 /**
  * View model for lesson settings screen
@@ -27,7 +23,7 @@ import kotlinx.serialization.Serializable
  */
 class LessonSettingsViewModel(
     val lessonId: Int,
-    private val lessonSettingsRepository: LocalSettingsRepository,
+    private val lessonSettingsRepository: LessonSettingsRepository,
     private val settingsRepository: SettingsRepository,
     private val autoTranspose: Boolean = true
 ): SettingsViewModel(settingsRepository) {

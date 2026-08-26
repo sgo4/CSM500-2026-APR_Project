@@ -4,7 +4,7 @@ import com.sawears.data.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
-import com.sawears.data.settings.LocalSettingsRepository
+import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
@@ -22,7 +22,7 @@ interface AppContainer {
     /**
      * Repository for local lesson-scoped settings
      */
-    val localSettingsRepository: LocalSettingsRepository
+    val lessonSettingsRepository: LessonSettingsRepository
 
     /**
      * Class that loads a song from memory

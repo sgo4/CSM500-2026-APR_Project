@@ -1,12 +1,9 @@
 package com.sawears.model.useCases
 
-import com.sawears.data.SongRepository
 import com.sawears.data.settings.AppSettings
-import com.sawears.data.settings.LocalSettingsRepository
-import com.sawears.data.settings.SettingsRepository
+import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.model.Song
 import com.sawears.ui.screens.lessonsettings.LessonSettings
-import kotlinx.coroutines.flow.first
 
 
 /**
@@ -14,7 +11,7 @@ import kotlinx.coroutines.flow.first
  */
 class RegisterLesson(
     val globalSettings: AppSettings,
-    val lessonSettingsRepository: LocalSettingsRepository
+    val lessonSettingsRepository: LessonSettingsRepository
 ) {
 
     private val defaultTempo = 80

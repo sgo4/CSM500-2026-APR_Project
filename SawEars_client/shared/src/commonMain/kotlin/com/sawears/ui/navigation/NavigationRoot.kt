@@ -1,10 +1,8 @@
 package com.sawears.ui.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,11 +16,9 @@ import com.sawears.AppContainer
 import com.sawears.ui.screens.lesson.LessonMainScreen
 import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.ui.screens.account.AccountScreen
-import com.sawears.ui.screens.home.ErrorScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
-import com.sawears.ui.screens.lessonsettings.LessonSettings
 import com.sawears.ui.screens.lessonsettings.LessonSettingsViewModel
 import com.sawears.ui.screens.selectsong.SongSelectionEvent
 import com.sawears.ui.screens.selectsong.SongSelectionScreen
@@ -92,7 +88,7 @@ fun NavigationRoot(
                         val viewModel = viewModel {SongSelectionViewModel(
                             container.db.songDao(),
                             songRepository = container.songRepository,
-                            lessonSettingsRepository = container.localSettingsRepository,
+                            lessonSettingsRepository = container.lessonSettingsRepository,
                             globalSettingsRepository = container.settingsRepository
                         )}
                         LaunchedEffect(viewModel) {
@@ -133,7 +129,7 @@ fun NavigationRoot(
                         val viewModel = viewModel {
                             LessonViewModel(
                                 container, // TODO viewmodel shouldn't just take whole container
-                                container.localSettingsRepository.get(key.lessonId)!!
+                                container.lessonSettingsRepository.get(key.lessonId)!!
                             )
                         }
 
@@ -172,7 +168,7 @@ fun NavigationRoot(
                         val viewModel = viewModel {
                             LessonSettingsViewModel(
                                 key.lessonId,
-                                container.localSettingsRepository,
+                                container.lessonSettingsRepository,
                                 container.settingsRepository
                             )
                         }
