@@ -64,10 +64,18 @@ class SongSelectionViewModel(
         _searchQuery.value = title
     }
 
-    fun selectSong(songId: Int, resourcePath: String, defaultTempo: Int = 80){
+    /**
+     * Handles the business logic for when a user selects a song on the song selection screen.
+     *
+     * 1. Loads song into memory
+     * 2. Registers song with lesson settings repository
+     * 3. If autoTransposition flag is true, transposes song to best fit instrument range
+     * 4. Sends event indicating outcome
+     */
+    fun selectSong(songId: Int, resourcePath: String, defaultTempo: Int = 80, autoTranspose: Boolean = true){
 
         viewModelScope.launch {
-            val song = songRepository.load(resourcePath)
+            var song = songRepository.load(resourcePath)
 
             if (song == null){
                 _events.send(SongSelectionEvent.ShowError("Could not load song with id $songId from path $resourcePath"))
@@ -75,6 +83,18 @@ class SongSelectionViewModel(
             }
 
             val globalSettings = globalSettingsRepository.settings.first()
+
+            /*
+            If autotransposition flag set, transpose song to fit range defined in global settings as soon as it's loaded
+             */
+            if (autoTranspose){
+                song = song.adaptForRange(
+                    globalSettings.rangeMinMidi,
+                    globalSettings.rangeMaxMidi
+                )
+            }
+
+
 
             RegisterLesson(
                 globalSettings,

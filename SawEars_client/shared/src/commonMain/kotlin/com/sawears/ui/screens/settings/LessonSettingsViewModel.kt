@@ -126,7 +126,7 @@ class LessonSettingsViewModel(
 
             }
         }
-  
+
         // update setting locally
         lessonSettingsRepository.set(
             lessonId,
