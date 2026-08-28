@@ -100,7 +100,7 @@ fun LessonCanvas(
     }
 
     Canvas(Modifier.fillMaxSize()){
-        val player = viewModel.lessonPlayer?: return@Canvas
+        val player = viewModel.lessonState.value.player
 
         // set up canvas dimensions
         val canvasWidthPx = size.width

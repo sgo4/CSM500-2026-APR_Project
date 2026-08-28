@@ -18,46 +18,56 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 
 
 /**
  * Experimental working class for a view model holding lesson state
  *
- * Song
- * Time
- * Tempo
- * Current pitch
- * // TODO finish KDOC
+ * @param container
  */
 class LessonViewModel(
     container: AppContainer, // TODO just pass in the actual classes needed
     val lessonId: Int,
-    val lessonSettingsRepository: LessonSettingsRepository
+    lessonSettingsRepository: LessonSettingsRepository
 ): ViewModel() {
 
-    init {
-        println("Initializing lesson viewmodel") // TODO delete debug text
-    }
+    // settings
 
-    // TODO observe lesson settings from central repository
-    val st = lessonSettingsRepository.settingsFor(lessonId)
+    /*
+    Obtain latest settings for current lesson synchronously. This should work as it is not possible to start a lesson
+     without first creating lesson settings in the lesson settings screen.
+     */
+    private val initialSettings = requireNotNull(lessonSettingsRepository.get(lessonId)){
+        "unable to find settings for lesson with lesson Id $lessonId"
+    }
+    val lessonSettings = lessonSettingsRepository
+        .settingsFor(lessonId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = initialSettings
+        )
 
     // state
-    private val _state = MutableStateFlow(LessonUiState())
+    private val _state = MutableStateFlow(LessonUiState(
+        initialSettings.song,
+        initialSettings.tempo,
+    ))
     val lessonState = _state.asStateFlow()
 
-    private val _settings = MutableStateFlow(lessonSettings)
-    val settings = _settings.asStateFlow()
 
     // TODO is this necessary / the best way of handling things?
     var error by mutableStateOf<String?>(null)
         private set
-
-    // player class to help with managing animations etc.
-    var lessonPlayer: LessonPlayer = LessonPlayer(lessonSettings.song, lessonSettings.tempo)
-    // TODO figure out if you want to use a playback clock
-    val playbackClock = container.playbackClock
 
     // audio in
     private var pitchCaptureJob: Job? = null
@@ -73,10 +83,65 @@ class LessonViewModel(
     val estimator = container.estimator
     val pitchCurveInput = PitchCurveInput() // buffer to hold pitch estimates for pitch graph
 
+    // animation timeline
+    private var lessonPlayer = LessonPlayer(
+        song = initialSettings.song,
+        tempoBpm = initialSettings.tempo
+    )
+
     init {
-        // preload audioplayer with song ready for playback
-        audioPlayer.audioSource.loadInput(settings.value.song)
+        // observe settings for changes that could affect the lesson (e.g. changes to tempo)
+        observePlaybackSettings()
+        println("Initializing lesson viewmodel") // TODO delete debug text
+
     }
+
+    private fun observePlaybackSettings(){
+        lessonSettings.map { settings ->
+            PlaybackSettings(
+                song = settings.song,
+                tempo = settings.tempo
+            )
+        }
+            .distinctUntilChanged()
+            .onEach { settings ->
+
+                // reset audio playback if song/tempo change
+                playbackJob?.cancelAndJoin()
+                audioPlayer.stop()
+                audioPlayer.flush()
+                audioPlayer.audioSource.loadInput(settings.song)
+
+                // reset lesson Player on tempo change
+                // currently this assumes the lesson restarts on playback
+                // change and does not attempt to resume from the same position
+                val player = LessonPlayer(
+                    song = settings.song,
+                    tempoBpm = settings.tempo
+                )
+
+                _state.update {
+                    it.copy(
+                        player = player,
+                        audioPaused = true
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    /**
+     * Public function to play / pause animation/scoring
+     */
+    fun toggleLessonPlayback(){
+        
+    }
+
+    private fun updatePlayback(currentTimeMillis: Long){
+
+    }
+
+
     /**
      * Open an audio channel and start generating pitch estimates
      */
@@ -290,5 +355,14 @@ class LessonPlayer(
 
     }
 }
+
+/*
+Helper class holding settings that directly affect playback and may require animations/
+audio players etc. to be updated
+ */
+private data class PlaybackSettings(
+    val song: Song,
+    val tempo: Int
+)
 
 

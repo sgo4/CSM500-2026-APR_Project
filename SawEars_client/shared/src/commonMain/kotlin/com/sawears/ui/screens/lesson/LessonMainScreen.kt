@@ -29,7 +29,7 @@ fun LessonMainScreen(
 ){
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
-    val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val settings by viewModel.lessonSettings.collectAsStateWithLifecycle()
 
     // TODO evaluate where in the flow to actually start recording
     DisposableEffect(viewModel){

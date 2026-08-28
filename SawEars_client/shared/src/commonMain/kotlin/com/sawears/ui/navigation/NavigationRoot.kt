@@ -78,7 +78,7 @@ fun NavigationRoot(
                             onClickMenu = { openMenu() },
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
-                            onBack = { onBack(backStack) }
+                            onBack = { backStack.removeLastOrNull() }
                         )
                     }
                 }
@@ -129,7 +129,8 @@ fun NavigationRoot(
                         val viewModel = viewModel {
                             LessonViewModel(
                                 container, // TODO viewmodel shouldn't just take whole container
-                                container.lessonSettingsRepository.get(key.lessonId)!!
+                                key.lessonId,
+                                container.lessonSettingsRepository
                             )
                         }
 
@@ -152,6 +153,7 @@ fun NavigationRoot(
                             settings=settings.value,
                             onUpdateMin=viewModel::updateRangeMin,
                             onUpdateMax=viewModel::updateRangeMax,
+                            onUpdateMode=viewModel::updateMode,
                             onUpdateDifficulty = viewModel::updateDifficulty,
                             onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
                             onClickAccount = {backStack.add(Route.AccountScreen)},
@@ -202,14 +204,6 @@ fun NavigationRoot(
 }
 
 
-/**
- * Common back button function
- */
-fun onBack(
-    backStack: NavBackStack<NavKey>
-){
-    backStack.removeLastOrNull()
-}
 
 /**
  * Common open menu action
