@@ -19,7 +19,6 @@ import com.sawears.ui.screens.lesson.DisplayNote
 import com.sawears.ui.screens.lesson.LessonUiState
 import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.model.pitch.PitchResult
-import com.sawears.ui.screens.lesson.LessonPlayer
 import kotlinx.coroutines.isActive
 import kotlin.math.ceil
 import kotlin.math.ln
@@ -100,7 +99,6 @@ fun LessonCanvas(
     }
 
     Canvas(Modifier.fillMaxSize()){
-        val player = viewModel.lessonState.value.player
 
         // set up canvas dimensions
         val canvasWidthPx = size.width
@@ -111,11 +109,11 @@ fun LessonCanvas(
         }
 
         // calculate range of pitches to display based on song range +/- a fixed margin
-        val minPitchMidi = player.song.songMinMidi - pitchDisplayMarginMidi
-        val maxPitchMidi = player.song.songMaxMidi + pitchDisplayMarginMidi
+        val minPitchMidi = lessonState.song.songMinMidi - pitchDisplayMarginMidi
+        val maxPitchMidi = lessonState.song.songMaxMidi + pitchDisplayMarginMidi
 
         // calculate how many seconds into the past to show pitch samples based on playbackhead
-        val pitchCurveDurationSeconds = durationSeconds * player.playBackHeadPosition
+        val pitchCurveDurationSeconds = durationSeconds * lessonState.playBackHeadPosition
 
         // combine dimension-related information into single object
         val dimensions = LessonCanvasDimensions(
@@ -123,7 +121,7 @@ fun LessonCanvas(
             maxPitchMidi,
             canvasWidthPx,
             canvasHeightPx,
-            player.playBackHeadPosition,
+            lessonState.playBackHeadPosition,
             durationSeconds,
             pitchCurveDurationSeconds
         )
@@ -138,8 +136,6 @@ fun LessonCanvas(
 
         drawPianoRoll(
             lessonState,
-            viewModel.lessonPlayer,
-            elapsedNanos,
             dimensions
         )
 
@@ -155,22 +151,19 @@ fun LessonCanvas(
 
 fun DrawScope.drawPianoRoll(
     lessonState: LessonUiState,
-    player: LessonPlayer,
-    elapsedNanos: Long,
     dimensions: LessonCanvasDimensions
 ){
 
-    val elapsedMillis = elapsedNanos / 1_000_000
-    val notesInView = player.notesInView(elapsedMillis)
+    val notesInView = lessonState.notesInView
     // calculate noteheight as canvas height / range of displayable notes
     val noteHeightPx = dimensions.canvasHeightPx / (dimensions.maxPitchMidi - dimensions.minPitchMidi)
     // calculate startX
-    val headPx = player.playBackHeadPosition * dimensions.canvasWidthPx
-    val pxPerBeat = dimensions.canvasWidthPx / player.canvasWidthBeats
+    val headPx = lessonState.playBackHeadPosition * dimensions.canvasWidthPx
+    val pxPerBeat = dimensions.canvasWidthPx / lessonState.canvasWidthBeats
 
     for (note in notesInView){
 
-        val distanceFromHeadBeats = note.startsOnBeat - player.playBackHeadBeats
+        val distanceFromHeadBeats = note.startsOnBeat - lessonState.playBackHeadBeats
         val startX = headPx + (distanceFromHeadBeats * pxPerBeat)
         val noteWidthPx = note.durationRelative * pxPerBeat
         drawNote(

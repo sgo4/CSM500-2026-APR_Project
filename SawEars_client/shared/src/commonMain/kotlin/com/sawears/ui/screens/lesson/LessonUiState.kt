@@ -19,6 +19,8 @@ data class LessonUiState(
     val tempoBpm: Int,
     val notesInView: List<DisplayNote> = emptyList(),
     val playBackHeadBeats: Float = 0f,
+    val playBackHeadPosition: Float = 0.5f,
+    val canvasWidthBeats: Float = 5f,
     val paused: Boolean = true,
     val audioPaused: Boolean = true,
     val recordAudio: Boolean = false, // TODO this isn't really ui state

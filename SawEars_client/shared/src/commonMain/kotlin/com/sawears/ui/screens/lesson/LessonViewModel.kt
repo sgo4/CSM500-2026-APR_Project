@@ -134,10 +134,24 @@ class LessonViewModel(
      * Public function to play / pause animation/scoring
      */
     fun toggleLessonPlayback(){
-        
+
     }
 
     private fun updatePlayback(currentTimeMillis: Long){
+
+    }
+
+    /*
+    Apply relevant changes to player class
+     */
+    private fun applyPlacBackSettings(settings: PlaybackSettings){
+        lessonPlayer = LessonPlayer(
+            song = settings.song,
+            tempoBpm = settings.tempo
+        )
+
+        audioPlayer.audioSource.loadInput(settings.song)
+
 
     }
 
