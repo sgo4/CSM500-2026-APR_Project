@@ -75,6 +75,7 @@ fun LessonCanvas(
 
             if (!lessonState.paused){
                 elapsedNanos += frameDeltaNanos
+                viewModel.onPlaybackFrame(frameDeltaNanos)
             }
             // add latest pitch samples
             viewModel.pitchCurveInput.drainInto(pitchSamples)
@@ -190,8 +191,14 @@ fun DrawScope.drawNote(
 
     drawRoundRect(
         colour,
-        topLeft = Offset(startX,centreY+(noteHeight/2)),
-        size = Size(noteWidth,noteHeight),
+        topLeft = Offset(
+            startX,
+            centreY - (noteHeight/2) // / minus as offsets are calculated from top left downwards
+        ),
+        size = Size(
+            noteWidth,
+            noteHeight
+        ),
         cornerRadius = CornerRadius(
             x = noteHeight / 2f,
             y = noteHeight / 2f

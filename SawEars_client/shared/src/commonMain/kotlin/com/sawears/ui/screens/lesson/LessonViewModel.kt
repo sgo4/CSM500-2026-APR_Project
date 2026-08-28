@@ -85,15 +85,15 @@ class LessonViewModel(
 
     // animation timeline
     private var lessonPlayer = LessonPlayer(
-        song = initialSettings.song,
-        tempoBpm = initialSettings.tempo
+        lessonState.value
     )
 
     init {
         // observe settings for changes that could affect the lesson (e.g. changes to tempo)
         observePlaybackSettings()
         println("Initializing lesson viewmodel") // TODO delete debug text
-
+        // provide initial animation state
+        updateAnimationState(0L)
     }
 
     private fun observePlaybackSettings(){
@@ -115,46 +115,20 @@ class LessonViewModel(
                 // reset lesson Player on tempo change
                 // currently this assumes the lesson restarts on playback
                 // change and does not attempt to resume from the same position
-                val player = LessonPlayer(
-                    song = settings.song,
-                    tempoBpm = settings.tempo
-                )
-
                 _state.update {
                     it.copy(
-                        player = player,
+                        song = settings.song,
+                        tempoBpm = settings.tempo,
                         audioPaused = true
                     )
                 }
+
+                lessonPlayer = LessonPlayer(
+                    lessonState.value
+                )
             }
             .launchIn(viewModelScope)
     }
-
-    /**
-     * Public function to play / pause animation/scoring
-     */
-    fun toggleLessonPlayback(){
-
-    }
-
-    private fun updatePlayback(currentTimeMillis: Long){
-
-    }
-
-    /*
-    Apply relevant changes to player class
-     */
-    private fun applyPlacBackSettings(settings: PlaybackSettings){
-        lessonPlayer = LessonPlayer(
-            song = settings.song,
-            tempoBpm = settings.tempo
-        )
-
-        audioPlayer.audioSource.loadInput(settings.song)
-
-
-    }
-
 
     /**
      * Open an audio channel and start generating pitch estimates
@@ -208,8 +182,6 @@ class LessonViewModel(
         pitchCaptureJob?.cancel()
     }
 
-
-
     fun toggleAudioPause(){
 
         _state.update {
@@ -247,6 +219,34 @@ class LessonViewModel(
 
     }
 
+    /**
+     * Function that calls when a new frame of animation is requested
+     * Progresses animation timeline and exposes new values for drawable
+     * components.
+     *
+     * @property frameDeltaNanos time delta between current and previous frame
+     */
+    fun onPlaybackFrame(frameDeltaNanos: Long){
+        updateAnimationState(frameDeltaNanos)
+    }
+
+    /*
+     * //TODO
+     */
+    private fun updateAnimationState(frameDeltaNanos: Long){
+        // get state for next frame based on time delta
+        val animationSnapshot = lessonPlayer.nextFrame(
+            frameDeltaNanos / 1_000_000f
+        )
+        // update state
+        _state.update {
+            it.copy(
+                notesInView = animationSnapshot.notesInView,
+                playBackHeadBeats = animationSnapshot.playBackHeadBeats
+            )
+        }
+
+    }
     fun toggleLessonPlay(){
         _state.update {
             it.copy(
@@ -263,113 +263,6 @@ class LessonViewModel(
     }
 }
 
-
-/**
- * UI layer representation of a single note including information about its
- * position in the melody
- */
-data class DisplayNote(
-    val pitchMidi: Float,
-    val durationRelative: Float,
-    val startsOnBeat: Float,
-    val isCurrentNote: Boolean
-)
-
-
-
-/**
- * Player class that controlls the main animations
- */
-class LessonPlayer(
-    val song: Song,
-    val tempoBpm: Int,
-    val canvasWidthBeats: Float = 5f,
-    val playBackHeadPosition: Float = 0.5f
-){
-    var playBackHeadBeats: Float = 0f
-    var systemTimeMillis: Long? = null
-    var noteTransitions = FloatArray(song.notes.size)
-    var currentNoteIdx = 0
-    var currentWindowStartBeats = 0f
-    var currentWindowEndBeats = currentWindowStartBeats + canvasWidthBeats
-    var latestConsumedNoteIdx = -1
-    var consumedNotesBeats = 0f
-    val pastBeats = canvasWidthBeats * playBackHeadPosition
-    val futureBeats = canvasWidthBeats * (1-playBackHeadPosition)
-
-
-    init {
-        // populate noteTransitions with the end of each note
-        var boundary = 0f
-        for (i in noteTransitions.indices){
-            boundary += song.notes[i].durationRelative.toFloat()
-            noteTransitions[i] = boundary
-        }
-    }
-
-    /*
-     * Update the position of the playback head in beats elapsed based on time elapses
-     *
-     * @param currentTimeMillis
-     */
-    private fun updatePlayBackHead(currentTimeMillis: Long){
-        if (systemTimeMillis == null){
-            systemTimeMillis = currentTimeMillis
-        }
-        val elapsedTimeMs = currentTimeMillis - systemTimeMillis!!
-        val elapsedTimeBeats = elapsedTimeMs / (60_000f / tempoBpm)
-        playBackHeadBeats += elapsedTimeBeats
-        systemTimeMillis = currentTimeMillis
-    }
-
-    /**
-     * Calculate which notes are in view (fully or partially) at current time
-     *
-     * @param currentTimeMillis
-     */
-    fun notesInView(currentTimeMillis: Long): List<DisplayNote>{
-
-        updatePlayBackHead(currentTimeMillis) // move playback head appropriate distance for time elapsed
-
-        while (currentNoteIdx < noteTransitions.size && playBackHeadBeats >= noteTransitions[currentNoteIdx]){
-            currentNoteIdx ++ // update current note idx
-        }
-        // calculate window start / end in terms of cummulative beats elapsed
-        currentWindowStartBeats = playBackHeadBeats - pastBeats
-        currentWindowEndBeats = playBackHeadBeats + futureBeats
-
-        var windowStartIdx = latestConsumedNoteIdx
-        var cummulativeBeats = maxOf(consumedNotesBeats,0f)
-        while (windowStartIdx < song.notes.size-1 && cummulativeBeats <= currentWindowStartBeats){
-            windowStartIdx++
-            cummulativeBeats += song.notes[windowStartIdx].durationRelative.toFloat()
-        }
-        windowStartIdx = maxOf(windowStartIdx,0)
-        latestConsumedNoteIdx = windowStartIdx - 1
-        consumedNotesBeats = maxOf(cummulativeBeats - song.notes[windowStartIdx].durationRelative.toFloat(), 0f)
-
-        val res = mutableListOf<DisplayNote>()
-        var noteIdx = windowStartIdx
-        cummulativeBeats = consumedNotesBeats
-        while (noteIdx < song.notes.size-1 && cummulativeBeats <= currentWindowEndBeats){
-            val note = song.notes[noteIdx]
-            val durationRelative = note.durationRelative.toFloat()
-            res.add(
-                DisplayNote(
-                    note.pitchMidi.toFloat(),
-                    durationRelative,
-                    cummulativeBeats,
-                    isCurrentNote = noteIdx == currentNoteIdx
-                )
-            )
-            cummulativeBeats += durationRelative
-            noteIdx++
-        }
-        return res.toList()
-
-    }
-}
-
 /*
 Helper class holding settings that directly affect playback and may require animations/
 audio players etc. to be updated
@@ -378,5 +271,3 @@ private data class PlaybackSettings(
     val song: Song,
     val tempo: Int
 )
-
-

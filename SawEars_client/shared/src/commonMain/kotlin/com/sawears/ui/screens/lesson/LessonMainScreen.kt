@@ -8,11 +8,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sawears.model.Song
 import com.sawears.ui.screens.lesson.components.LessonCanvas
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 
@@ -74,7 +72,6 @@ fun LessonMainScreen(
             20f,
             5f
         )
-
     }
 }
 

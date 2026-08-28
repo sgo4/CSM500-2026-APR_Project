@@ -104,6 +104,7 @@ fun SettingsScreenPreview(){
         {Int ->},
         {},
         {},
+        {},
         {}
     )
 }
