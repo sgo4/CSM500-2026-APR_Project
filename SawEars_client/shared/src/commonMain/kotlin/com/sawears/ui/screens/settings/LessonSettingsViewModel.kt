@@ -174,10 +174,23 @@ class LessonSettingsViewModel(
         super.updateMode(mode)
     }
 
+    override fun updatePitchMargin(marginMidi: Int) {
+        // update setting locally
+        lessonSettingsRepository.set(
+            lessonId,
+            lessonSettings.value.copy(
+                pitchDisplayMarginMidi = marginMidi
+            )
+        )
+        // update setting globally
+        super.updatePitchMargin(marginMidi)
+    }
+
 }
 
 /**
  * Class to hold local lesson settings
+ * //TODO Kdoc
  */
 data class LessonSettings(
     val song: Song,
@@ -185,7 +198,8 @@ data class LessonSettings(
     val difficulty: Int,
     val mode: LessonMode,
     val rangeMin: Int,
-    val rangeMax: Int
+    val rangeMax: Int,
+    val pitchDisplayMarginMidi: Int
 )
 
 

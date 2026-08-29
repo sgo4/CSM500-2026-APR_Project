@@ -52,4 +52,10 @@ open class SettingsViewModel(
         }
     }
 
+    open fun updatePitchMargin(marginMidi: Int){
+        viewModelScope.launch{
+            settingsRepository.setPitchDisplayMargin(marginMidi)
+        }
+    }
+
 }

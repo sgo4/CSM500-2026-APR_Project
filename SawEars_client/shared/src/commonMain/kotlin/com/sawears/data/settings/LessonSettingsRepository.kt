@@ -17,7 +17,6 @@ interface LessonSettingsRepository {
     val settings: StateFlow<Map<Int, LessonSettings>>
     fun get(lessonId: Int): LessonSettings?
     fun settingsFor(lessonId: Int): Flow<LessonSettings>
-
     fun set(lessonId: Int, lessonSettings: LessonSettings)
 
 }
