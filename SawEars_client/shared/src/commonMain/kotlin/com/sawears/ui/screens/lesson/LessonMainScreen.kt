@@ -46,7 +46,7 @@ fun LessonMainScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()){
-        debugText(settings)
+        DebugText(settings)
 
         Row(modifier = Modifier.fillMaxWidth()){
             Button(
@@ -90,7 +90,7 @@ fun LessonMainScreen(
 Debug text // TODO remove from final version
  */
 @Composable
-private fun debugText(lessonSettings: LessonSettings){
+private fun DebugText(lessonSettings: LessonSettings){
     Text(
         "${lessonSettings.song} || tempo=${lessonSettings.tempo}"
     )
@@ -98,9 +98,12 @@ private fun debugText(lessonSettings: LessonSettings){
 
 
 /**
- * Represents pitch detection state for a single frame
+ * Represents pitch detection state for a single frame#
+ *
+ * @param pitchSamples
+ * @param frameNanos
+ * @param offsetNanos offset required to sync with animation timeline
  */
-
 data class PitchDetectionAnimationState(
     val pitchSamples: List<PitchResult> = emptyList(),
     val frameNanos: Long = 0L,
@@ -108,7 +111,11 @@ data class PitchDetectionAnimationState(
 )
 
 /**
- * Respo
+ * Converts pitch samples into observable UI state
+ *
+ * @param viewModel
+ * @param paused
+ * @param pitchCurveDurationSeconds
  */
 @Composable
 fun providePitchDetectionstate(
