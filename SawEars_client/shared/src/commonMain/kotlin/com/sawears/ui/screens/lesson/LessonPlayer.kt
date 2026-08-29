@@ -62,15 +62,20 @@ class LessonPlayer(
         while (noteIdx < song.notes.size && cummulativeBeats <= currentWindowEndBeats){
             val note = song.notes[noteIdx]
             val durationRelative = note.durationRelative.toFloat()
-            res.add(
-                DisplayNote(
-                    idx = noteIdx,
-                    note.pitchMidi.toFloat(),
-                    durationRelative,
-                    cummulativeBeats,
-                    isCurrentNote = noteIdx == currentNoteIdx
+
+            // by convention rests are indicated by pitch value -1
+            // these should not be treated as "notes in view"
+            if (note.pitchMidi >= 0){
+                res.add(
+                    DisplayNote(
+                        idx = noteIdx,
+                        note.pitchMidi.toFloat(),
+                        durationRelative,
+                        cummulativeBeats,
+                        isCurrentNote = noteIdx == currentNoteIdx
+                    )
                 )
-            )
+            }
             cummulativeBeats += durationRelative
             noteIdx++
         }

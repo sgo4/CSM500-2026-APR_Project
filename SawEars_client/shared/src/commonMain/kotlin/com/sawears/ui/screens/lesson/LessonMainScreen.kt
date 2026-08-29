@@ -92,7 +92,7 @@ Debug text // TODO remove from final version
 @Composable
 private fun DebugText(lessonSettings: LessonSettings){
     Text(
-        "${lessonSettings.song} || tempo=${lessonSettings.tempo}"
+        "${lessonSettings.song} || tempo=${lessonSettings.tempo} || pitchMargin=${lessonSettings.pitchDisplayMarginMidi}"
     )
 }
 

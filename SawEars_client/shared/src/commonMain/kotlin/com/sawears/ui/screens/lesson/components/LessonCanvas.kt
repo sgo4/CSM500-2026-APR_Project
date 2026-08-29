@@ -49,7 +49,7 @@ fun LessonCanvas(
         // calculate range of pitches to display based on song range +/- a fixed margin
         val minPitchMidi = lessonState.song.songMinMidi - lessonState.pitchDisplayMarginMidi
         val maxPitchMidi = lessonState.song.songMaxMidi + lessonState.pitchDisplayMarginMidi
-
+        
         // calculate how many seconds into the past to show pitch samples based on playbackhead
         val pitchCurveDurationSeconds = lessonState.durationSeconds * lessonState.playBackHeadPosition
 
@@ -128,7 +128,6 @@ fun DrawScope.drawNote(
     noteHeight: Float,
     noteWidth: Float,
 ){
-
     // A note must also graphically serve as a percentage bar, meaning we need a split rounded rectangle
     // conceptually this is a single rounded rectangle with two rectangles inside it
 
