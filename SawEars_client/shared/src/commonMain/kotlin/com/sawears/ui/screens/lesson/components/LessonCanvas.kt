@@ -82,8 +82,10 @@ fun LessonCanvas(
                 // in order to treat youngest sample as age=0
                 pitchCurveTime = System.nanoTime()
                 pitchOffset = (pitchCurveTime - pitchSamples.last().timeStampNanos).toLong()
+                // calculate length of pitch history (i.e. proportion of time window before playback head)
+                val pitchCurveDurationSeconds = lessonState.durationSeconds * lessonState.playBackHeadPosition
                 val oldestAllowed =
-                    System.nanoTime() - (lessonState.durationSeconds * 1_000_000_000).toLong() - pitchOffset
+                    System.nanoTime() - (pitchCurveDurationSeconds * 1_000_000_000).toLong() - pitchOffset
 
                 while (
                     pitchSamples.isNotEmpty() &&

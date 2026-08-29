@@ -7,7 +7,7 @@ class LessonPlayer(
     lessonState: LessonUiState
 ){
 
-    val playBackHeadPosition = lessonState.playBackHeadBeats
+    val playBackHeadPosition = lessonState.playBackHeadPosition
 
     val canvasWidthBeats = lessonState.canvasWidthBeats
 
