@@ -2,14 +2,18 @@ package com.sawears.ui.screens.lesson.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.graphics.Path
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipPath
 import com.sawears.ui.screens.lesson.DisplayNote
 import com.sawears.ui.screens.lesson.LessonUiState
 import com.sawears.ui.screens.lesson.PitchDetectionAnimationState
@@ -96,11 +100,18 @@ fun DrawScope.drawPianoRoll(
 
     for (note in notesInView){
 
+        val percentAccurate = lessonState
+            .noteAccuracies
+            .firstOrNull { it.idx == note.idx }
+            ?.percentOnPitch
+            ?: 0f
+
         val distanceFromHeadBeats = note.startsOnBeat - lessonState.playBackHeadBeats
         val startX = headPx + (distanceFromHeadBeats * pxPerBeat)
         val noteWidthPx = note.durationRelative * pxPerBeat
         drawNote(
             note,
+            percentAccurate,
             dimensions,
             startX,
             noteHeightPx,
@@ -111,32 +122,70 @@ fun DrawScope.drawPianoRoll(
 
 fun DrawScope.drawNote(
     note: DisplayNote,
+    percentAccurate: Float,
     dimensions: LessonCanvasDimensions,
     startX: Float,
     noteHeight: Float,
     noteWidth: Float,
 ){
 
-    val colour = if (note.isCurrentNote) {Color(0xFFFFF08D)
+    // A note must also graphically serve as a percentage bar, meaning we need a split rounded rectangle
+    // conceptually this is a single rounded rectangle with two rectangles inside it
+
+    val baseColour = if (note.isCurrentNote) {Color(0xFFFFF08D) // TODO colours should be dynamic
     } else {Color(0xFF8DC0FF)}
+
+    val completeColour = Color(0xFF95FF8D) // TODO colours should be dynamic
+
     val centreY = midiToY(note.pitchMidi, dimensions)
 
-    drawRoundRect(
-        colour,
-        topLeft = Offset(
-            startX,
-            centreY - (noteHeight/2) // / minus as offsets are calculated from top left downwards
-        ),
-        size = Size(
-            noteWidth,
-            noteHeight
+    val topLeftOffset = Offset(
+        startX,
+        centreY - (noteHeight / 2)
+    )
+
+    val rectSize = Size(
+        noteWidth,
+        noteHeight
+    )
+
+    val roundedRect = RoundRect(
+        rect = Rect(
+            offset = topLeftOffset,
+            size = rectSize
         ),
         cornerRadius = CornerRadius(
             x = noteHeight / 2f,
             y = noteHeight / 2f
         )
-
     )
+
+    // controls where the rect will be split to indicate progress
+    val splitX = topLeftOffset.x + rectSize.width * percentAccurate
+
+    clipPath(
+        Path().apply {
+            addRoundRect(roundedRect)
+        }
+    ){
+        drawRect(
+            color = completeColour,
+            topLeft = topLeftOffset,
+            size = Size(
+                rectSize.width * percentAccurate,
+                rectSize.height
+            )
+        )
+
+        drawRect(
+            color = baseColour,
+            topLeft = Offset(splitX,topLeftOffset.y),
+            size = Size(
+                rectSize.width - (rectSize.width * percentAccurate),
+                rectSize.height
+            )
+        )
+    }
 }
 
 /**

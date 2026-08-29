@@ -57,6 +57,7 @@ class LessonViewModel(
             initialValue = initialSettings
         )
 
+    private val accuracyTracker = AccuracyTracker()
     // state
     private val _state = MutableStateFlow(LessonUiState(
         initialSettings.song,
@@ -255,10 +256,17 @@ class LessonViewModel(
         val animationSnapshot = lessonPlayer.nextFrame(
             frameDeltaNanos / 1_000_000f
         )
+
+        accuracyTracker.update(
+            lessonState.value.notesInView,
+            animationSnapshot.playBackHeadBeats,
+            true // TODO actually get this information
+        )
         // update state
         _state.update {
             it.copy(
                 notesInView = animationSnapshot.notesInView,
+                noteAccuracies = accuracyTracker.noteAccuracies,
                 playBackHeadBeats = animationSnapshot.playBackHeadBeats
             )
         }
@@ -270,11 +278,6 @@ class LessonViewModel(
                 paused = !it.paused
             )
         }
-    }
-
-    // TODO
-    fun updateNoteAccuracies(){
-
     }
 
 

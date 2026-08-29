@@ -9,6 +9,7 @@ import com.sawears.model.pitch.PitchResult
  * @property song current song around which lesson is based
  * @property tempoBpm current tempo
  * @property notesInView which notes are currently withing display window
+ * @property noteAccuracies accuracy information for notes in view
  * @property playBackHeadBeats position of the playback head within song
  * @property playBackHeadPosition position of playback head on screen as fraction of width
  * @property pitchDisplayMarginMidi how many notes to display around song range in midi
@@ -22,6 +23,7 @@ data class LessonUiState(
     val song: Song,
     val tempoBpm: Int,
     val notesInView: List<DisplayNote> = emptyList(),
+    val noteAccuracies: List<NoteAccuracy> = emptyList(),
     val playBackHeadBeats: Float = 0f,
     val playBackHeadPosition: Float = 0.5f,
     val pitchDisplayMarginMidi: Float = 5f,

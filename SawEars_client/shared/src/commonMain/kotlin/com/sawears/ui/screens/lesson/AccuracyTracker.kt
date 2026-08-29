@@ -40,7 +40,7 @@ class AccuracyTracker {
     Discard outdated entries which are too far in the past to be displayed anymore
      */
     private fun clearOutdatedNotes(notesInView: List<DisplayNote>){
-        val oldestNoteIdx = notesInView.lastOrNull()?.idx ?: 0
+        val oldestNoteIdx = notesInView.firstOrNull()?.idx ?: 0
         while (noteAccuracies.isNotEmpty() && noteAccuracies[0].idx < oldestNoteIdx){
             noteAccuracies.removeFirst()
         }
