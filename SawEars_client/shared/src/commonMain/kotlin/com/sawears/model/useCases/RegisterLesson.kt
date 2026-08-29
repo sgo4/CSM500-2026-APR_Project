@@ -37,6 +37,7 @@ class RegisterLesson(
             mode=globalSettings.mode,
             rangeMin=globalSettings.rangeMinMidi,
             rangeMax=globalSettings.rangeMaxMidi,
+            pitchDisplayMarginMidi = globalSettings.pitchDisplayMarginMidi
         )
         // register lesson with the localSettingsRepository
         lessonSettingsRepository.set(lessonId,lessonSettings)
