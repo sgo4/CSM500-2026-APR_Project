@@ -37,6 +37,7 @@ import com.sawears.ui.shared.components.Tooltip
  * @param onUpdateMax function to change range max
  * @param onUpdateDifficulty
  * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
+ * @param onUpdatePitchMargin update margin either side of melody range
  * @param onClickDone return to home screen
  * @param onClickMenu
  * @param onClickAccount
@@ -48,6 +49,7 @@ fun SettingsScreen(
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
     onUpdateMode: (LessonMode) -> Unit,
+    onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: () -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
@@ -61,6 +63,7 @@ fun SettingsScreen(
                 onUpdateMax,
                 onUpdateDifficulty,
                 onUpdateMode,
+                onUpdatePitchMargin,
                 onClickDone,
                 modifier = Modifier.padding(innerPadding)
             )
@@ -81,6 +84,8 @@ fun SettingsScreen(
  * @param onUpdateMin function to change range min
  * @param onUpdateMax function to change range max
  * @param onUpdateDifficulty
+ * @param onUpdateMode
+ * @param onUpdatePitchMargin
  * @param onClickDone
  */
 @Composable
@@ -90,6 +95,7 @@ fun SettingsScreenContent(
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,
     onUpdateMode: (LessonMode) -> Unit,
+    onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: () -> Unit,
     modifier: Modifier = Modifier,
 ){
@@ -174,13 +180,32 @@ fun SettingsScreenContent(
                 }
 
             }
-            // Done button, sends the user home
-            Button(
-                onClick = onClickDone
-            ){
-                Text("Done")
-            }
 
+        }
+        SettingsGroup(
+            "Display"
+        ){
+            SettingRow(
+                label="Display margin",
+                tooltip="""
+                    Controls margin to display around melody, e.g. if set to 5 the highest
+                    note displayed will be 5 midi notes higher than the highest note in the 
+                    melody.
+                """.trimIndent()
+            ){
+                NumericStepper(
+                    value = settings.difficulty,
+                    onValueChange = onUpdatePitchMargin,
+                    min = 5,
+                    max = 50
+                )
+            }
+        }
+        // Done button, sends the user home
+        Button(
+            onClick = onClickDone
+        ){
+            Text("Done")
         }
     }
 

@@ -40,6 +40,7 @@ import com.sawears.ui.shared.components.Tooltip
  * @param onUpdateDifficulty
  * @param onUpdateTempo change song tempo
  * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
+ * @param onUpdatePitchMargin update margin either side of melody range
  * @param onClickMenu
  * @param onClickAccount
  */
@@ -52,6 +53,7 @@ fun LessonSettingsScreen(
     onUpdateDifficulty: (Int) -> Unit,
     onUpdateTempo: (Int) -> Unit,
     onUpdateMode: (LessonMode) -> Unit,
+    onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: (Int) -> Unit,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
@@ -68,6 +70,7 @@ fun LessonSettingsScreen(
                 onUpdateDifficulty,
                 onUpdateTempo,
                 onUpdateMode,
+                onUpdatePitchMargin,
                 onClickDone,
                 modifier = Modifier.padding(innerPadding)
             )
@@ -83,7 +86,7 @@ fun LessonSettingsScreen(
 /**
  * Content for settings screen.
  * Shows groups of related settings in sections.
- *
+ * // TODO finish KDOC
  * @param settings
  * @param onUpdateMin function to change range min
  * @param onUpdateMax function to change range max
@@ -97,6 +100,7 @@ fun LessonSettingsScreenContent(
     onUpdateDifficulty: (Int) -> Unit,
     onUpdateTempo: (Int) -> Unit,
     onUpdateMode: (LessonMode) -> Unit,
+    onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ){
@@ -195,12 +199,31 @@ fun LessonSettingsScreenContent(
                 )
             }
         }
-        // Done button, sends the user to the lesson
-        Button(
-            onClick = {onClickDone(lessonId)}
+    }
+    SettingsGroup(
+        "Display"
+    ){
+        SettingRow(
+            label="Display margin",
+            tooltip="""
+                    Controls margin to display around melody, e.g. if set to 5 the highest
+                    note displayed will be 5 midi notes higher than the highest note in the 
+                    melody.
+                """.trimIndent()
         ){
-            Text("Done")
+            NumericStepper(
+                value = settings.difficulty,
+                onValueChange = onUpdatePitchMargin,
+                min = 5,
+                max = 50
+            )
         }
+    }
+    // Done button, sends the user to the lesson
+    Button(
+        onClick = {onClickDone(lessonId)}
+    ){
+        Text("Done")
     }
 
 }
@@ -224,13 +247,19 @@ internal fun LessonSettingsScreenPreview(
                 null,
                 listOf()),
             90,
-            3, LessonMode.PERFORMANCE,0,1000),
+            3,
+            LessonMode.PERFORMANCE,
+            0,
+            1000,
+            5
+        ),
         {Int -> },
         {Int ->},
         {Int -> },
         {Int -> },
         { LessonMode -> },
         {Int -> },
+        {},
         {},
         {},
         {}
