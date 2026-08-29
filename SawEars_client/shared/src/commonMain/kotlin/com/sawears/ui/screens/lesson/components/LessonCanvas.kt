@@ -4,15 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -21,9 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.sawears.ui.screens.lesson.DisplayNote
 import com.sawears.ui.screens.lesson.LessonUiState
-import com.sawears.ui.screens.lesson.LessonViewModel
-import com.sawears.model.pitch.PitchResult
-import kotlinx.coroutines.isActive
+import com.sawears.ui.screens.lesson.PitchDetectionAnimationState
 import kotlin.math.ceil
 import kotlin.math.ln
 
@@ -40,7 +29,7 @@ fun LessonCanvas(
     lessonState: LessonUiState,
     pitchDetectionAnimationState: State<PitchDetectionAnimationState>
 ){
-    
+
     Canvas(Modifier.fillMaxSize()){
 
         val pitchFrame = pitchDetectionAnimationState.value
@@ -234,78 +223,3 @@ data class LessonCanvasDimensions(
     val durationSeconds: Float,
     val pitchCurveDurationSeconds: Float
 )
-
-/**
- * Represents pitch detection state for a single frame
- */
-
-data class PitchDetectionAnimationState(
-    val pitchSamples: List<PitchResult> = emptyList(),
-    val frameNanos: Long = 0L,
-    val offsetNanos: Long = 0L
-)
-
-/**
- * Respo
- */
-@Composable
-fun providePitchDetectionstate(
-    viewModel: LessonViewModel,
-    paused: Boolean,
-    pitchCurveDurationSeconds: Float
-): State<PitchDetectionAnimationState>{
-
-    val currentWindow by rememberUpdatedState(pitchCurveDurationSeconds)
-
-    return produceState(
-        initialValue = PitchDetectionAnimationState(),
-        viewModel,
-        paused
-    ){
-
-        val pitchSamples = ArrayDeque<PitchResult>()
-        var previousFrameNanos = withFrameNanos { it }
-
-        while (true){
-            val currentFrameNanos = withFrameNanos { it }
-            val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
-            previousFrameNanos = currentFrameNanos
-
-            if (!paused){
-                viewModel.onPlaybackFrame(frameDeltaNanos)
-            }
-
-            // add latest pitch samples
-            viewModel.pitchCurveInput.drainInto(pitchSamples)
-
-            val currentSystemTime = System.nanoTime()
-
-            // calculate an offset between youngest sample and current time,
-            // in order to treat youngest sample as age=0
-            val pitchOffset = pitchSamples.lastOrNull()
-                ?.let { (currentSystemTime - it.timeStampNanos).toLong()}
-                ?: 0L
-            val oldestAllowed =
-                System.nanoTime() - (currentWindow * 1_000_000_000).toLong() - pitchOffset
-
-//                // calculate length of pitch history (i.e. proportion of time window before playback head)
-                // TODO this logic to be moved to parent
-//                val pitchCurveDurationSeconds = lessonState.durationSeconds * lessonState.playBackHeadPosition
-
-            while (
-                pitchSamples.isNotEmpty() &&
-                pitchSamples.first().timeStampNanos < oldestAllowed
-
-            ) {
-                pitchSamples.removeFirst()
-            }
-
-            // emit animation state that can be consumed by drawables
-            value = PitchDetectionAnimationState(
-                pitchSamples = pitchSamples.toList(),
-                frameNanos = currentSystemTime,
-                offsetNanos = pitchOffset
-            )
-        }
-    }
-}
