@@ -34,22 +34,6 @@ class LessonPlayer(
         }
     }
 
-    /*
-     * Update the position of the playback head in beats elapsed based on time elapses
-     *
-     * @param currentTimeMillis
-     * // TODO is this still needed
-     */
-    private fun updatePlayBackHead(currentTimeMillis: Long){
-        if (systemTimeMillis == null){
-            systemTimeMillis = currentTimeMillis
-        }
-        val elapsedTimeMs = currentTimeMillis - systemTimeMillis!!
-        val elapsedTimeBeats = elapsedTimeMs / (60_000f / tempoBpm)
-        playBackHeadBeats += elapsedTimeBeats
-        systemTimeMillis = currentTimeMillis
-    }
-
     /**
      * Calculate which notes are in view (fully or partially) at current time
      * based on current position of playback head
