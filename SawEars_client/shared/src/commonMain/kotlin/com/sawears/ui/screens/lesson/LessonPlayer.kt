@@ -9,9 +9,7 @@ class LessonPlayer(
 ){
 
     val playBackHeadPosition = lessonState.playBackHeadPosition
-
     val canvasWidthBeats = lessonState.canvasWidthBeats
-
     val song = lessonState.song
     val tempoBpm = lessonState.tempoBpm
     var playBackHeadBeats: Float = 0f
@@ -113,10 +111,13 @@ data class PlaybackSnapshot(
  * @property durationRelative
  * @property startsOnBeat
  * @property isCurrentNote
+ * @property percentageOnPitch Tracks for what percentage of elapsed note duration
+ *      user was on pitch
  */
 data class DisplayNote(
     val pitchMidi: Float,
     val durationRelative: Float,
     val startsOnBeat: Float,
-    val isCurrentNote: Boolean
+    val isCurrentNote: Boolean,
+    val percentageOnPitch: Float = 0f
 )
