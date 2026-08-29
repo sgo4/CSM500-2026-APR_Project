@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -103,6 +105,7 @@ fun SettingsScreenContent(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ){
 
         SettingsGroup("Instrument settings"){
@@ -194,7 +197,7 @@ fun SettingsScreenContent(
                 """.trimIndent()
             ){
                 NumericStepper(
-                    value = settings.difficulty,
+                    value = settings.pitchDisplayMarginMidi,
                     onValueChange = onUpdatePitchMargin,
                     min = 5,
                     max = 50

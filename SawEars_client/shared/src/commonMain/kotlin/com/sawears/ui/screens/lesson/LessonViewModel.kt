@@ -91,9 +91,25 @@ class LessonViewModel(
     init {
         // observe settings for changes that could affect the lesson (e.g. changes to tempo)
         observePlaybackSettings()
-        println("Initializing lesson viewmodel") // TODO delete debug text
+        // observe settings that affect display (e.g. zoom)
+        observeDisplaySettings()
         // provide initial animation state
         updateAnimationState(0L)
+    }
+
+
+    private fun observeDisplaySettings(){
+        lessonSettings
+            .map{ it.pitchDisplayMarginMidi }
+            .distinctUntilChanged()
+            .onEach { marginMidi ->
+                _state.update {
+                    it.copy(
+                        pitchDisplayMarginMidi = marginMidi.toFloat()
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun observePlaybackSettings(){

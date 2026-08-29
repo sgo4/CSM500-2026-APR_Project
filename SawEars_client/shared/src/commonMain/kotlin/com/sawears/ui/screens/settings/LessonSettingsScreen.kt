@@ -199,33 +199,32 @@ fun LessonSettingsScreenContent(
                 )
             }
         }
-    }
-    SettingsGroup(
-        "Display"
-    ){
-        SettingRow(
-            label="Display margin",
-            tooltip="""
+        SettingsGroup(
+            "Display"
+        ){
+            SettingRow(
+                label="Display margin",
+                tooltip="""
                     Controls margin to display around melody, e.g. if set to 5 the highest
                     note displayed will be 5 midi notes higher than the highest note in the 
                     melody.
                 """.trimIndent()
+            ){
+                NumericStepper(
+                    value = settings.pitchDisplayMarginMidi,
+                    onValueChange = onUpdatePitchMargin,
+                    min = 5,
+                    max = 50
+                )
+            }
+        }
+        // Done button, sends the user to the lesson
+        Button(
+            onClick = {onClickDone(lessonId)}
         ){
-            NumericStepper(
-                value = settings.difficulty,
-                onValueChange = onUpdatePitchMargin,
-                min = 5,
-                max = 50
-            )
+            Text("Done")
         }
     }
-    // Done button, sends the user to the lesson
-    Button(
-        onClick = {onClickDone(lessonId)}
-    ){
-        Text("Done")
-    }
-
 }
 
 
