@@ -155,6 +155,7 @@ fun NavigationRoot(
                             onUpdateMax=viewModel::updateRangeMax,
                             onUpdateMode=viewModel::updateMode,
                             onUpdateDifficulty = viewModel::updateDifficulty,
+                            onUpdatePitchMargin = viewModel::updatePitchMargin,
                             onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
                             onClickAccount = {backStack.add(Route.AccountScreen)},
                             onClickMenu = {openMenu()}
@@ -186,6 +187,7 @@ fun NavigationRoot(
                             onUpdateDifficulty = viewModel::updateDifficulty,
                             onUpdateTempo = viewModel::updateTempo,
                             onUpdateMode = viewModel::updateMode,
+                            onUpdatePitchMargin = viewModel::updatePitchMargin,
                             onClickDone = {
                                 backStack.add(
                                     Route.LessonScreen(key.lessonId)
