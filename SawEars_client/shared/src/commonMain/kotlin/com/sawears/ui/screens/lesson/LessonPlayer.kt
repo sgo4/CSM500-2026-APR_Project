@@ -2,6 +2,7 @@ package com.sawears.ui.screens.lesson
 
 /**
  * Player class that controlls the main animations
+ * //TODO update kdoc
  */
 class LessonPlayer(
     lessonState: LessonUiState
