@@ -65,6 +65,7 @@ class LessonViewModel(
     val lessonState = _state.asStateFlow()
 
 
+
     // TODO is this necessary / the best way of handling things?
     var error by mutableStateOf<String?>(null)
         private set
@@ -270,6 +271,12 @@ class LessonViewModel(
             )
         }
     }
+
+    // TODO
+    fun updateNoteAccuracies(){
+
+    }
+
 
     override fun onCleared(){
         audioPlayer.close() // close audio line

@@ -64,6 +64,7 @@ class LessonPlayer(
             val durationRelative = note.durationRelative.toFloat()
             res.add(
                 DisplayNote(
+                    idx = noteIdx,
                     note.pitchMidi.toFloat(),
                     durationRelative,
                     cummulativeBeats,
@@ -107,17 +108,16 @@ data class PlaybackSnapshot(
  * UI layer representation of a single note including information about its
  * position in the melody
  *
+ * @property idx The index of the note within the melody (serves as an id)
  * @property pitchMidi
  * @property durationRelative
  * @property startsOnBeat
  * @property isCurrentNote
- * @property percentageOnPitch Tracks for what percentage of elapsed note duration
- *      user was on pitch
  */
 data class DisplayNote(
+    val idx: Int,
     val pitchMidi: Float,
     val durationRelative: Float,
     val startsOnBeat: Float,
-    val isCurrentNote: Boolean,
-    val percentageOnPitch: Float = 0f
+    val isCurrentNote: Boolean
 )
