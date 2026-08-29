@@ -29,15 +29,12 @@ import kotlin.math.ln
  * Canvas for piano roll style lesson
  *
  * @param viewModel
- * @param durationSeconds time range to display
- * @param pitchDisplayMarginMidi margin around song's range to display, as a %
+ * @param lessonState UI state holder containing immutable animation variables
  */
 @Composable
 fun LessonCanvas(
     viewModel: LessonViewModel,
-    lessonState: LessonUiState,
-    durationSeconds: Float,
-    pitchDisplayMarginMidi: Float = 5f
+    lessonState: LessonUiState
 ){
     val pitchSamples = remember {
         ArrayDeque<PitchResult>()
@@ -86,7 +83,7 @@ fun LessonCanvas(
                 pitchCurveTime = System.nanoTime()
                 pitchOffset = (pitchCurveTime - pitchSamples.last().timeStampNanos).toLong()
                 val oldestAllowed =
-                    System.nanoTime() - (durationSeconds * 1_000_000_000).toLong() - pitchOffset
+                    System.nanoTime() - (lessonState.durationSeconds * 1_000_000_000).toLong() - pitchOffset
 
                 while (
                     pitchSamples.isNotEmpty() &&
@@ -110,11 +107,11 @@ fun LessonCanvas(
         }
 
         // calculate range of pitches to display based on song range +/- a fixed margin
-        val minPitchMidi = lessonState.song.songMinMidi - pitchDisplayMarginMidi
-        val maxPitchMidi = lessonState.song.songMaxMidi + pitchDisplayMarginMidi
+        val minPitchMidi = lessonState.song.songMinMidi - lessonState.pitchDisplayMarginMidi
+        val maxPitchMidi = lessonState.song.songMaxMidi + lessonState.pitchDisplayMarginMidi
 
         // calculate how many seconds into the past to show pitch samples based on playbackhead
-        val pitchCurveDurationSeconds = durationSeconds * lessonState.playBackHeadPosition
+        val pitchCurveDurationSeconds = lessonState.durationSeconds * lessonState.playBackHeadPosition
 
         // combine dimension-related information into single object
         val dimensions = LessonCanvasDimensions(
@@ -123,7 +120,7 @@ fun LessonCanvas(
             canvasWidthPx,
             canvasHeightPx,
             lessonState.playBackHeadPosition,
-            durationSeconds,
+            lessonState.durationSeconds,
             pitchCurveDurationSeconds
         )
         // canvas height must be >= range of displayable notes otherwise they won't fit on screen

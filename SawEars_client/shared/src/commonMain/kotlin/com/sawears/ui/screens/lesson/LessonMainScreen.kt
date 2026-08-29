@@ -68,9 +68,7 @@ fun LessonMainScreen(
 
         LessonCanvas(
             viewModel,
-            lessonState,
-            20f,
-            5f
+            lessonState
         )
     }
 }
