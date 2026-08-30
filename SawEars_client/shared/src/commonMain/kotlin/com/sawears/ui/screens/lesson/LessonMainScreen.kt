@@ -140,10 +140,6 @@ fun providePitchDetectionstate(
             val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
             previousFrameNanos = currentFrameNanos
 
-            if (!paused){
-                viewModel.onPlaybackFrame(frameDeltaNanos)
-            }
-
             // add latest pitch samples
             viewModel.pitchCurveInput.drainInto(pitchSamples)
 
@@ -163,6 +159,11 @@ fun providePitchDetectionstate(
 
             ) {
                 pitchSamples.removeFirst()
+            }
+
+            if (!paused){
+                val latestPitch = pitchSamples.lastOrNull()
+                viewModel.onPlaybackFrame(frameDeltaNanos, latestPitch)
             }
 
             // emit animation state that can be consumed by drawables

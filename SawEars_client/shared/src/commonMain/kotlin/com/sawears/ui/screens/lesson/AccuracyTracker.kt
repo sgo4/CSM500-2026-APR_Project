@@ -1,15 +1,22 @@
 package com.sawears.ui.screens.lesson
 
+import com.sawears.model.pitch.midiToHz
+import kotlin.math.log2
+import kotlin.math.abs
+
 
 /**
  * Calculates pitch accuracies for notes currently in view
  */
-class AccuracyTracker {
+class AccuracyTracker(
+    val thresholdCents: Float = 50f
+) {
 
     val noteAccuracies: ArrayDeque<NoteAccuracy> = ArrayDeque()
 
 
-    fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, onPitch: Boolean){
+
+    fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, currentPitchHz: Float){
         clearOutdatedNotes(notesInView)
         val currentNote = notesInView
             .firstOrNull { it.isCurrentNote }
@@ -28,6 +35,10 @@ class AccuracyTracker {
                 noteAccuracies.add(it)
             }
 
+        // check whether latest pitch 'on pitch for latest notes
+        val noteFrequencyHz = midiToHz(currentNote.pitchMidi)
+        val onPitch = isOnPitch(noteFrequencyHz,currentPitchHz)
+        // increase % accuracy if on pitch
         if (onPitch){
             val beatsDelta = currentTimeBeats - currentNoteAccuracy.lastUpdatedBeats
             val percentDelta = beatsDelta / currentNote.durationRelative
@@ -44,6 +55,25 @@ class AccuracyTracker {
         while (noteAccuracies.isNotEmpty() && noteAccuracies[0].idx < oldestNoteIdx){
             noteAccuracies.removeFirst()
         }
+    }
+
+    /*
+    Calculates whether measured pitch is sufficiently accurate vs expected pitch based
+    on defined threshold
+    // TODO cents threshold needs to come from somewhere
+     */
+    private fun isOnPitch(currentNoteHz: Float, measuredPitchHz: Float): Boolean {
+        val centsDifference = centsDifference(measuredPitchHz,currentNoteHz)
+
+        return centsDifference < thresholdCents
+
+    }
+
+    /*
+    Calculate cents difference between two pitches
+     */
+    private fun centsDifference(measured: Float, actual: Float): Float {
+        return abs(1200 * log2((actual/measured)))
     }
 
 }

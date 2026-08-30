@@ -10,6 +10,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class MidiJsonFileNoteDto(
-    val pitch: Int,
+    val pitch: Float,
     val duration: Double
 )

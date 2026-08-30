@@ -4,6 +4,7 @@ import com.sawears.model.Song
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import com.sawears.ui.screens.lesson.LessonPlayer
+import com.sawears.ui.screens.lesson.LessonUiState
 
 
 class LessonViewModelTest {
@@ -21,18 +22,15 @@ class LessonViewModelTest {
         )
 
         val player = LessonPlayer(
-            song,
-            60,
-            5f,
-            0.5f
+            lessonState= LessonUiState(song,60)
         )
 
-        player.systemTimeMillis = 0
-        val currentTime = 4000L
+        val frameDeltaMillis = 4000f
 
-        val notesInView = player.notesInView(
-            currentTime
-        )
+        val notesInView = player
+            .nextFrame(frameDeltaMillis)
+            .notesInView
+
 
         for (note in notesInView){
             println(note.durationRelative)
@@ -55,19 +53,9 @@ class LessonViewModelTest {
             )
         )
 
-        val player = LessonPlayer(
-            song,
-            60,
-            5f,
-            0.5f
-        )
+        val player = LessonPlayer(LessonUiState(song, 60))
 
-        player.systemTimeMillis = 0L
-        val currentTime = 0L
-
-        val notesInView = player.notesInView(
-            currentTime
-        )
+        val notesInView = player.nextFrame(0f).notesInView
 
         for (note in notesInView){
             println(note.durationRelative)
@@ -89,19 +77,13 @@ class LessonViewModelTest {
             )
         )
 
-        val player = LessonPlayer(
-            song,
-            60,
-            5f,
-            0.5f
-        )
+        val player = LessonPlayer(LessonUiState(song, 60))
 
-        player.systemTimeMillis = 0L
-        val currentTime = 5000L
+        val frameDeltaMillis = 5000f
 
-        val notesInView = player.notesInView(
-            currentTime
-        )
+        val notesInView = player
+            .nextFrame(frameDeltaMillis)
+            .notesInView
 
         for (note in notesInView){
             println(note.durationRelative)
@@ -126,7 +108,7 @@ fun generateTestSong(durations: DoubleArray): Song {
     for (duration in durations){
         notes.add(
             Note(
-                60,
+                60f,
                 duration
             )
         )

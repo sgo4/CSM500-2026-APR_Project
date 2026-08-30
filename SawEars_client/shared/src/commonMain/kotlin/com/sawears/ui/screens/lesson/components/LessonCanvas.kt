@@ -26,7 +26,7 @@ import kotlin.math.ln
  * Canvas for piano roll style lesson
  *
  * @param lessonState UI state holder containing immutable animation variables
- * @param PitchDetectionAnimationState Holder for pitch detection specific
+ * @param PitchDetectionAnimationState Holder for pitch detection specific animation state
  */
 @Composable
 fun LessonCanvas(

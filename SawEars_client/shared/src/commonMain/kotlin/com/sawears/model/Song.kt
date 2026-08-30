@@ -28,7 +28,7 @@ data class Song(
     /**
      * Return a transposed Song object by a defined number of semitones
      */
-    fun transpose(semitones: Int): Song {
+    fun transpose(semitones: Float): Song {
         val transposedNotes = notes.map {
             it.transpose(semitones)
         }

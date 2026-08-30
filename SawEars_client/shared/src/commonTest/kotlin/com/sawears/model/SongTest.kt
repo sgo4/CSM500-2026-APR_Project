@@ -9,10 +9,10 @@ class SongTest {
 
 
     private data class TranspositionTestCase(
-        val melody: IntArray,
+        val melody: FloatArray,
         val rangeMin: Int,
         val rangeMax: Int,
-        val transposedMelody: IntArray
+        val transposedMelody: FloatArray
     )
     /**
      * Tests that a Song can be correctly transposed to fit within a given range
@@ -22,22 +22,22 @@ class SongTest {
 
         val cases = listOf(
             TranspositionTestCase(
-                intArrayOf(1,2,3),
+                floatArrayOf(1f,2f,3f),
                 9,
                 11,
-                intArrayOf(9,10,11)
+                floatArrayOf(9f,10f,11f)
             ),
             TranspositionTestCase(
-                intArrayOf(1,6,10),
+                floatArrayOf(1f,6f,10f),
                 20,
                 40,
-                intArrayOf(26,31,35)
+                floatArrayOf(26f,31f,35f)
             ),
             TranspositionTestCase(
-                intArrayOf(2,4,6,8),
+                floatArrayOf(2f,4f,6f,8f),
                 1,
                 10,
-                intArrayOf(2,4,6,8)
+                floatArrayOf(2f,4f,6f,8f)
             )
         )
 
@@ -58,7 +58,7 @@ class SongTest {
     fun `range transposition fails if target range smaller than song range`(){
 
         val song = generateTestSong(
-            intArrayOf(1,1000) // song with a really big range!
+            floatArrayOf(1f,1000f) // song with a really big range!
         )
 
         val rangeMin = 2
@@ -73,7 +73,7 @@ class SongTest {
     fun `range transposition fails with negative target range`(){
 
         val song = generateTestSong(
-            intArrayOf(1,2) // song with a really big range!
+            floatArrayOf(1f,2f) // song with a really big range!
         )
 
         val rangeMin = 20
@@ -88,7 +88,7 @@ class SongTest {
     fun `range transposition fails with negative range boundaries`(){
 
         val song = generateTestSong(
-            intArrayOf(1,2) // song with a really big range!
+            floatArrayOf(1f,2f) // song with a really big range!
         )
 
         val rangeMin = -1 // negative range
@@ -105,7 +105,7 @@ class SongTest {
 Helper function to generate test songs with specified note values
 without specifying any other details
  */
-fun generateTestSong(midiValues: IntArray): Song {
+fun generateTestSong(midiValues: FloatArray): Song {
 
     val notes = mutableListOf<Note>()
 

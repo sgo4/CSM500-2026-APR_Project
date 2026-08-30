@@ -1,5 +1,7 @@
 package com.sawears.ui.screens.lesson
 
+import com.sawears.model.Note
+
 /**
  * Player class that controlls the main animations
  * //TODO update kdoc
@@ -13,7 +15,6 @@ class LessonPlayer(
     val song = lessonState.song
     val tempoBpm = lessonState.tempoBpm
     var playBackHeadBeats: Float = 0f
-    var systemTimeMillis: Long? = null
     var noteTransitions = FloatArray(song.notes.size)
     var currentNoteIdx = 0
     var currentWindowStartBeats = 0f
@@ -69,7 +70,7 @@ class LessonPlayer(
                 res.add(
                     DisplayNote(
                         idx = noteIdx,
-                        note.pitchMidi.toFloat(),
+                        note.pitchMidi,
                         durationRelative,
                         cummulativeBeats,
                         isCurrentNote = noteIdx == currentNoteIdx

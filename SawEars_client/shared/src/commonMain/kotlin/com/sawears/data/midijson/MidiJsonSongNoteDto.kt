@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class MidiJsonSongNoteDto(
-    val pitchMidi: Int,
+    val pitchMidi: Float,
     val durationRelative: Double
 )
 

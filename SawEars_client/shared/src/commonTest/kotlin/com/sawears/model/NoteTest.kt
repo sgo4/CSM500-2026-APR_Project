@@ -32,7 +32,7 @@ class NoteTest {
 
         cases.forEach { case ->
             val note = Note(
-                60,
+                60f,
                 case.relativeDuration
             )
             val msDuration = note.toMs(case.tempo)
@@ -45,7 +45,7 @@ class NoteTest {
     }
 
     private data class MidiHzTestCase(
-        val midiPitch: Int,
+        val midiPitch: Float,
         val expectedHz: Float
     )
 
@@ -54,27 +54,27 @@ class NoteTest {
 
         val cases = listOf(
             MidiHzTestCase(
-                60,
+                60f,
                 261.63f
             ),
             MidiHzTestCase(
-                69,
+                69f,
                 440f
             ),
             MidiHzTestCase(
-                78,
+                78f,
                 739.99f
             ),
             MidiHzTestCase(
-                127,
+                127f,
                 12543.86f
             ),
             MidiHzTestCase(
-                0,
+                0f,
                 8.18f
             ),
             MidiHzTestCase(
-                -1,
+                -1f,
                 -1f
             )
         )
@@ -91,9 +91,9 @@ class NoteTest {
 
 
     private data class TranspositionTestCase(
-        val pitchMidi: Int,
-        val semitones: Int,
-        val transposedPitch: Int
+        val pitchMidi: Float,
+        val semitones: Float,
+        val transposedPitch: Float
     )
 
     @Test
@@ -101,19 +101,19 @@ class NoteTest {
 
         val cases = listOf(
             TranspositionTestCase(
-                60,
-                1,
-                61
+                60f,
+                1f,
+                61f
             ),
             TranspositionTestCase(
-                60,
-                -1,
-                59
+                60f,
+                -1f,
+                59f
             ),
             TranspositionTestCase(
-                70,
-                -10,
-                60
+                70f,
+                -10f,
+                60f
             )
         )
 
@@ -132,12 +132,12 @@ class NoteTest {
     @Test
     fun `transposition rejects negative values`(){
         val note = Note(
-            0,
+            0f,
             1.0
         )
 
         assertFailsWith<TranspositionException>{
-            note.transpose(-1)
+            note.transpose(-1f)
          }
     }
 }

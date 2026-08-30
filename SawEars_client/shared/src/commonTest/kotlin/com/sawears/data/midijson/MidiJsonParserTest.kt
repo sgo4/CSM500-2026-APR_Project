@@ -38,10 +38,10 @@ internal class MidiJsonParserTest {
         assertEquals(120,parsed.tempo)
         assertEquals("https://www.youtube.com/watch?v=dQw4w9WgXcQ",parsed.description)
         val note1 = parsed.notes[0]
-        assertEquals(60,note1.pitch)
+        assertEquals(60f,note1.pitch)
         assertEquals(3.0,note1.duration)
         val note2 = parsed.notes[1]
-        assertEquals(80, note2.pitch)
+        assertEquals(80f, note2.pitch)
         assertEquals(1.5, note2.duration)
     }
 

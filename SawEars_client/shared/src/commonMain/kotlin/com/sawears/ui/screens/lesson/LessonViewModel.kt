@@ -12,6 +12,7 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
+import com.sawears.model.pitch.PitchResult
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -244,14 +245,14 @@ class LessonViewModel(
      *
      * @property frameDeltaNanos time delta between current and previous frame
      */
-    fun onPlaybackFrame(frameDeltaNanos: Long){
-        updateAnimationState(frameDeltaNanos)
+    fun onPlaybackFrame(frameDeltaNanos: Long, latestPitch: PitchResult?=null){
+        updateAnimationState(frameDeltaNanos, latestPitch)
     }
 
     /*
      * //TODO
      */
-    private fun updateAnimationState(frameDeltaNanos: Long){
+    private fun updateAnimationState(frameDeltaNanos: Long, latestPitch: PitchResult?=null){
         // get state for next frame based on time delta
         val animationSnapshot = lessonPlayer.nextFrame(
             frameDeltaNanos / 1_000_000f
@@ -260,7 +261,7 @@ class LessonViewModel(
         accuracyTracker.update(
             lessonState.value.notesInView,
             animationSnapshot.playBackHeadBeats,
-            true // TODO actually get this information
+            latestPitch // TODO actually get this information
         )
         // update state
         _state.update {

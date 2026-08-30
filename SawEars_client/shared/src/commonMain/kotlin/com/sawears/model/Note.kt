@@ -12,7 +12,7 @@ import com.sawears.data.midijson.MidiJsonSongNoteDto
  */
 @Serializable
 data class Note(
-    val pitchMidi: Int,
+    val pitchMidi: Float,
     val durationRelative: Double
 ){
     /**
@@ -29,7 +29,7 @@ data class Note(
      */
     fun toHz(): Float {
         if (pitchMidi < 0){
-            return pitchMidi.toFloat()
+            return pitchMidi
         } else {
             return 440 * 2f.pow((pitchMidi-69)/12f)
         }
@@ -41,7 +41,7 @@ data class Note(
      * @param semitones the number of semitones +/- to transpose
      * @return a new Note with updated pitch
      */
-    fun transpose(semitones: Int): Note {
+    fun transpose(semitones: Float): Note {
 
         // do not transpose negative note values as these represent rests
         if (pitchMidi < 0){
