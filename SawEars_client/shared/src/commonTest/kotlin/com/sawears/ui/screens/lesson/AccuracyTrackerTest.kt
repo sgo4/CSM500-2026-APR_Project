@@ -120,7 +120,7 @@ class AccuracyTrackerTest{
                 60f,
                 1f,
                 0f,
-                false
+                true
             )
         )
 
@@ -136,8 +136,8 @@ class AccuracyTrackerTest{
         // update with values that should pass
         tracker.update(
             notesInView=notesInView,
-            currentTimeBeats=0.1f,
-            currentPitchHz=410f, // 42 cents difference, should pass with 50 threshold
+            currentTimeBeats=0.2f,
+            currentPitchHz=269f, // 48 cents difference, should pass with 50 threshold
         )
 
         var newPercentAccuracy = tracker.noteAccuracies[0].percentOnPitch
@@ -146,11 +146,11 @@ class AccuracyTrackerTest{
         }
         percentAccuracy = newPercentAccuracy
 
-        // try another value that should pass
+        // try another value that should pass (this time too low)
         tracker.update(
             notesInView=notesInView,
-            currentTimeBeats=0.1f,
-            currentPitchHz=411f, // 46 cents difference, should pass with 50 threshold
+            currentTimeBeats=0.4f,
+            currentPitchHz=255f, // 44 cents difference, should pass with 50 threshold
         )
 
         newPercentAccuracy = tracker.noteAccuracies[0].percentOnPitch
@@ -163,7 +163,7 @@ class AccuracyTrackerTest{
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats=0.1f,
-            currentPitchHz=412f, // 51 cents difference, should fail with 50 threshold
+            currentPitchHz=254f, // 51 cents difference, should fail with 50 threshold
         )
         newPercentAccuracy = tracker.noteAccuracies[0].percentOnPitch
         assertEquals(percentAccuracy, newPercentAccuracy)

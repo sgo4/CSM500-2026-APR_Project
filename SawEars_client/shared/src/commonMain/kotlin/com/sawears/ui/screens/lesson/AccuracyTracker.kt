@@ -7,14 +7,15 @@ import kotlin.math.abs
 
 /**
  * Calculates pitch accuracies for notes currently in view
+ *
  */
 class AccuracyTracker(
     val thresholdCents: Float = 50f
 ) {
 
+    // the idea here is to only record note accuracies for notes which are currently in view
+    // rather than trying to mainntain all notes in memory
     val noteAccuracies: ArrayDeque<NoteAccuracy> = ArrayDeque()
-
-
 
     fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, currentPitchHz: Float){
         clearOutdatedNotes(notesInView)

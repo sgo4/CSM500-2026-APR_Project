@@ -97,7 +97,7 @@ class LessonViewModel(
         // observe settings that affect display (e.g. zoom)
         observeDisplaySettings()
         // provide initial animation state
-        updateAnimationState(0L)
+        updateAnimationState(0L,-1f)
     }
 
 
@@ -245,14 +245,14 @@ class LessonViewModel(
      *
      * @property frameDeltaNanos time delta between current and previous frame
      */
-    fun onPlaybackFrame(frameDeltaNanos: Long, latestPitch: PitchResult?=null){
-        updateAnimationState(frameDeltaNanos, latestPitch)
+    fun onPlaybackFrame(frameDeltaNanos: Long, latestPitch: PitchResult?){
+        updateAnimationState(frameDeltaNanos, latestPitch?.frequencyHz?.toFloat()?: -1f)
     }
 
     /*
      * //TODO
      */
-    private fun updateAnimationState(frameDeltaNanos: Long, latestPitch: PitchResult?=null){
+    private fun updateAnimationState(frameDeltaNanos: Long, latestPitchHz: Float){
         // get state for next frame based on time delta
         val animationSnapshot = lessonPlayer.nextFrame(
             frameDeltaNanos / 1_000_000f
@@ -261,7 +261,7 @@ class LessonViewModel(
         accuracyTracker.update(
             lessonState.value.notesInView,
             animationSnapshot.playBackHeadBeats,
-            latestPitch // TODO actually get this information
+            latestPitchHz // TODO actually get this information
         )
         // update state
         _state.update {
