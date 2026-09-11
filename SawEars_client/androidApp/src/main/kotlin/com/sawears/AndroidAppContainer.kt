@@ -7,6 +7,7 @@ import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.pitch.PitchEstimator
+import com.sawears.model.pitch.settings.DifficultySettingsProvider
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import javax.inject.Inject
 
@@ -22,5 +23,6 @@ class AndroidAppContainer
     override val estimator: PitchEstimator,
     override val audioInputSourceFactory: AudioInputSourceFactory,
     override val playbackClock: PlaybackClock,
-    override val db: AppDatabase
+    override val db: AppDatabase,
+    override val difficultySettingsProvider: DifficultySettingsProvider
 ): AppContainer

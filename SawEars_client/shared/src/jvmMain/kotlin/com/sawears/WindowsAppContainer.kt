@@ -14,7 +14,7 @@ import com.sawears.data.settings.createDataStore
 import com.sawears.model.pitch.estimators.DebugEstimator
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.estimators.FixedSineEstimator
-
+import com.sawears.model.pitch.settings.StandardDifficultySettingsProvider
 
 
 /**
@@ -56,4 +56,6 @@ class WindowsAppContainer(): AppContainer {
     override val playbackClock = PlaybackClock()
 
     override val db = buildWindowsDatabase()
+
+    override val difficultySettingsProvider = StandardDifficultySettingsProvider()
 }

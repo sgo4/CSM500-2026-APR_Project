@@ -8,6 +8,7 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
+import com.sawears.model.pitch.settings.DifficultySettingsProvider
 
 /**
  * Common interface for dependency injection container
@@ -55,5 +56,10 @@ interface AppContainer {
      * Factory for app database
      */
     val db: AppDatabase
+
+    /**
+     * Converts difficulty levels to concrete application settings
+     */
+    val difficultySettingsProvider: DifficultySettingsProvider
 
 }

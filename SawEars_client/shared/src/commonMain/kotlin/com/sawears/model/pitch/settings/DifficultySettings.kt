@@ -23,8 +23,8 @@ interface DifficultySettingsProvider {
 /**
  * Standard difficulty implementation
  */
-class StandardDifficultySettingsProvider{
-    fun get(difficulty: Difficulty): DifficultySettings =
+class StandardDifficultySettingsProvider: DifficultySettingsProvider {
+    override fun get(difficulty: Difficulty): DifficultySettings =
         when (difficulty){
             Difficulty.EASIEST -> DifficultySettings(60f)
             Difficulty.EASY -> DifficultySettings(55f)
