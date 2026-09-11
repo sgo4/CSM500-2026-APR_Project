@@ -8,6 +8,10 @@ import kotlin.math.abs
 /**
  * Calculates pitch accuracies for notes currently in view
  *
+ * @property thresholdCents sets the allowable cents difference
+ *  between actual pitch and expected pitch for a pitch to be considered
+ *  accurate
+ *
  */
 class AccuracyTracker(
     val thresholdCents: Float = 50f
@@ -61,7 +65,6 @@ class AccuracyTracker(
     /*
     Calculates whether measured pitch is sufficiently accurate vs expected pitch based
     on defined threshold
-    // TODO cents threshold needs to come from somewhere
      */
     private fun isOnPitch(currentNoteHz: Float, measuredPitchHz: Float): Boolean {
         val centsDifference = centsDifference(measuredPitchHz,currentNoteHz)
@@ -75,6 +78,10 @@ class AccuracyTracker(
      */
     private fun centsDifference(measured: Float, actual: Float): Float {
         return abs(1200 * log2((actual/measured)))
+    }
+
+    fun reset(){
+        noteAccuracies.clear()
     }
 
 }

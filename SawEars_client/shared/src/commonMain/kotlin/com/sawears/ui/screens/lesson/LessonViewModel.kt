@@ -13,7 +13,6 @@ import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchResult
-import com.sawears.ui.screens.lessonsettings.LessonSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -22,7 +21,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -137,14 +135,23 @@ class LessonViewModel(
                 _state.update {
                     it.copy(
                         song = settings.song,
+                        notesInView=emptyList(),
                         tempoBpm = settings.tempo,
+                        playBackHeadBeats = 0f,
                         audioPaused = true
                     )
                 }
 
+                accuracyTracker.reset()
+
                 lessonPlayer = LessonPlayer(
                     lessonState.value
                 )
+
+                // provide initial animation state
+                updateAnimationState(0L,-1f)
+
+
             }
             .launchIn(viewModelScope)
     }
@@ -291,8 +298,8 @@ class LessonViewModel(
 }
 
 /*
-Helper class holding settings that directly affect playback and may require animations/
-audio players etc. to be updated
+ Helper class holding settings that directly affect playback and may require animations/
+ audio players etc. to be updated
  */
 private data class PlaybackSettings(
     val song: Song,

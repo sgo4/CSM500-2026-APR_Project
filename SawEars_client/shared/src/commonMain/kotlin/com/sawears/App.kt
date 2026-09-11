@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import com.sawears.ui.navigation.NavigationRoot
 import com.sawears.ui.theme.SawEarsTheme
 
+// TODO figure out if this can be made platform agnostic
 @Composable
 fun App(container: AppContainer) {
     SawEarsTheme {

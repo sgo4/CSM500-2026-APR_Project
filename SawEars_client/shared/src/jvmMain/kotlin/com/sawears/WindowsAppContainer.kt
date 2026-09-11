@@ -11,6 +11,7 @@ import com.sawears.data.settings.DataStoreSettingsRepository
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.createDataStore
+import com.sawears.model.pitch.estimators.DebugEstimator
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.estimators.FixedSineEstimator
 
@@ -39,13 +40,14 @@ class WindowsAppContainer(): AppContainer {
 //        44_100f,
 //        1024
 //    )
-    override val estimator = FixedSineEstimator(
-        44_100f,
-        1024,
-        frequency = 2f,
-        minPitcHz = 600,
-        maxPitchHz = 1000
-    )
+//    override val estimator = FixedSineEstimator(
+//        44_100f,
+//        1024,
+//        frequency = 2f,
+//        minPitcHz = 600,
+//        maxPitchHz = 1000
+//    )
+    override val estimator = DebugEstimator(44_100f,1024)
 
     override val audioInputSourceFactory = AudioInputSourceFactory {
         WindowsMicAudioInputSource()

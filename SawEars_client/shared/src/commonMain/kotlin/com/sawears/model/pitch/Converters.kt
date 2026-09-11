@@ -4,20 +4,14 @@ import kotlin.math.pow
 
 /**
  * General purpose midi to hz converter
+ *
+ * @param pitchMidi
+ * @return pitch in Hz
  */
 fun midiToHz(pitchMidi: Float): Float {
-    if (pitchMidi < 0){
-        return pitchMidi
+    return if (pitchMidi < 0){
+        pitchMidi
     } else {
-        return 440 * 2f.pow((pitchMidi-69)/12f)
+        440 * 2f.pow((pitchMidi-69)/12f)
     }
-}
-
-/**
- * General purpose hz to midi converter
- *
- * TODO
- */
-fun hzToMidi(){
-
 }

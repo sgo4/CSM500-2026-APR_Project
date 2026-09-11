@@ -13,8 +13,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for managing settings
  *
- * Open so it can be subclassed by other view models that access settings
- *
+ * Implementation Note: Open so it can be subclassed by other view models that access settings
  */
 open class SettingsViewModel(
     private val settingsRepository: SettingsRepository
