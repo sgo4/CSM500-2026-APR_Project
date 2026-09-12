@@ -16,7 +16,9 @@ import kotlinx.coroutines.launch
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.PitchResult
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.model.pitch.settings.DifficultySettingsProvider
+import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import kotlin.Float
 
 
 /**
@@ -72,6 +75,7 @@ class LessonViewModel(
     private val _state = MutableStateFlow(LessonUiState(
         initialSettings.song,
         initialSettings.tempo,
+        initialSettings.mode
     ))
     val lessonState = _state.asStateFlow()
 
@@ -99,38 +103,30 @@ class LessonViewModel(
     init {
         // observe settings for changes that could affect the lesson (e.g. changes to tempo)
         observePlaybackSettings()
-        // observe settings that affect display (e.g. zoom)
-        observeDisplaySettings()
-        // observe changes to difficulty
-        observeDifficulty()
+        // observe changes to lesson settings that affect state (e.g. mode, difficulty)
+        observeLessonUiSettings()
         // provide initial animation state
         updateAnimationState(0L,-1f)
     }
 
-    private fun observeDifficulty(){
+    private fun observeLessonUiSettings(){
         lessonSettings
-            .map{ it.difficulty }
-            .distinctUntilChanged()
-            .onEach { difficulty ->
-                _state.update {
-                    it.copy(
-                        leniencyThresholdCents = difficultySettingsProvider
-                            .get(difficulty)
-                            .centsThreshold
-                    )
-                }
+            .map{ settings ->
+                LessonUiSettings(
+                    pitchDisplayMarginMidi = settings.pitchDisplayMarginMidi,
+                    difficulty = settings.difficulty,
+                    mode = settings.mode
+                )
             }
-            .launchIn(viewModelScope)
-    }
-
-    private fun observeDisplaySettings(){
-        lessonSettings
-            .map{ it.pitchDisplayMarginMidi }
             .distinctUntilChanged()
-            .onEach { marginMidi ->
+            .onEach { settings ->
                 _state.update {
                     it.copy(
-                        pitchDisplayMarginMidi = marginMidi.toFloat()
+                        pitchDisplayMarginMidi = settings.pitchDisplayMarginMidi.toFloat(),
+                        mode = settings.mode,
+                        leniencyThresholdCents = difficultySettingsProvider
+                            .get(settings.difficulty)
+                            .centsThreshold
                     )
                 }
             }
@@ -353,4 +349,14 @@ class LessonViewModel(
 private data class PlaybackSettings(
     val song: Song,
     val tempo: Int
+)
+
+/*
+ * Helper class holding other observable lesson ui settings, e.g. display margin,
+ * mode, difficulty
+ */
+private data class LessonUiSettings(
+    val pitchDisplayMarginMidi: Int,
+    val difficulty: Difficulty,
+    val mode: LessonMode
 )

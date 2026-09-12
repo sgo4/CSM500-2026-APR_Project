@@ -9,9 +9,9 @@ import com.sawears.ui.screens.lessonsettings.LessonMode
  *
  * @property song current song around which lesson is based
  * @property tempoBpm current tempo
+ * @property mode current lesson mode
  * @property notesInView which notes are currently withing display window
  * @property noteAccuracies accuracy information for notes in view
- * @property mode current lesson mode
  * @property leniencyThresholdCents max allowable difference between actual and expected pitch
  * @property playBackHeadBeats position of the playback head within song
  * @property playBackHeadPosition position of playback head on screen as fraction of width
@@ -25,9 +25,9 @@ import com.sawears.ui.screens.lessonsettings.LessonMode
 data class LessonUiState(
     val song: Song,
     val tempoBpm: Int,
+    val mode: LessonMode,
     val notesInView: List<DisplayNote> = emptyList(),
     val noteAccuracies: List<NoteAccuracy> = emptyList(),
-    val mode: LessonMode,
     val leniencyThresholdCents: Float = 50f,
     val playBackHeadBeats: Float = 0f,
     val playBackHeadPosition: Float = 0.5f,
