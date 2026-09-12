@@ -1,5 +1,6 @@
 package com.sawears.data.settings
 
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.Flow
 
@@ -28,7 +29,7 @@ interface SettingsRepository {
      *
      * @param difficulty
      */
-    suspend fun setDifficulty(difficulty: Int)
+    suspend fun setDifficulty(difficulty: Difficulty)
 
     /**
      * Set lesson mode

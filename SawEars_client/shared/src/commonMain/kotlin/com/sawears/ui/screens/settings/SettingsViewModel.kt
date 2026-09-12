@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.SettingsRepository
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -40,8 +41,15 @@ open class SettingsViewModel(
     }
 
     open fun updateDifficulty(difficulty: Int){
+
+        require(difficulty in 1..enumValues<Difficulty>().size){
+            "Int value outside range of possible difficulty enums"
+        }
+
+        val difficultyEnum = Difficulty.entries[difficulty-1]
+
         viewModelScope.launch {
-            settingsRepository.setDifficulty(difficulty)
+            settingsRepository.setDifficulty(difficultyEnum)
         }
     }
 

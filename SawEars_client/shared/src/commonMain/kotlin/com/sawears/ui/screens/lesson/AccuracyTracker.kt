@@ -8,20 +8,15 @@ import kotlin.math.abs
 /**
  * Calculates pitch accuracies for notes currently in view
  *
- * @property thresholdCents sets the allowable cents difference
- *  between actual pitch and expected pitch for a pitch to be considered
- *  accurate
  *
  */
-class AccuracyTracker(
-    val thresholdCents: Float = 50f
-) {
+class AccuracyTracker {
 
     // the idea here is to only record note accuracies for notes which are currently in view
     // rather than trying to mainntain all notes in memory
     val noteAccuracies: ArrayDeque<NoteAccuracy> = ArrayDeque()
 
-    fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, currentPitchHz: Float){
+    fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, currentPitchHz: Float, thresholdCents: Float){
         clearOutdatedNotes(notesInView)
         val currentNote = notesInView
             .firstOrNull { it.isCurrentNote }
@@ -42,7 +37,7 @@ class AccuracyTracker(
 
         // check whether latest pitch 'on pitch for latest notes
         val noteFrequencyHz = midiToHz(currentNote.pitchMidi)
-        val onPitch = isOnPitch(noteFrequencyHz,currentPitchHz)
+        val onPitch = isOnPitch(noteFrequencyHz,currentPitchHz, thresholdCents)
         // increase % accuracy if on pitch
         if (onPitch){
             val beatsDelta = currentTimeBeats - currentNoteAccuracy.lastUpdatedBeats
@@ -66,7 +61,7 @@ class AccuracyTracker(
     Calculates whether measured pitch is sufficiently accurate vs expected pitch based
     on defined threshold
      */
-    private fun isOnPitch(currentNoteHz: Float, measuredPitchHz: Float): Boolean {
+    private fun isOnPitch(currentNoteHz: Float, measuredPitchHz: Float, thresholdCents: Float): Boolean {
         val centsDifference = centsDifference(measuredPitchHz,currentNoteHz)
 
         return centsDifference < thresholdCents

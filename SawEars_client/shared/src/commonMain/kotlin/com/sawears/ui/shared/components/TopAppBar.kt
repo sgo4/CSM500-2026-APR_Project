@@ -1,5 +1,8 @@
 package com.sawears.ui.shared.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
@@ -31,7 +34,8 @@ fun ContentWithTopBar(
     title: String,
     onClickMenu: () -> Unit,
     onClickAccount: () -> Unit,
-    onClickSettings: () -> Unit
+    onClickSettings: () -> Unit,
+    showTopBar: Boolean = true
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -39,42 +43,48 @@ fun ContentWithTopBar(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 
         topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text(
-                        title,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onClickMenu) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menu"
+            AnimatedVisibility(
+                visible = showTopBar,
+                enter = slideInVertically { -it },
+                exit = slideOutVertically { -it }
+            ){
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(
+                            title,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
                         )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onClickSettings){
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
-                        )
-                    }
-                    IconButton(onClick = onClickAccount) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Account"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-            )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onClickMenu) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Menu"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = onClickSettings){
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings"
+                            )
+                        }
+                        IconButton(onClick = onClickAccount) {
+                            Icon(
+                                imageVector = Icons.Filled.AccountCircle,
+                                contentDescription = "Account"
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            }
         },
         content = content
     )

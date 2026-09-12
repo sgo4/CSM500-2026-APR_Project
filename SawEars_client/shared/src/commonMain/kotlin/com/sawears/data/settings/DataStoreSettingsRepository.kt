@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.map
 
@@ -18,13 +19,19 @@ class DataStoreSettingsRepository(
 
     private val RANGE_MIN_KEY = intPreferencesKey("range_min")
     private val RANGE_MAX_KEY = intPreferencesKey("range_max")
-    private val DIFFICULTY_KEY = intPreferencesKey("difficulty")
+    private val DIFFICULTY_KEY = stringPreferencesKey("difficulty")
     private val MODE_KEY = stringPreferencesKey("mode")
     private val MARGIN_KEY = intPreferencesKey("margin")
 
     private val rangeMinDefault = 20
     private val rangeMaxDefault = 90
-    private val defaultDifficulty = 3
+    private val defaultDifficulty = enumValues<Difficulty>().let{
+        if (it.size < 3){
+            it.first()
+        } else {
+            it[(it.size - 1) / 2]
+        }
+    }
     private val defaultMode = LessonMode.PRACTICE
     private val defaultPitchMargin = 5
 
@@ -35,8 +42,9 @@ class DataStoreSettingsRepository(
                     ?: rangeMinDefault,
                 rangeMaxMidi = preferences[RANGE_MAX_KEY]
                     ?: rangeMaxDefault,
-                difficulty = preferences[DIFFICULTY_KEY]
-                    ?: defaultDifficulty,
+                difficulty = Difficulty.valueOf(
+                    preferences[DIFFICULTY_KEY]?: defaultDifficulty.name
+                ),
                 mode = enumValueOf(preferences[MODE_KEY]
                     ?: defaultMode.name),
                 pitchDisplayMarginMidi = preferences[MARGIN_KEY]
@@ -57,10 +65,10 @@ class DataStoreSettingsRepository(
         }
     }
 
-    override suspend fun setDifficulty(difficulty: Int){
+    override suspend fun setDifficulty(difficulty: Difficulty){
 
         dataStore.edit { preferences ->
-            preferences[DIFFICULTY_KEY] = difficulty
+            preferences[DIFFICULTY_KEY] = difficulty.name
         }
 
     }

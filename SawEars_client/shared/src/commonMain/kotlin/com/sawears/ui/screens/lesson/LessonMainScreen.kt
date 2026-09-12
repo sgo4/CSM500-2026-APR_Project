@@ -1,38 +1,45 @@
 package com.sawears.ui.screens.lesson
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.model.pitch.PitchResult
 import com.sawears.ui.screens.lesson.components.LessonCanvas
-import com.sawears.ui.screens.lessonsettings.LessonSettings
+import com.sawears.ui.shared.components.ContentWithTopBar
 
 /**
  * Main lesson screen
  *
  * @param viewModel
- * @param lessonId
  */
 @Composable
 fun LessonMainScreen(
    viewModel: LessonViewModel,
-   lessonId: Int
+   onClickMenu: () -> Unit = {},
+   onClickAccount: () -> Unit = {},
+   onClickSettings: () -> Unit = {}
 ){
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
-    val settings by viewModel.lessonSettings.collectAsStateWithLifecycle()
+    // allow user to show/hide top bar to maximise screen space
+    var showTopBar by rememberSaveable { mutableStateOf(true)}
 
     // TODO evaluate where in the flow to actually start recording
     DisposableEffect(viewModel){
@@ -44,29 +51,57 @@ fun LessonMainScreen(
             viewModel.stopPitchPrediction()
         }
     }
+    DebugText( // TODO remove
+        lessonState,
+                visible = showTopBar
+        )
 
-    Column(modifier = Modifier.fillMaxSize()){
-        DebugText(settings)
+    ContentWithTopBar(
+        content = { innerPadding -> LessonMainScreenContent(
+            viewModel = viewModel,
+            lessonState = lessonState,
+            onContentTap = { showTopBar = !showTopBar },
+            modifier = Modifier.padding(innerPadding)
+        )},
+        title = lessonState.song.title,
+        onClickMenu = onClickMenu,
+        onClickAccount = onClickAccount,
+        onClickSettings = onClickSettings,
+        showTopBar = showTopBar
+    )
+}
 
+@Composable
+fun LessonMainScreenContent(
+    viewModel: LessonViewModel,
+    lessonState: LessonUiState,
+    onContentTap: () -> Unit = {},
+    modifier: Modifier = Modifier
+){
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .clickable(onClick = onContentTap) // clickable to toggle top bar visibility
+    ){
         Row(modifier = Modifier.fillMaxWidth()){
             Button(
                 viewModel::toggleLessonPlay
             ){
                 if (lessonState.paused){
-                        Text("Play")
-                    } else{
-                        Text("Pause")
-                    }
+                    Text("Play")
+                } else{
+                    Text("Pause")
+                }
             }
 
             Button(
                 viewModel::playAudio
             ){
                 if (lessonState.audioPaused){
-                        Text("Play Audio")
-                    } else{
-                        Text("Pause Audio")
-                    }
+                    Text("Play Audio")
+                } else{
+                    Text("Pause Audio")
+                }
             }
 
         }
@@ -90,9 +125,15 @@ fun LessonMainScreen(
 Debug text // TODO remove from final version
  */
 @Composable
-private fun DebugText(lessonSettings: LessonSettings){
+private fun DebugText(
+    lessonUiState: LessonUiState,
+    visible: Boolean = false
+){
     Text(
-        "${lessonSettings.song} || tempo=${lessonSettings.tempo} || pitchMargin=${lessonSettings.pitchDisplayMarginMidi}"
+        """${lessonUiState.song} || 
+            |tempo=${lessonUiState.tempoBpm} ||
+            |pitchMargin=${lessonUiState.pitchDisplayMarginMidi}
+            |leniencyCents=${lessonUiState.leniencyThresholdCents}""".trimMargin()
     )
 }
 

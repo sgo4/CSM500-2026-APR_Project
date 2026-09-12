@@ -1,15 +1,11 @@
 package com.sawears.ui.screens.settings
 
-
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -19,17 +15,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sawears.data.settings.AppSettings
 import com.sawears.model.Song
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 import com.sawears.ui.shared.components.ContentWithTopBar
 import com.sawears.ui.shared.components.NumericStepper
-import com.sawears.ui.shared.components.Tooltip
 
 /**
  * Screen for manipulating global application settings
@@ -111,80 +105,28 @@ fun LessonSettingsScreenContent(
             .verticalScroll(rememberScrollState())
     ){
         SettingsGroup("Instrument"){
-            SettingRow(
-                label="Range min",
-                tooltip="Set the lowest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range."
-            ){
-                NumericStepper(
-                    value = settings.rangeMin,
-                    onValueChange = onUpdateMin,
-                    min = 0,
-                    max = maxOf(127,settings.rangeMax)
-                )
-            }
+            RangeMinSettingRow(
+                settings.rangeMin,
+                settings.rangeMax,
+                onUpdateMin
+            )
 
-            SettingRow(
-                label="Range max",
-                tooltip="Set the highest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range."
-            ){
-                NumericStepper(
-                    value = settings.rangeMax,
-                    onValueChange = onUpdateMax,
-                    min = 0,
-                    max = maxOf(127,settings.rangeMax)
-                )
-            }
+            RangeMaxSettingRow(
+                settings.rangeMin,
+                settings.rangeMax,
+                onUpdateMax
+            )
         }
         SettingsGroup(
             "Lesson"
         ){
-            SettingRow(
-                label="Difficulty",
-                tooltip="Controls how sensitive the app is to changes in pitch (1=easiest, 5=hardest). "
-                        + "At higher difficulties you will need to meet the target pitch very precisely. " +
-                        "At lower difficulties a wider range of pitches will be accepted."
-            ){
-                NumericStepper(
-                    value = settings.difficulty,
-                    onValueChange = onUpdateDifficulty,
-                    min = 0,
-                    max = 5
-                )
-            }
-            SettingRow(
-                label="Mode",
-                tooltip="""
-                    Control the default lesson mode
-                    
-                    Practice: The lesson will wait for you to produce the correct note before proceeding, allowing you to practice the song at your own pace.
-                    Performance: The lesson will continue at the tempo you set, like a karaoke performance.
-                """.trimIndent()
-            ){
-                // set component options based on all available modes
-                val options = LessonMode.entries.map { it.name }
-                // keep track of which option is selected
-                var selectedIndex by remember { mutableIntStateOf(0) }
-
-                // Component adapted from:
-                // https://developer.android.com/develop/ui/compose/components/segmented-button
-                SingleChoiceSegmentedButtonRow {
-                    options.forEachIndexed { index, label ->
-                        SegmentedButton(
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = options.size
-                            ),
-                            onClick = {
-                                onUpdateMode(enumValueOf(options[index])) // update mode based on option index
-                                selectedIndex = index // update selection
-                                 },
-                            selected = index == selectedIndex,
-                            label = { Text(label) }
-                        )
-                    }
-                }
-
-            }
+            DifficultySettingRow(
+                settings.difficulty,
+                onUpdateDifficulty
+            )
+            ModeSettingRow(
+                onUpdateMode
+            )
         }
         SettingsGroup("Song"){
             SettingRow(
@@ -202,21 +144,10 @@ fun LessonSettingsScreenContent(
         SettingsGroup(
             "Display"
         ){
-            SettingRow(
-                label="Display margin",
-                tooltip="""
-                    Controls margin to display around melody, e.g. if set to 5 the highest
-                    note displayed will be 5 midi notes higher than the highest note in the 
-                    melody.
-                """.trimIndent()
-            ){
-                NumericStepper(
-                    value = settings.pitchDisplayMarginMidi,
-                    onValueChange = onUpdatePitchMargin,
-                    min = 5,
-                    max = 50
-                )
-            }
+            DisplayMarginSettingRow(
+                settings.pitchDisplayMarginMidi,
+                onUpdatePitchMargin
+            )
         }
         // Done button, sends the user to the lesson
         Button(
@@ -246,7 +177,7 @@ internal fun LessonSettingsScreenPreview(
                 null,
                 listOf()),
             90,
-            3,
+            Difficulty.STANDARD,
             LessonMode.PERFORMANCE,
             0,
             1000,

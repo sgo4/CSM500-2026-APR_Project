@@ -64,6 +64,8 @@ class LessonViewModel(
     ))
     val lessonState = _state.asStateFlow()
 
+    private val difficultySettingsProvider = container.difficultySettingsProvider
+
 
 
     // TODO is this necessary / the best way of handling things?
@@ -94,10 +96,27 @@ class LessonViewModel(
         observePlaybackSettings()
         // observe settings that affect display (e.g. zoom)
         observeDisplaySettings()
+        // observe changes to difficulty
+        observeDifficulty()
         // provide initial animation state
         updateAnimationState(0L,-1f)
     }
 
+    private fun observeDifficulty(){
+        lessonSettings
+            .map{ it.difficulty }
+            .distinctUntilChanged()
+            .onEach { difficulty ->
+                _state.update {
+                    it.copy(
+                        leniencyThresholdCents = difficultySettingsProvider
+                            .get(difficulty)
+                            .centsThreshold
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
     private fun observeDisplaySettings(){
         lessonSettings
@@ -268,7 +287,8 @@ class LessonViewModel(
         accuracyTracker.update(
             lessonState.value.notesInView,
             animationSnapshot.playBackHeadBeats,
-            latestPitchHz // TODO actually get this information
+            latestPitchHz, // TODO actually get this information
+            lessonState.value.leniencyThresholdCents
         )
         // update state
         _state.update {

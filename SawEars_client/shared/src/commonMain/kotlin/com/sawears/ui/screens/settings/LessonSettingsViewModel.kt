@@ -6,6 +6,7 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.Song
 import com.sawears.model.TranspositionException
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -143,14 +144,17 @@ class LessonSettingsViewModel(
      */
     override fun updateDifficulty(difficulty: Int){
 
-        require(difficulty in 1..5){
-            "Difficulty must be an integer between 1 and 5"
+        require(difficulty in 1..enumValues<Difficulty>().size){
+            "Int value outside range of possible difficulty enums"
         }
+
+        val difficultyEnum = Difficulty.entries[difficulty-1]
+
         // update setting locally
         lessonSettingsRepository.set(
             lessonId,
             lessonSettings.value.copy(
-                difficulty = difficulty
+                difficulty = difficultyEnum
             )
         )
         // update setting globally
@@ -195,7 +199,7 @@ class LessonSettingsViewModel(
 data class LessonSettings(
     val song: Song,
     val tempo: Int,
-    val difficulty: Int,
+    val difficulty: Difficulty,
     val mode: LessonMode,
     val rangeMin: Int,
     val rangeMax: Int,

@@ -135,8 +135,12 @@ fun NavigationRoot(
                         }
 
                         LessonMainScreen(
-                            viewModel,
-                            key.lessonId
+                            viewModel=viewModel,
+                            onClickMenu = { openMenu() },
+                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickSettings = { backStack.add(Route.SettingsScreen) }
+
+
                         )
                     }
                 }

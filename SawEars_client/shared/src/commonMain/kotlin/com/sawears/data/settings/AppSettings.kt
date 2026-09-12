@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Storage
 import androidx.datastore.preferences.core.Preferences
+import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 
 /**
@@ -21,7 +22,7 @@ data class AppSettings(
     // set very wide range as default, will be overwritten by more sensible values later in the flow
     val rangeMinMidi: Int = 0,
     val rangeMaxMidi: Int = 1000,
-    val difficulty: Int = 3,
+    val difficulty: Difficulty = Difficulty.STANDARD,
     val mode: LessonMode = LessonMode.PRACTICE,
     val pitchDisplayMarginMidi: Int = 5
 )
