@@ -11,10 +11,22 @@ import junit.framework.TestCase.assertTrue
 import kotlin.math.abs
 
 
-class LessonViewModelTest {
+/**
+ * These tests validate the behaviour of the lesson player,
+ * the core class responsible for advancing the timeline
+ * and animation state of the piano roll style display.
+ *
+ * These tests relate to the following objectives:
+ * - O2: A user interface representing expected vs actual pitch
+ *  using a side-scrolling piano roll style display
+ * - O5: A 'wait' mode that allows the user to reach the expected
+ *  pitch before moving to the next note, ignoring tempo
+ *
+ */
+class LessonPlayerTests {
 
     @Test
-    fun `Lesson correctly identifies notes in frame`(){
+    fun `Lesson player correctly identifies notes in frame`(){
         val song = generateTestSong(
             doubleArrayOf(
                 1.0,
@@ -165,8 +177,7 @@ class LessonViewModelTest {
      * To test this we call nextFrame with both true and false values for isOnPitch and verify
      * that the timeline only advances in the true case.
      *
-     * This test partially validates objective O5: 'A 'wait' mode that allows the user
-     * to reach the expected pitch before moving to the next note, ignoring tempo'
+     * This test partially validates objective O5
      */
     @Test
     fun `Practice mode only advances timeline when user is on pitch`(){
