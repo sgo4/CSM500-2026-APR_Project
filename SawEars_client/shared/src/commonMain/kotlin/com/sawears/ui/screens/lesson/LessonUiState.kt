@@ -2,6 +2,7 @@ package com.sawears.ui.screens.lesson
 
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchResult
+import com.sawears.ui.screens.lessonsettings.LessonMode
 
 /**
  * State holder for main lesson screen
@@ -10,6 +11,7 @@ import com.sawears.model.pitch.PitchResult
  * @property tempoBpm current tempo
  * @property notesInView which notes are currently withing display window
  * @property noteAccuracies accuracy information for notes in view
+ * @property mode current lesson mode
  * @property leniencyThresholdCents max allowable difference between actual and expected pitch
  * @property playBackHeadBeats position of the playback head within song
  * @property playBackHeadPosition position of playback head on screen as fraction of width
@@ -25,6 +27,7 @@ data class LessonUiState(
     val tempoBpm: Int,
     val notesInView: List<DisplayNote> = emptyList(),
     val noteAccuracies: List<NoteAccuracy> = emptyList(),
+    val mode: LessonMode,
     val leniencyThresholdCents: Float = 50f,
     val playBackHeadBeats: Float = 0f,
     val playBackHeadPosition: Float = 0.5f,
