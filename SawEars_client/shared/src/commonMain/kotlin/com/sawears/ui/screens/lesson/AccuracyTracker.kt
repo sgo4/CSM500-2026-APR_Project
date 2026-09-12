@@ -15,7 +15,7 @@ class AccuracyTracker {
     // the idea here is to only record note accuracies for notes which are currently in view
     // rather than trying to mainntain all notes in memory
     val noteAccuracies: ArrayDeque<NoteAccuracy> = ArrayDeque()
-
+    
     fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, currentPitchHz: Float, thresholdCents: Float){
         clearOutdatedNotes(notesInView)
         val currentNote = notesInView

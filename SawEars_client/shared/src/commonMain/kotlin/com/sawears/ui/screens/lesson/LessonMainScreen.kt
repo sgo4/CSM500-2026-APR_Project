@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,6 +22,9 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.Modifier
@@ -92,26 +94,40 @@ fun LessonMainScreenContent(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ){
-            Button(
-                viewModel::toggleLessonPlay
+            IconButton(
+                onClick = viewModel::toggleLessonPlay
             ){
-                if (lessonState.paused){
-                    Text("Play")
-                } else{
-                    Text("Pause")
-                }
+                Icon(
+                    imageVector = if (lessonState.paused){
+                        Icons.Filled.PlayArrow
+                    } else {
+                        Icons.Filled.Pause
+                    },
+                    contentDescription = if (lessonState.paused) "Play lesson" else "Pause lesson"
+                )
             }
 
-            Button(
-                viewModel::playAudio
+            IconButton(
+                onClick = viewModel::playAudio
             ){
-                if (lessonState.audioPaused){
-                    Text("Play Audio")
-                } else{
-                    Text("Pause Audio")
-                }
+                Icon(
+                    imageVector = if (lessonState.audioPaused){
+                        Icons.Filled.VolumeUp
+                    } else {
+                        Icons.Filled.VolumeOff
+                    },
+                    contentDescription = if (lessonState.paused) "Play audio" else "Pause audio"
+                )
             }
 
+            IconButton(
+                onClick = viewModel::restartLesson
+            ){
+                Icon(
+                    imageVector = Icons.Filled.Replay,
+                    contentDescription = "Restart lesson"
+                )
+            }
         }
 
         val pitchDetectionAnimationState = providePitchDetectionstate(

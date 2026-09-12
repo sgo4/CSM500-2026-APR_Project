@@ -265,6 +265,30 @@ class LessonViewModel(
     }
 
     /**
+     * Resets lesson back to beginning
+     */
+    fun restartLesson(){
+
+        _state.update {
+            it.copy(
+                notesInView=emptyList(),
+                tempoBpm = lessonSettings.value.tempo,
+                playBackHeadBeats = 0f,
+                audioPaused = true
+            )
+        }
+
+        accuracyTracker.reset()
+
+        lessonPlayer = LessonPlayer(
+            lessonState.value
+        )
+
+        // provide initial animation state
+        updateAnimationState(0L,-1f)
+    }
+
+    /**
      * Function that calls when a new frame of animation is requested
      * Progresses animation timeline and exposes new values for drawable
      * components.
