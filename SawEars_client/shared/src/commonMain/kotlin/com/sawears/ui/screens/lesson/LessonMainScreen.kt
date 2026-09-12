@@ -1,6 +1,7 @@
 package com.sawears.ui.screens.lesson
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,7 +40,7 @@ fun LessonMainScreen(
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
     // allow user to show/hide top bar to maximise screen space
-    var showTopBar by rememberSaveable { mutableStateOf(true)}
+    var showTopBar by rememberSaveable { mutableStateOf(false)}
 
     // TODO evaluate where in the flow to actually start recording
     DisposableEffect(viewModel){
@@ -51,10 +52,6 @@ fun LessonMainScreen(
             viewModel.stopPitchPrediction()
         }
     }
-    DebugText( // TODO remove
-        lessonState,
-                visible = showTopBar
-        )
 
     ContentWithTopBar(
         content = { innerPadding -> LessonMainScreenContent(
@@ -126,15 +123,23 @@ Debug text // TODO remove from final version
  */
 @Composable
 private fun DebugText(
-    lessonUiState: LessonUiState,
-    visible: Boolean = false
+    lessonUiState: LessonUiState
 ){
-    Text(
+
+    var showDebug by rememberSaveable { mutableStateOf(true)}
+    Box(
+        modifier = Modifier
+            .clickable(
+                onClick = {showDebug = !showDebug} // tap debug to hide it
+            )
+    ){
+        Text(
         """${lessonUiState.song} || 
             |tempo=${lessonUiState.tempoBpm} ||
             |pitchMargin=${lessonUiState.pitchDisplayMarginMidi}
             |leniencyCents=${lessonUiState.leniencyThresholdCents}""".trimMargin()
-    )
+    )}
+
 }
 
 
