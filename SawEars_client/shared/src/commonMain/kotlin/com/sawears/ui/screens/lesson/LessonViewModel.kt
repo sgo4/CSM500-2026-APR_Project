@@ -8,11 +8,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.sawears.AppContainer
 import com.sawears.data.io.audioIn.AudioInputSource
+import com.sawears.data.io.audioIn.AudioInputSourceFactory
+import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
+import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.PitchResult
+import com.sawears.model.pitch.settings.DifficultySettingsProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -31,11 +35,18 @@ import kotlinx.coroutines.isActive
 /**
  * Experimental working class for a view model holding lesson state
  *
- * @param container
+ * @property lessonId unique identifier mapping lesson to related entities such as settings
+ * @property audioPlayer
+ * @property estimator
+ * @property difficultySettingsProvider involved in translating difficulty levels to concrete settings
+ * @property audioInputSourceFactory creates audio input source
  */
 class LessonViewModel(
-    container: AppContainer, // TODO just pass in the actual classes needed
     val lessonId: Int,
+    val audioPlayer: AudioPlayer,
+    val estimator: PitchEstimator,
+    private val difficultySettingsProvider: DifficultySettingsProvider,
+    private val audioInputSourceFactory: AudioInputSourceFactory,
     lessonSettingsRepository: LessonSettingsRepository
 ): ViewModel() {
 
@@ -64,8 +75,6 @@ class LessonViewModel(
     ))
     val lessonState = _state.asStateFlow()
 
-    private val difficultySettingsProvider = container.difficultySettingsProvider
-
 
 
     // TODO is this necessary / the best way of handling things?
@@ -74,16 +83,12 @@ class LessonViewModel(
 
     // audio in
     private var pitchCaptureJob: Job? = null
-
-    private val audioInputSourceFactory = container.audioInputSourceFactory
     private var _audioInputSource: AudioInputSource? = null
 
     // audio out
-    val audioPlayer = container.audioPlayer
     private var playbackJob: Job? = null
 
     // pitch tracking
-    val estimator = container.estimator
     val pitchCurveInput = PitchCurveInput() // buffer to hold pitch estimates for pitch graph
 
     // animation timeline

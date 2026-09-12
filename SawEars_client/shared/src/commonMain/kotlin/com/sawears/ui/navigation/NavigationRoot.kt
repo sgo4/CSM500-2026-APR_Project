@@ -128,8 +128,11 @@ fun NavigationRoot(
                     NavEntry(key){
                         val viewModel = viewModel {
                             LessonViewModel(
-                                container, // TODO viewmodel shouldn't just take whole container
                                 key.lessonId,
+                                container.audioPlayer,
+                                container.estimator,
+                                container.difficultySettingsProvider,
+                                container.audioInputSourceFactory,
                                 container.lessonSettingsRepository
                             )
                         }
