@@ -38,6 +38,7 @@ kotlin {
 
         commonMain.dependencies {
             implementation(libs.compose.material.icons.core)
+            implementation(libs.compose.material.icons.extended)
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)

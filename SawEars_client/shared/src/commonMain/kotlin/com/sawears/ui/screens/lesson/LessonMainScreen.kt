@@ -1,6 +1,7 @@
 package com.sawears.ui.screens.lesson
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.model.pitch.PitchResult
@@ -80,7 +86,12 @@ fun LessonMainScreenContent(
             .fillMaxSize()
             .clickable(onClick = onContentTap) // clickable to toggle top bar visibility
     ){
-        Row(modifier = Modifier.fillMaxWidth()){
+        DebugText(lessonState) // TODO remove
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ){
             Button(
                 viewModel::toggleLessonPlay
             ){
