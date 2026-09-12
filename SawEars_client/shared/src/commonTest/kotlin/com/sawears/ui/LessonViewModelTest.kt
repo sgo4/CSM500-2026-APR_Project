@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import com.sawears.ui.screens.lesson.LessonPlayer
 import com.sawears.ui.screens.lesson.LessonUiState
+import com.sawears.ui.screens.lessonsettings.LessonMode
 
 
 class LessonViewModelTest {
@@ -22,13 +23,13 @@ class LessonViewModelTest {
         )
 
         val player = LessonPlayer(
-            lessonState= LessonUiState(song,60)
+            lessonState= LessonUiState(song,60, LessonMode.PERFORMANCE)
         )
 
         val frameDeltaMillis = 4000f
 
         val notesInView = player
-            .nextFrame(frameDeltaMillis)
+            .nextFrame(frameDeltaMillis, true)
             .notesInView
 
 
@@ -53,9 +54,9 @@ class LessonViewModelTest {
             )
         )
 
-        val player = LessonPlayer(LessonUiState(song, 60))
+        val player = LessonPlayer(LessonUiState(song, 60, LessonMode.PERFORMANCE))
 
-        val notesInView = player.nextFrame(0f).notesInView
+        val notesInView = player.nextFrame(0f,true).notesInView
 
         for (note in notesInView){
             println(note.durationRelative)
@@ -77,12 +78,12 @@ class LessonViewModelTest {
             )
         )
 
-        val player = LessonPlayer(LessonUiState(song, 60))
+        val player = LessonPlayer(LessonUiState(song, 60,LessonMode.PERFORMANCE))
 
         val frameDeltaMillis = 5000f
 
         val notesInView = player
-            .nextFrame(frameDeltaMillis)
+            .nextFrame(frameDeltaMillis, true)
             .notesInView
 
         for (note in notesInView){
@@ -108,7 +109,7 @@ fun generateTestSong(durations: DoubleArray): Song {
     for (duration in durations){
         notes.add(
             Note(
-                60f,
+                60,
                 duration
             )
         )
