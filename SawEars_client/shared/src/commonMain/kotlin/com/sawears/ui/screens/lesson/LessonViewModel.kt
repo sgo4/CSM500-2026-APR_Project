@@ -268,6 +268,10 @@ class LessonViewModel(
 
     }
 
+    /**
+     * Designed to map to a "play" button for audio playback. Handles state changes and
+     * passes instructions to player if state is unpaused.
+     */
     fun playAudio(){
         toggleAudioPause()
         if (_state.value.audioPaused) {
@@ -275,7 +279,6 @@ class LessonViewModel(
             playbackJob = null
             return
         }
-
 
         playbackJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive && !_state.value.audioPaused) {
@@ -378,7 +381,6 @@ class LessonViewModel(
         }
 
     }
-
 
     override fun onCleared(){
         audioPlayer.close() // close audio line
