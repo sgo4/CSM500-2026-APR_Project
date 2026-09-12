@@ -165,7 +165,8 @@ private fun DebugText(
             |tempo=${lessonUiState.tempoBpm} ||
             |pitchMargin=${lessonUiState.pitchDisplayMarginMidi}
             |leniencyCents=${lessonUiState.leniencyThresholdCents}""".trimMargin()
-    )}
+        )
+    }
 
 }
 

@@ -138,9 +138,7 @@ fun NavigationRoot(
                             viewModel=viewModel,
                             onClickMenu = { openMenu() },
                             onClickAccount = { backStack.add(Route.AccountScreen) },
-                            onClickSettings = { backStack.add(Route.SettingsScreen) }
-
-
+                            onClickSettings = { backStack.add(Route.LessonSettingsScreen(key.lessonId)) }
                         )
                     }
                 }
