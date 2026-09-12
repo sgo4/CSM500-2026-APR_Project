@@ -1,4 +1,5 @@
 package com.sawears.ui
+
 import com.sawears.model.Note
 import com.sawears.model.Song
 import kotlin.test.Test
@@ -6,6 +7,8 @@ import kotlin.test.assertEquals
 import com.sawears.ui.screens.lesson.LessonPlayer
 import com.sawears.ui.screens.lesson.LessonUiState
 import com.sawears.ui.screens.lessonsettings.LessonMode
+import junit.framework.TestCase.assertTrue
+import kotlin.math.abs
 
 
 class LessonViewModelTest {
@@ -29,7 +32,10 @@ class LessonViewModelTest {
         val frameDeltaMillis = 4000f
 
         val notesInView = player
-            .nextFrame(frameDeltaMillis, true)
+            .nextFrame(
+                frameDeltaMillis,
+                mode=LessonMode.PERFORMANCE,
+                isOnPitch=true)
             .notesInView
 
 
@@ -56,7 +62,11 @@ class LessonViewModelTest {
 
         val player = LessonPlayer(LessonUiState(song, 60, LessonMode.PERFORMANCE))
 
-        val notesInView = player.nextFrame(0f,true).notesInView
+        val notesInView = player.nextFrame(
+            0f,
+            mode=LessonMode.PERFORMANCE,
+            isOnPitch=true
+        ).notesInView
 
         for (note in notesInView){
             println(note.durationRelative)
@@ -83,7 +93,10 @@ class LessonViewModelTest {
         val frameDeltaMillis = 5000f
 
         val notesInView = player
-            .nextFrame(frameDeltaMillis, true)
+            .nextFrame(
+                frameDeltaMillis,
+                LessonMode.PERFORMANCE,
+                true)
             .notesInView
 
         for (note in notesInView){
@@ -93,6 +106,110 @@ class LessonViewModelTest {
         assertEquals(2, notesInView.size)
         assertEquals(1f,notesInView[1].durationRelative)
         assertEquals(5f,notesInView[1].startsOnBeat)
+    }
+
+    /**
+     * While performance mode active, time should progress regardless of whether user is
+     * on pitch.
+     *
+     * To test this we call nextFrame with both true and false values for isOnPitch and verify
+     * that the timeline advances.
+     */
+    @Test
+    fun `Performance mode advances timeline regardless of user pitch`(){
+
+        val song = generateTestSong(
+            doubleArrayOf(
+                1.0,
+                3.0,
+                1.0,
+                3.0,
+                1.0
+            )
+        )
+        val mode = LessonMode.PERFORMANCE
+        val player = LessonPlayer(
+            lessonState= LessonUiState(song,60, mode)
+        )
+
+        // initial timestamp
+        val t1 = player.playBackHeadBeats
+
+        // request new frame while on pitch
+        player.nextFrame(
+            frameDeltaMillis=500f,
+            mode=mode,
+            isOnPitch = true
+        )
+
+        // time should have progressed
+        val t2 = player.playBackHeadBeats
+        assertTrue(t2 > t1)
+
+        // request new frame while not on pitch
+        player.nextFrame(
+            frameDeltaMillis=500f,
+            mode=mode,
+            isOnPitch = false
+        )
+
+        // time should have progressed
+        val t3 = player.playBackHeadBeats
+        assertTrue(t3 > t2)
+    }
+
+    /**
+     * While practice mode is active, the timeline only advance while the user is on pitch,
+     * to give the user sufficient chance to practice the correct note.
+     *
+     * To test this we call nextFrame with both true and false values for isOnPitch and verify
+     * that the timeline only advances in the true case.
+     *
+     * This test partially validates objective O5: 'A 'wait' mode that allows the user
+     * to reach the expected pitch before moving to the next note, ignoring tempo'
+     */
+    @Test
+    fun `Practice mode only advances timeline when user is on pitch`(){
+
+        val song = generateTestSong(
+            doubleArrayOf(
+                1.0,
+                3.0,
+                1.0,
+                3.0,
+                1.0
+            )
+        )
+        val mode = LessonMode.PRACTICE
+        val player = LessonPlayer(
+            lessonState= LessonUiState(song,60, mode)
+        )
+
+        // initial timestamp
+        val t1 = player.playBackHeadBeats
+
+        // request new frame while on pitch
+        player.nextFrame(
+            frameDeltaMillis=500f,
+            mode=mode,
+            isOnPitch = true
+        )
+
+        // time should have progressed
+        val t2 = player.playBackHeadBeats
+        assertTrue(t2 > t1)
+
+        // request new frame while not on pitch
+        player.nextFrame(
+            frameDeltaMillis=500f,
+            mode=mode,
+            isOnPitch = false
+        )
+
+        // time should not have progressed
+        val t3 = player.playBackHeadBeats
+        assertTrue(abs(t3 - t2) < 0.0001) // account for Float imprecision
+
     }
 }
 
@@ -109,7 +226,7 @@ fun generateTestSong(durations: DoubleArray): Song {
     for (duration in durations){
         notes.add(
             Note(
-                60,
+                60f,
                 duration
             )
         )

@@ -54,8 +54,6 @@ class LessonViewModel(
     lessonSettingsRepository: LessonSettingsRepository
 ): ViewModel() {
 
-    // settings
-
     /*
     Obtain latest settings for current lesson synchronously. This should work as it is not possible to start a lesson
      without first creating lesson settings in the lesson settings screen.
@@ -79,12 +77,6 @@ class LessonViewModel(
         initialSettings.mode
     ))
     val lessonState = _state.asStateFlow()
-
-
-
-    // TODO is this necessary / the best way of handling things?
-    var error by mutableStateOf<String?>(null)
-        private set
 
     // audio in
     private var pitchCaptureJob: Job? = null
@@ -331,11 +323,9 @@ class LessonViewModel(
     /*
      * Updates animation state
      *
-     * Implementation note: This is where performance vs. practice mode affects playback.
-     * If PERFORMANCE mode is selected, the timeline always runs while playing.
-     * If PRACTICE mode is selected, the timeline only advances if
      */
     private fun updateAnimationState(frameDeltaNanos: Long, latestPitchHz: Float){
+
         val currentNote = lessonPlayer.currentNote()
 
         // determine whether user is "on pitch". If current note is null
@@ -349,23 +339,14 @@ class LessonViewModel(
             )
         }?: true
 
-        val advanceTimeline = when {
-            // timeline should advance continuously in performance mode
-            lessonState.value.mode == LessonMode.PERFORMANCE -> true
-            // timeline should only progress if there is a valid note
-            currentNote == null -> false
-            // by convention, pitches below 0f indicate a rest, so timeline
-            // should always progress
-            currentNote.pitchMidi < 0f -> true
-            // advance timeline if note is on pitch
-            else -> isOnPitch
-        }
-        // get state for next frame based on time delta
+        // get state for next frame - player handles most of the logic,
+        // viewmodel simply provides values
         val animationSnapshot = lessonPlayer.nextFrame(
-            frameDeltaNanos / 1_000_000f,
-            advanceTimeline
+            frameDeltaMillis=frameDeltaNanos / 1_000_000f,
+            mode=lessonState.value.mode,
+            isOnPitch=isOnPitch,
         )
-
+        // update accuracy tracker
         accuracyTracker.update(
             lessonState.value.notesInView,
             animationSnapshot.playBackHeadBeats,

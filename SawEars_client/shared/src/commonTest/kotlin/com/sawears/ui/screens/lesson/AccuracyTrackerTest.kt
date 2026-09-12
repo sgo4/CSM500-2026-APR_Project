@@ -1,14 +1,16 @@
 package com.sawears.ui.screens.lesson
 
+import com.sawears.model.pitch.midiToHz
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 
 class AccuracyTrackerTest{
 
     @Test
-    fun `clears outdates notes from view`(){
+    fun `clears outdated notes from view`(){
         val tracker = AccuracyTracker()
 
         var notesInView = mutableListOf(
@@ -39,7 +41,7 @@ class AccuracyTrackerTest{
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats = 0f,
-            currentPitchHz = 400f
+            isOnPitch = true
         )
         // check that entry is created for current note in view
         assertEquals(1, tracker.noteAccuracies.size)
@@ -65,7 +67,7 @@ class AccuracyTrackerTest{
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats = 1f,
-            currentPitchHz = 400f
+            isOnPitch = true
         )
         // check that the size of noteAccuracies does not increase
         assertEquals(1, tracker.noteAccuracies.size)
@@ -95,11 +97,19 @@ class AccuracyTrackerTest{
             )
         )
 
+        val isOnPitch = tracker.isOnPitch(
+            currentNoteHz=midiToHz(notesInView.get(0).pitchMidi),
+            measuredPitchHz=261.63f, // 261.63 hz = 60 midi, i.e. should count as accurate
+            50f
+        )
+
+        assertTrue(isOnPitch)
+
         // simulate updating note accuracy 50% into note duration
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats = 1.5f,
-            currentPitchHz = 261.63f // 261.63 hz = 60 midi, i.e. should count as accurate
+            isOnPitch
         )
         // pitch should now have 50% accuracy
         assertEquals(
@@ -110,9 +120,7 @@ class AccuracyTrackerTest{
     @Test
     fun `on pitch calculations respect threshold`(){
 
-        val tracker = AccuracyTracker(
-            thresholdCents = 50f
-        )
+        val tracker = AccuracyTracker()
 
         val notesInView = listOf(
             DisplayNote(
@@ -123,21 +131,34 @@ class AccuracyTrackerTest{
                 true
             )
         )
+        var isOnPitch = tracker.isOnPitch(
+            currentNoteHz=midiToHz(notesInView.get(0).pitchMidi),
+            measuredPitchHz=1000f, // way too high, should be inaccurate
+            50f
+        )
+
+        assertFalse(isOnPitch)
 
         // update with an inaccurate pitch and check that percent accuracy remains 0
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats=0.1f,
-            currentPitchHz=1000f, // way too high, should be inaccurate
+            isOnPitch
         )
         var percentAccuracy = tracker.noteAccuracies[0].percentOnPitch
         assertEquals(0f,percentAccuracy)
 
+        isOnPitch = tracker.isOnPitch(
+            currentNoteHz=midiToHz(notesInView.get(0).pitchMidi),
+            measuredPitchHz=269f, // 48 cents difference, should pass with 50 threshold
+            50f
+        )
+        assertTrue(isOnPitch)
         // update with values that should pass
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats=0.2f,
-            currentPitchHz=269f, // 48 cents difference, should pass with 50 threshold
+            isOnPitch
         )
 
         var newPercentAccuracy = tracker.noteAccuracies[0].percentOnPitch
@@ -146,11 +167,18 @@ class AccuracyTrackerTest{
         }
         percentAccuracy = newPercentAccuracy
 
+        isOnPitch = tracker.isOnPitch(
+            currentNoteHz=midiToHz(notesInView.get(0).pitchMidi),
+            measuredPitchHz=255f, // 44 cents difference, should pass with 50 threshold
+            50f
+        )
+        assertTrue(isOnPitch)
+
         // try another value that should pass (this time too low)
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats=0.4f,
-            currentPitchHz=255f, // 44 cents difference, should pass with 50 threshold
+            isOnPitch
         )
 
         newPercentAccuracy = tracker.noteAccuracies[0].percentOnPitch
@@ -160,10 +188,17 @@ class AccuracyTrackerTest{
         percentAccuracy = newPercentAccuracy
 
         // try another value that should fail
+        isOnPitch = tracker.isOnPitch(
+            currentNoteHz=midiToHz(notesInView.get(0).pitchMidi),
+            measuredPitchHz=254f, // 51 cents difference, should pass with 50 threshold
+            50f
+        )
+        assertFalse(isOnPitch)
+
         tracker.update(
             notesInView=notesInView,
             currentTimeBeats=0.1f,
-            currentPitchHz=254f, // 51 cents difference, should fail with 50 threshold
+            isOnPitch
         )
         newPercentAccuracy = tracker.noteAccuracies[0].percentOnPitch
         assertEquals(percentAccuracy, newPercentAccuracy)
