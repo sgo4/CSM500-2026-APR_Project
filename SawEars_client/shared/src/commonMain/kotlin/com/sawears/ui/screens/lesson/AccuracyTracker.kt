@@ -15,8 +15,13 @@ class AccuracyTracker {
     // the idea here is to only record note accuracies for notes which are currently in view
     // rather than trying to mainntain all notes in memory
     val noteAccuracies: ArrayDeque<NoteAccuracy> = ArrayDeque()
-    
-    fun update(notesInView: List<DisplayNote>, currentTimeBeats: Float, currentPitchHz: Float, thresholdCents: Float){
+
+    // TODO kdoc
+    fun update(
+        notesInView: List<DisplayNote>,
+        currentTimeBeats: Float,
+        isOnPitch: Boolean
+    ){
         clearOutdatedNotes(notesInView)
         val currentNote = notesInView
             .firstOrNull { it.isCurrentNote }
@@ -35,11 +40,8 @@ class AccuracyTracker {
                 noteAccuracies.add(it)
             }
 
-        // check whether latest pitch 'on pitch for latest notes
-        val noteFrequencyHz = midiToHz(currentNote.pitchMidi)
-        val onPitch = isOnPitch(noteFrequencyHz,currentPitchHz, thresholdCents)
         // increase % accuracy if on pitch
-        if (onPitch){
+        if (isOnPitch){
             val beatsDelta = currentTimeBeats - currentNoteAccuracy.lastUpdatedBeats
             val percentDelta = beatsDelta / currentNote.durationRelative
             currentNoteAccuracy.percentOnPitch += percentDelta
@@ -57,15 +59,26 @@ class AccuracyTracker {
         }
     }
 
-    /*
-    Calculates whether measured pitch is sufficiently accurate vs expected pitch based
-    on defined threshold
+    /**
+     * Calculates whether measured pitch is sufficiently accurate vs expected pitch based
+     * on defined threshold.
+     *
+     * Implementation notes: rests are always considered on pitch, and are defined as any note below 0f
+     * by convention.
+     *
+     * @param currentNoteHz the current note in the melody
+     * @param measuredPitchHz the pitch of the latest measured pitch sample
+     * @param thresholdCents the allowable cents difference between current note and measured pitch for
+     * user to be considered "on pitch"
      */
-    private fun isOnPitch(currentNoteHz: Float, measuredPitchHz: Float, thresholdCents: Float): Boolean {
+    fun isOnPitch(currentNoteHz: Float, measuredPitchHz: Float, thresholdCents: Float): Boolean {
         val centsDifference = centsDifference(measuredPitchHz,currentNoteHz)
 
-        return centsDifference < thresholdCents
-
+        if (currentNoteHz < 0f){
+            return true // notes below 0f are considered rests by convention and are always "on pitch"
+        } else {
+            return centsDifference < thresholdCents
+        }
     }
 
     /*

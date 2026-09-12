@@ -70,7 +70,7 @@ class LessonPlayer(
                 res.add(
                     DisplayNote(
                         idx = noteIdx,
-                        note.pitchMidi,
+                        note.pitchMidi.toFloat(),
                         durationRelative,
                         cummulativeBeats,
                         isCurrentNote = noteIdx == currentNoteIdx
@@ -88,16 +88,29 @@ class LessonPlayer(
      * Return immutable state for the next frame in the animation, based on a time delta
      *
      * @param frameDeltaMillis time elapsed since last frame in milliseconds
+     * @param advanceTimeline dictactes whether timeline should advance (enables wait mode)
      */
-    fun nextFrame(frameDeltaMillis: Float): PlaybackSnapshot {
+    fun nextFrame(
+        frameDeltaMillis: Float,
+        advanceTimeline: Boolean
+    ): PlaybackSnapshot {
 
-        playBackHeadBeats += frameDeltaMillis / (60_000f / tempoBpm)
+        if (advanceTimeline) {
+            playBackHeadBeats += frameDeltaMillis / (60_000f / tempoBpm)
+        }
 
         return PlaybackSnapshot(
             playBackHeadBeats,
             notesInView()
         )
     }
+
+    /**
+     * Exposes the current note
+     *
+     * @return the current note in the melody
+     */
+    fun currentNote(): Note? = song.notes.getOrNull(currentNoteIdx)
 }
 
 /**

@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.PitchResult
+import com.sawears.model.pitch.midiToHz
 import com.sawears.model.pitch.settings.Difficulty
 import com.sawears.model.pitch.settings.DifficultySettingsProvider
 import com.sawears.ui.screens.lessonsettings.LessonMode
@@ -228,10 +229,34 @@ class LessonViewModel(
         pitchCaptureJob?.cancel()
     }
 
+    /**
+     * Pause / unpause lesson
+     *
+     * Implementation note: As pitch detection is designed to be monophonic,
+     * audio playback and lesson playback are designed to be mutually exclusive
+     * to prevent audio output being registered as user input
+     */
+    fun toggleLessonPlay(){
+        _state.update {
+            it.copy(
+                paused = !it.paused,
+                audioPaused = true // guarantees audio and lesson cannot be unpaused at same time
+            )
+        }
+    }
+
+    /**
+     * Pause / unpause audio playback
+     *
+     * Implementation note: As pitch detection is designed to be monophonic,
+     * audio playback and lesson playback are designed to be mutually exclusive
+     * to prevent audio output being registered as user input
+     */
     fun toggleAudioPause(){
 
         _state.update {
             it.copy(
+                paused = true, // guarantees lesson cannot be unpaused while audio is unpaused
                 audioPaused = !it.audioPaused
             )
         }
@@ -301,19 +326,47 @@ class LessonViewModel(
     }
 
     /*
-     * //TODO
+     * Updates animation state
+     *
+     * Implementation note: This is where performance vs. practice mode affects playback.
+     * If PERFORMANCE mode is selected, the timeline always runs while playing.
+     * If PRACTICE mode is selected, the timeline only advances if
      */
     private fun updateAnimationState(frameDeltaNanos: Long, latestPitchHz: Float){
+        val currentNote = lessonPlayer.currentNote()
+
+        // determine whether user is "on pitch". If current note is null
+        // user is considered on pitch by default (but the timeline will not
+        // advance so no scoring update will occur)
+        val isOnPitch = currentNote?.let {
+            accuracyTracker.isOnPitch(
+                it.toHz(),
+                latestPitchHz,
+                lessonState.value.leniencyThresholdCents
+            )
+        }?: true
+
+        val advanceTimeline = when {
+            // timeline should advance continuously in performance mode
+            lessonState.value.mode == LessonMode.PERFORMANCE -> true
+            // timeline should only progress if there is a valid note
+            currentNote == null -> false
+            // by convention, pitches below 0f indicate a rest, so timeline
+            // should always progress
+            currentNote.pitchMidi < 0f -> true
+            // advance timeline if note is on pitch
+            else -> isOnPitch
+        }
         // get state for next frame based on time delta
         val animationSnapshot = lessonPlayer.nextFrame(
-            frameDeltaNanos / 1_000_000f
+            frameDeltaNanos / 1_000_000f,
+            advanceTimeline
         )
 
         accuracyTracker.update(
             lessonState.value.notesInView,
             animationSnapshot.playBackHeadBeats,
-            latestPitchHz, // TODO actually get this information
-            lessonState.value.leniencyThresholdCents
+            isOnPitch
         )
         // update state
         _state.update {
@@ -324,13 +377,6 @@ class LessonViewModel(
             )
         }
 
-    }
-    fun toggleLessonPlay(){
-        _state.update {
-            it.copy(
-                paused = !it.paused
-            )
-        }
     }
 
 
