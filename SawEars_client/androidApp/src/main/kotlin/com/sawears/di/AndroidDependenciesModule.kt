@@ -19,7 +19,7 @@ import com.sawears.data.settings.SettingsRepository
 import com.sawears.data.settings.createDataStore
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.estimators.FixedSineEstimator
-import com.sawears.model.pitch.settings.StandardDifficultySettingsProvider
+import com.sawears.model.settings.StandardDifficultySettingsProvider
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import dagger.Binds
 import dagger.Module

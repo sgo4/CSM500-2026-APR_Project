@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.model.pitch.settings.Difficulty
+import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn

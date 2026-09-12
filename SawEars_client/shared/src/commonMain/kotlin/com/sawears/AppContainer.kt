@@ -8,7 +8,7 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
-import com.sawears.model.pitch.settings.DifficultySettingsProvider
+import com.sawears.model.settings.DifficultySettingsProvider
 
 /**
  * Common interface for dependency injection container

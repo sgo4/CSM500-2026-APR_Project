@@ -1,4 +1,4 @@
-package com.sawears.model.pitch.settings
+package com.sawears.model.settings
 
 
 /**

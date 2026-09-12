@@ -23,9 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
-import com.sawears.model.pitch.settings.Difficulty
+import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
-import com.sawears.ui.screens.lessonsettings.LessonSettings
 import com.sawears.ui.shared.components.NumericStepper
 import com.sawears.ui.shared.components.Tooltip
 

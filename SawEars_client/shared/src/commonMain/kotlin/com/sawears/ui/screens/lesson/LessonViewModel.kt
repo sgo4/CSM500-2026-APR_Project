@@ -2,11 +2,7 @@ package com.sawears.ui.screens.lesson
 
 
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.sawears.AppContainer
 import com.sawears.data.io.audioIn.AudioInputSource
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
@@ -16,9 +12,8 @@ import kotlinx.coroutines.launch
 import com.sawears.model.Song
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.PitchResult
-import com.sawears.model.pitch.midiToHz
-import com.sawears.model.pitch.settings.Difficulty
-import com.sawears.model.pitch.settings.DifficultySettingsProvider
+import com.sawears.model.settings.Difficulty
+import com.sawears.model.settings.DifficultySettingsProvider
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

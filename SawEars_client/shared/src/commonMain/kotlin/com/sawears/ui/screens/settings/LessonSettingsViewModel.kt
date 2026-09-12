@@ -6,7 +6,7 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.Song
 import com.sawears.model.TranspositionException
-import com.sawears.model.pitch.settings.Difficulty
+import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
