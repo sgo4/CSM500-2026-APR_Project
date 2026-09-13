@@ -100,7 +100,7 @@ class AccuracyTrackerTest{
         val isOnPitch = tracker.isOnPitch(
             currentNoteHz=midiToHz(notesInView.get(0).pitchMidi),
             measuredPitchHz=261.63f, // 261.63 hz = 60 midi, i.e. should count as accurate
-            50f
+            thresholdCents=50f
         )
 
         assertTrue(isOnPitch)

@@ -21,7 +21,6 @@ import kotlin.math.abs
  *  using a side-scrolling piano roll style display
  * - O5: A 'wait' mode that allows the user to reach the expected
  *  pitch before moving to the next note, ignoring tempo
- *
  */
 class LessonPlayerTests {
 
