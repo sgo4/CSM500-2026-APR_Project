@@ -205,13 +205,17 @@ fun ModeSettingRow(
     }
 }
 
+/**
+ * Row to set display margin. This is exposed to user as "zoom" as this is a more intuitive
+ * way of understanding the effect (a higher margin has the effect of zooming out), but it is referred to within the code as display margin
+ */
 @Composable
 fun DisplayMarginSettingRow(
     pitchDisplayMarginMidi: Int,
     onUpdatePitchMargin: (Int) -> Unit
 ){
     SettingRow(
-        label="Display margin",
+        label="Zoom",
         tooltip="""
                     Controls margin to display around melody, e.g. if set to 5 the highest
                     note displayed will be 5 midi notes higher than the highest note in the 
