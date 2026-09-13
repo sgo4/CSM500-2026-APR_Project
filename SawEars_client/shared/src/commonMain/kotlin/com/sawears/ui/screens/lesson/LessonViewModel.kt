@@ -183,9 +183,7 @@ class LessonViewModel(
                 val frame = audioInputSource.readFrame() ?: break
                 val pitchResult = estimator.estimate(frame)
                 pitchResult.frequencyHz?.let{
-                    if (it > 0){
-                        pitchCurveInput.submitPitch(pitchResult)
-                    }
+                    pitchCurveInput.submitPitch(pitchResult)
                 }
             }
         }

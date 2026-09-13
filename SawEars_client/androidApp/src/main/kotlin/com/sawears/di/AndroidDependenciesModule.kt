@@ -38,7 +38,6 @@ import javax.inject.Singleton
  * Tutorials consulted:
  * - https://www.youtube.com/watch?v=bbMsuI2p1DQ (+ source code https://github.com/philipplackner/DaggerHiltCourse)
  * - https://developer.android.com/training/dependency-injection/hilt-android
- *
  */
 @Module
 @InstallIn(SingletonComponent::class)
