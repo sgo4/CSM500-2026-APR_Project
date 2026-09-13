@@ -70,7 +70,7 @@ fun SongSelectionSearchBar(
                     },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { stringResource(Res.string.songselection_searchbar_placeholder) }
+                    placeholder = { Text(stringResource(Res.string.songselection_searchbar_placeholder)) }
                 )
             },
             expanded = expanded,

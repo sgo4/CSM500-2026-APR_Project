@@ -9,7 +9,7 @@ import com.sawears.algorithm_development.io.AudioFrame
  * Adapted to use common interface
  * Source: https://github.com/JorenSix/TarsosDSP/
  */
-class YinEstimator(
+class FastYinEstimator(
     override val sampleRate: Float,
     override val frameSize: Int
 ): PitchEstimator {

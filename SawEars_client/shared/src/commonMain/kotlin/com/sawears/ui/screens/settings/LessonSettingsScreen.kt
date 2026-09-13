@@ -164,7 +164,7 @@ fun LessonSettingsScreenContent(
         Button(
             onClick = {onClickDone(lessonId)}
         ){
-            stringResource(Res.string.common_buttons_done)
+            Text(stringResource(Res.string.common_buttons_done))
         }
     }
 }

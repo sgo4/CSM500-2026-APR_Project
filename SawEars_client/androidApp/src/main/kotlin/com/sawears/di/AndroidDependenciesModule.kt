@@ -17,6 +17,7 @@ import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.data.settings.createDataStore
+import com.sawears.model.pitch.FastYinEstimator
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.estimators.FixedSineEstimator
 import com.sawears.model.settings.StandardDifficultySettingsProvider
@@ -65,13 +66,18 @@ object AppProviderModule {
 
     @Provides
     @Singleton
-    fun provideEstimator(): PitchEstimator = FixedSineEstimator( // TDOD replace with real estimator once build is working
+    fun provideEstimator(): PitchEstimator = FastYinEstimator(
         44_100f,
-        1024,
-        frequency = 2f,
-        minPitcHz = 600,
-        maxPitchHz = 1000
+        1024
     )
+
+//        FixedSineEstimator( // TDOD replace with real estimator once build is working
+//        44_100f,
+//        1024,
+//        frequency = 2f,
+//        minPitcHz = 600,
+//        maxPitchHz = 1000
+//    )
 
 
     @Provides
