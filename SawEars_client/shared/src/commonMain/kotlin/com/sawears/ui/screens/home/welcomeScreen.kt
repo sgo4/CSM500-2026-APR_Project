@@ -9,6 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.sawears.ui.shared.components.ContentWithTopBar
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.app_name
+import sawears.shared.generated.resources.home_page_button_startlesson
+import sawears.shared.generated.resources.home_page_error
+import sawears.shared.generated.resources.home_page_loading
 
 
 @Composable
@@ -22,18 +28,20 @@ fun MainScreen(
     ContentWithTopBar(
         content = {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Button(
                     onClick = onOpenLesson
                 ) {
-                    Text("Start lesson")
+                    Text(
+                        stringResource(Res.string.home_page_button_startlesson)
+                    )
                 }
             }
         },
-        title = "SawEars - Home",
+        title = stringResource(Res.string.app_name),
         onClickMenu = onClickMenu,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
@@ -43,10 +51,10 @@ fun MainScreen(
 }
 @Composable
 fun LoadingScreen(){
-    Text("Loading...")
+    Text(stringResource(Res.string.home_page_loading))
 }
 
 @Composable
 fun ErrorScreen(error: String){
-    Text("Error: $error")
+    Text(stringResource(Res.string.home_page_error, error))
 }

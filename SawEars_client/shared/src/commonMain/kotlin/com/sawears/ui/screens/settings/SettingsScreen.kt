@@ -13,6 +13,13 @@ import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.shared.components.ContentWithTopBar
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.common_buttons_done
+import sawears.shared.generated.resources.settings_page_title
+import sawears.shared.generated.resources.settings_section_titles_display
+import sawears.shared.generated.resources.settings_section_titles_instrument
+import sawears.shared.generated.resources.settings_section_titles_lesson
 
 /**
  * Screen for manipulating global application settings
@@ -50,10 +57,10 @@ fun SettingsScreen(
                 onUpdateMode,
                 onUpdatePitchMargin,
                 onClickDone,
-                modifier = Modifier.padding(innerPadding)
+                modifier = modifier.padding(innerPadding)
             )
         },
-        title = "Settings",
+        title = stringResource(Res.string.settings_page_title),
         onClickMenu = onClickMenu,
         onClickAccount = onClickAccount,
         onClickSettings = { } // we're already on the settings page so this function doesn't need to do anything
@@ -91,7 +98,7 @@ fun SettingsScreenContent(
             .verticalScroll(rememberScrollState())
     ){
 
-        SettingsGroup("Instrument"){
+        SettingsGroup(stringResource(Res.string.settings_section_titles_instrument)){
             RangeMinSettingRow(
                 settings.rangeMinMidi,
                 settings.rangeMaxMidi,
@@ -104,7 +111,7 @@ fun SettingsScreenContent(
             )
         }
         SettingsGroup(
-            "Lesson"
+            stringResource(Res.string.settings_section_titles_lesson)
         ){
             DifficultySettingRow(
                 settings.difficulty,
@@ -113,7 +120,7 @@ fun SettingsScreenContent(
             ModeSettingRow(onUpdateMode)
         }
         SettingsGroup(
-            "Display"
+            stringResource(Res.string.settings_section_titles_display)
         ){
             DisplayMarginSettingRow(
                 settings.pitchDisplayMarginMidi,
@@ -124,7 +131,7 @@ fun SettingsScreenContent(
         Button(
             onClick = onClickDone
         ){
-            Text("Done")
+            Text(stringResource(Res.string.common_buttons_done))
         }
     }
 

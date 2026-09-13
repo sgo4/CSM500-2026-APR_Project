@@ -27,6 +27,18 @@ import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.shared.components.NumericStepper
 import com.sawears.ui.shared.components.Tooltip
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.settings_options_difficulty_label
+import sawears.shared.generated.resources.settings_options_difficulty_tooltip
+import sawears.shared.generated.resources.settings_options_displaymargin_label
+import sawears.shared.generated.resources.settings_options_displaymargin_tooltip
+import sawears.shared.generated.resources.settings_options_mode_label
+import sawears.shared.generated.resources.settings_options_mode_tooltip
+import sawears.shared.generated.resources.settings_options_rangemax_label
+import sawears.shared.generated.resources.settings_options_rangemax_tooltip
+import sawears.shared.generated.resources.settings_options_rangemin_label
+import sawears.shared.generated.resources.settings_options_rangemin_tooltip
 
 /**
  * A group of related settings shown together (e.g. saw range settings)
@@ -57,7 +69,7 @@ fun SettingsGroup(
         )
 
         HorizontalDivider(
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = modifier.padding(top = 16.dp)
         )
     }
 }
@@ -100,7 +112,6 @@ fun SettingRow(
             horizontalArrangement = Arrangement.Start,
             content = content
         )
-
     }
 }
 
@@ -115,8 +126,8 @@ fun RangeMinSettingRow(
     onUpdateMin: (Int) -> Unit
 ){
     SettingRow(
-        label="Range min",
-        tooltip="Set the lowest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range."
+        label=stringResource(Res.string.settings_options_rangemin_label),
+        tooltip=stringResource(Res.string.settings_options_rangemin_tooltip)
     ){
         NumericStepper(
             value = rangeMin,
@@ -134,8 +145,8 @@ fun RangeMaxSettingRow(
     onUpdateMax: (Int) -> Unit
 ){
     SettingRow(
-        label="Range max",
-        tooltip="Set the highest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range."
+        label=stringResource(Res.string.settings_options_rangemax_label),
+        tooltip=stringResource(Res.string.settings_options_rangemax_tooltip)
     ){
         NumericStepper(
             value = rangeMax,
@@ -151,10 +162,8 @@ fun DifficultySettingRow(
     onUpdateDifficulty: (Int) -> Unit
 ){
     SettingRow(
-        label="Difficulty",
-        tooltip="Controls how sensitive the app is to changes in pitch (1=easiest, 5=hardest). "
-                + "At higher difficulties you will need to meet the target pitch very precisely. " +
-                "At lower difficulties a wider range of pitches will be accepted."
+        label=stringResource(Res.string.settings_options_difficulty_label),
+        tooltip=stringResource(Res.string.settings_options_difficulty_tooltip)
     ){
         NumericStepper(
             value = difficulty.ordinal + 1,
@@ -170,13 +179,8 @@ fun ModeSettingRow(
     onUpdateMode: (LessonMode) -> Unit,
 ){
     SettingRow(
-        label="Mode",
-        tooltip="""
-            Control the default lesson mode
-            
-            Practice: The lesson will wait for you to produce the correct note before proceeding, allowing you to practice the song at your own pace.
-            Performance: The lesson will continue at the tempo you set, like a karaoke performance.
-        """.trimIndent()
+        label=stringResource(Res.string.settings_options_mode_label),
+        tooltip=stringResource(Res.string.settings_options_mode_tooltip)
     ){
         // set component options based on all available modes
         val options = LessonMode.entries.map { it.name }
@@ -215,12 +219,8 @@ fun DisplayMarginSettingRow(
     onUpdatePitchMargin: (Int) -> Unit
 ){
     SettingRow(
-        label="Zoom",
-        tooltip="""
-                    Controls margin to display around melody, e.g. if set to 5 the highest
-                    note displayed will be 5 midi notes higher than the highest note in the 
-                    melody.
-                """.trimIndent()
+        label=stringResource(Res.string.settings_options_displaymargin_label),
+        tooltip=stringResource(Res.string.settings_options_displaymargin_tooltip)
     ){
         NumericStepper(
             value = pitchDisplayMarginMidi,

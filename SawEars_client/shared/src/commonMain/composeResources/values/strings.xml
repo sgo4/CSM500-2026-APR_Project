@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">SawEars</string>
+    <!-- common strings -->
+    <string name="common_buttons_done">Done</string>
+    <string name="common_buttons_numericstepper_minus">-</string>
+    <string name="common_buttons_numericstepper_plus">+</string>
+    <!-- welcome page -->
+    <string name="home_page_button_startlesson">Start lesson</string>
+    <string name="home_page_loading">Loading..</string>
+    <string name="home_page_error">Error: %s</string>
+    <!-- account page -->
+    <string name="account_page_title">Account</string>
+    <string name="account_page_placeholdertext">Coming soon!\nAccount management features aren't implemented yet.\nIn the meantime, all features are usable without creating an account.</string>
+    <string name="account_page_buttons_home">Back home</string>
+    <!--settings and lesson settings screens -->
+    <string name="settings_page_title">Settings</string>
+    <string name="lessonsettings_page_title">Lesson Settings</string>
+    <string name="settings_section_titles_instrument">Instrument</string>
+    <string name="settings_section_titles_lesson">Lesson</string>
+    <string name="settings_section_titles_display">Display</string>
+    <string name="settings_section_titles_song">Song</string>
+    <string name="settings_options_rangemin_label">Range min</string>
+    <string name="settings_options_rangemin_tooltip">Set the lowest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range.</string>
+    <string name="settings_options_rangemax_label">Range max</string>
+    <string name="settings_options_rangemax_tooltip">Set the highest note your instrument can produce, as a midi value. This allows the application to transpose songs to fit your playable range.</string>
+    <string name="settings_options_difficulty_label">Difficulty</string>
+    <string name="settings_options_difficulty_tooltip">Controls how sensitive the app is to changes in pitch (1=easiest, 5=hardest). At higher difficulties you will need to meet the target pitch very precisely. At lower difficulties a wider range of pitches will be accepted.</string>
+    <string name="settings_options_mode_label">Mode</string>
+    <string name="settings_options_mode_tooltip">Control the default lesson mode\nPractice: The lesson will wait for you to produce the correct note before proceeding, allowing you to practice the song at your own pace.\nPerformance: The lesson will continue at the tempo you set, like a karaoke performance.</string>
+    <string name="settings_options_displaymargin_label">Zoom</string>
+    <string name="settings_options_displaymargin_tooltip">Controls margin to display around melody, e.g. if set to 5 the highest note displayed will be 5 midi notes higher than the highest note in the melody.</string>
+    <string name="settings_options_tempo_label">Tempo</string>
+    <string name="settings_options_tempo_tooltip">Control lesson tempo in BPM</string>
+    <!-- song selection screen -->
+    <string name="songselection_page_title">Song Selection</string>
+    <string name="songselection_searchbar_placeholder">Search</string>
+    <!-- lesson main screen -->
+    <string name="lesson_button_playlesson_description">Play lesson</string>
+    <string name="lesson_button_pauselesson_description">Pause lesson</string>
+    <string name="lesson_button_playaudio_description">Play audio</string>
+    <string name="lesson_button_pauseaudio_description">Pause audio</string>
+    <string name="lesson_button_restartlesson_description">Restart lesson</string>
+</resources>

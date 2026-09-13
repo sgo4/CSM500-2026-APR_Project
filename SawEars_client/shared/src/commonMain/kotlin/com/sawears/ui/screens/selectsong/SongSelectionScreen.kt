@@ -8,12 +8,22 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.ui.tooling.preview.Preview
 import com.sawears.data.database.SongEntity
 import com.sawears.ui.shared.components.ContentWithTopBar
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.songselection_page_title
 
 /**
  * Screen to search and select a song from the database
  *
  * Lazy column approach to database searching partially draws from the tutorial code here:
  * https://github.com/philipplackner/RoomGuideAndroid/
+ *
+ * @param state
+ * @param onSearch callback function for search
+ * @param onSelectSong callback function when a song is selected
+ * @param onClickMenu callback for menu button
+ * @param onClickAccount callback for account button
+ * @param onClickSettings callback for settings button
  */
 @Composable
 fun SongSelectionScreen(
@@ -34,10 +44,10 @@ fun SongSelectionScreen(
                 onSearch = onSearch,
                 onSelectSong = onSelectSong,
                 searchResults = state.songs,
-                modifier = Modifier.padding(innerPadding)
+                modifier = modifier.padding(innerPadding)
             )
         },
-        title = "Song Selection",
+        title = stringResource(Res.string.songselection_page_title),
         onClickMenu = onClickMenu,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
@@ -69,7 +79,7 @@ fun SongSelectionScreenPreview(){
                 modifier = Modifier.padding(innerPadding)
             )
         },
-        title = "Song Selection",
+        title = stringResource(Res.string.songselection_page_title),
         onClickMenu = {},
         onClickAccount = {},
         onClickSettings = {}

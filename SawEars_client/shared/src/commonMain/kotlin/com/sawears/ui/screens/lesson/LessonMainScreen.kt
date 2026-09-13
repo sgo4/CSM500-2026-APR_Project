@@ -32,6 +32,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.model.pitch.PitchResult
 import com.sawears.ui.screens.lesson.components.LessonCanvas
 import com.sawears.ui.shared.components.ContentWithTopBar
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.lesson_button_pauseaudio_description
+import sawears.shared.generated.resources.lesson_button_pauselesson_description
+import sawears.shared.generated.resources.lesson_button_playaudio_description
+import sawears.shared.generated.resources.lesson_button_playlesson_description
+import sawears.shared.generated.resources.lesson_button_restartlesson_description
 
 /**
  * Main lesson screen
@@ -50,7 +57,6 @@ fun LessonMainScreen(
     // allow user to show/hide top bar to maximise screen space
     var showTopBar by rememberSaveable { mutableStateOf(false)}
 
-    // TODO evaluate where in the flow to actually start recording
     DisposableEffect(viewModel){
         if (!lessonState.recordAudio) {
             viewModel.startPitchPrediction()
@@ -103,7 +109,9 @@ fun LessonMainScreenContent(
                     } else {
                         Icons.Filled.Pause
                     },
-                    contentDescription = if (lessonState.paused) "Play lesson" else "Pause lesson"
+                    contentDescription = if (lessonState.paused)
+                        stringResource(Res.string.lesson_button_playlesson_description)
+                        else stringResource(Res.string.lesson_button_pauselesson_description)
                 )
             }
 
@@ -116,7 +124,9 @@ fun LessonMainScreenContent(
                     } else {
                         Icons.Filled.VolumeOff
                     },
-                    contentDescription = if (lessonState.paused) "Play audio" else "Pause audio"
+                    contentDescription = if (lessonState.audioPaused)
+                        stringResource(Res.string.lesson_button_playaudio_description)
+                    else stringResource(Res.string.lesson_button_pauseaudio_description)
                 )
             }
 
@@ -125,7 +135,7 @@ fun LessonMainScreenContent(
             ){
                 Icon(
                     imageVector = Icons.Filled.Replay,
-                    contentDescription = "Restart lesson"
+                    contentDescription = stringResource(Res.string.lesson_button_restartlesson_description)
                 )
             }
         }

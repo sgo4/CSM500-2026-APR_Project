@@ -11,10 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.sawears.ui.shared.components.ContentWithTopBar
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.account_page_buttons_home
+import sawears.shared.generated.resources.account_page_placeholdertext
 
 /**
  * Placeholder account management screen.
- * Account features are not planned for initial realse, but they are
+ * Account features are not planned for initial realse, so this
+ * screen simply shows placeholder text.
  */
 @Composable
 fun AccountScreen(
@@ -35,16 +40,11 @@ fun AccountScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    Text("""
-                Coming soon!
-                Account management features aren't implemented yet.
-                In the meantime, all features are usable without creating an account.
-            """.trimIndent()
-                    )
+                    Text(stringResource(Res.string.account_page_placeholdertext))
                     Button(
                         onClick = onBack
                     ){
-                        Text("Back home")
+                        Text(stringResource(Res.string.account_page_buttons_home))
                     }
                 }
             }

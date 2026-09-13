@@ -26,9 +26,13 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import com.sawears.data.database.SongEntity
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.songselection_searchbar_placeholder
 
 
 /**
+ * Search bar for song selection page
  *
  * Boilerplate code adapted from: https://developer.android.com/develop/ui/compose/components/search-bar
  */
@@ -66,7 +70,7 @@ fun SongSelectionSearchBar(
                     },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { Text("Search") }
+                    placeholder = { stringResource(Res.string.songselection_searchbar_placeholder) }
                 )
             },
             expanded = expanded,

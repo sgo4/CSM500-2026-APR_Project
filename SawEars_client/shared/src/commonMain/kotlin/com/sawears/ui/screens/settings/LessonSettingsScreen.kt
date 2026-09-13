@@ -17,6 +17,15 @@ import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 import com.sawears.ui.shared.components.ContentWithTopBar
 import com.sawears.ui.shared.components.NumericStepper
+import org.jetbrains.compose.resources.stringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.common_buttons_done
+import sawears.shared.generated.resources.settings_options_tempo_label
+import sawears.shared.generated.resources.settings_options_tempo_tooltip
+import sawears.shared.generated.resources.settings_section_titles_display
+import sawears.shared.generated.resources.settings_section_titles_instrument
+import sawears.shared.generated.resources.settings_section_titles_lesson
+import sawears.shared.generated.resources.settings_section_titles_song
 
 /**
  * Screen for manipulating global application settings
@@ -59,7 +68,7 @@ fun LessonSettingsScreen(
                 onUpdateMode,
                 onUpdatePitchMargin,
                 onClickDone,
-                modifier = Modifier.padding(innerPadding)
+                modifier = modifier.padding(innerPadding)
             )
         },
         title = "Lesson Settings",
@@ -73,10 +82,15 @@ fun LessonSettingsScreen(
 /**
  * Content for settings screen.
  * Shows groups of related settings in sections.
- * // TODO finish KDOC
+ *
  * @param settings
- * @param onUpdateMin function to change range min
- * @param onUpdateMax function to change range max
+ * @param onUpdateMin callback function to change range min
+ * @param onUpdateMax callback function to change range max
+ * @param onUpdateDifficulty callback function to change difficulty
+ * @param onUpdateTempo callback function to update tempo
+ * @param onUpdateMode callback function to update mode
+ * @param onUpdatePitchMargin callback function to update pitch margin
+ * @param onClickDone callback function for done button
  */
 @Composable
 fun LessonSettingsScreenContent(
@@ -97,7 +111,9 @@ fun LessonSettingsScreenContent(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ){
-        SettingsGroup("Instrument"){
+        SettingsGroup(
+            stringResource(Res.string.settings_section_titles_instrument)
+        ){
             RangeMinSettingRow(
                 settings.rangeMin,
                 settings.rangeMax,
@@ -111,7 +127,7 @@ fun LessonSettingsScreenContent(
             )
         }
         SettingsGroup(
-            "Lesson"
+            stringResource(Res.string.settings_section_titles_lesson)
         ){
             DifficultySettingRow(
                 settings.difficulty,
@@ -121,10 +137,12 @@ fun LessonSettingsScreenContent(
                 onUpdateMode
             )
         }
-        SettingsGroup("Song"){
+        SettingsGroup(
+            stringResource(Res.string.settings_section_titles_song)
+        ){
             SettingRow(
-                label="Tempo",
-                tooltip="Control lesson tempo in BPM"
+                label=stringResource(Res.string.settings_options_tempo_label),
+                tooltip=stringResource(Res.string.settings_options_tempo_tooltip)
             ){
                 NumericStepper(
                     value = settings.tempo,
@@ -135,7 +153,7 @@ fun LessonSettingsScreenContent(
             }
         }
         SettingsGroup(
-            "Display"
+            stringResource(Res.string.settings_section_titles_display)
         ){
             DisplayMarginSettingRow(
                 settings.pitchDisplayMarginMidi,
@@ -146,7 +164,7 @@ fun LessonSettingsScreenContent(
         Button(
             onClick = {onClickDone(lessonId)}
         ){
-            Text("Done")
+            stringResource(Res.string.common_buttons_done)
         }
     }
 }
@@ -155,8 +173,6 @@ fun LessonSettingsScreenContent(
 @Preview
 @Composable
 internal fun LessonSettingsScreenPreview(
-
-
 ){
 
     LessonSettingsScreen(
