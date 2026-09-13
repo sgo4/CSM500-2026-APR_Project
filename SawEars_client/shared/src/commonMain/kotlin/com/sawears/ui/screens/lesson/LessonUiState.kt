@@ -35,7 +35,7 @@ data class LessonUiState(
     val canvasWidthBeats: Float = 5f,
     val paused: Boolean = true,
     val audioPaused: Boolean = true,
-    val recordAudio: Boolean = false, // TODO this isn't really ui state
+    val recordAudio: Boolean = false,
     val pendingPitchSamples: ArrayList<PitchResult> = ArrayList()
 ){
     val durationSeconds: Float

@@ -27,6 +27,8 @@
     <string name="settings_options_difficulty_tooltip">Controls how sensitive the app is to changes in pitch (1=easiest, 5=hardest). At higher difficulties you will need to meet the target pitch very precisely. At lower difficulties a wider range of pitches will be accepted.</string>
     <string name="settings_options_mode_label">Mode</string>
     <string name="settings_options_mode_tooltip">Control the default lesson mode\nPractice: The lesson will wait for you to produce the correct note before proceeding, allowing you to practice the song at your own pace.\nPerformance: The lesson will continue at the tempo you set, like a karaoke performance.</string>
+    <string name="settings_options_mode_practice_name">Practice</string>
+    <string name="settings_options_mode_performance_name">Performance</string>
     <string name="settings_options_displaymargin_label">Zoom</string>
     <string name="settings_options_displaymargin_tooltip">Controls margin to display around melody, e.g. if set to 5 the highest note displayed will be 5 midi notes higher than the highest note in the melody.</string>
     <string name="settings_options_tempo_label">Tempo</string>

@@ -34,6 +34,8 @@ import sawears.shared.generated.resources.settings_options_difficulty_tooltip
 import sawears.shared.generated.resources.settings_options_displaymargin_label
 import sawears.shared.generated.resources.settings_options_displaymargin_tooltip
 import sawears.shared.generated.resources.settings_options_mode_label
+import sawears.shared.generated.resources.settings_options_mode_performance_name
+import sawears.shared.generated.resources.settings_options_mode_practice_name
 import sawears.shared.generated.resources.settings_options_mode_tooltip
 import sawears.shared.generated.resources.settings_options_rangemax_label
 import sawears.shared.generated.resources.settings_options_rangemax_tooltip
@@ -183,7 +185,7 @@ fun ModeSettingRow(
         tooltip=stringResource(Res.string.settings_options_mode_tooltip)
     ){
         // set component options based on all available modes
-        val options = LessonMode.entries.map { it.name }
+        val options = LessonMode.entries
         // keep track of which option is selected
         var selectedIndex by remember { mutableIntStateOf(0) }
 
@@ -197,11 +199,14 @@ fun ModeSettingRow(
                         count = options.size
                     ),
                     onClick = {
-                        onUpdateMode(enumValueOf(options[index])) // update mode based on option index
+                        onUpdateMode(options[index]) // update mode based on option index
                         selectedIndex = index // update selection
                     },
                     selected = index == selectedIndex,
-                    label = { Text(label) }
+                    label = { when (label){
+                        LessonMode.PRACTICE -> Text(stringResource(Res.string.settings_options_mode_practice_name))
+                        LessonMode.PERFORMANCE -> Text(stringResource(Res.string.settings_options_mode_performance_name))
+                    } }
                 )
             }
         }

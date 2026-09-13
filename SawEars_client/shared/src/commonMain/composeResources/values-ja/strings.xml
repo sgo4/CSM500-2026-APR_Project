@@ -27,6 +27,8 @@
     <string name="settings_options_difficulty_tooltip">ピッチ（音程）の変化に対するアプリの判定の厳しさを設定します（1＝最も易しい、5＝最も難しい）。難易度が高いほど、目標のピッチに正確に合わせる必要があります。難易度が低い場合は、より広い範囲のピッチが許容されます。</string>
     <string name="settings_options_mode_label">モード</string>
     <string name="settings_options_mode_tooltip">デフォルトのレッスンモードを設定します\n練習：正しい音を出すまでレッスンが一時停止するため、自分のペースで曲を練習できます。\n演奏：カラオケのように、設定したテンポでレッスンが進行します。</string>
+    <string name="settings_options_mode_practice_name">練習</string>
+    <string name="settings_options_mode_performance_name">演奏</string>
     <string name="settings_options_displaymargin_label">ズーム</string>
     <string name="settings_options_displaymargin_tooltip">メロディの周囲に表示する余白を設定します。例えば「5」に設定すると、表示される最高音はメロディ内の最高音よりMIDIノートで5つ高い音になります。</string>
     <string name="settings_options_tempo_label">テンポ</string>
