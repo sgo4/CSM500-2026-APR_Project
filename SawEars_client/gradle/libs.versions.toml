@@ -15,21 +15,21 @@ hilt = "2.60.1"
 junit = "4.13.2"
 kotlin = "2.4.10"
 kotlinx-coroutines = "1.11.0"
-material3 = "1.11.0-alpha07"
+material3 = "1.4.0"
 moko = "0.20.1"
-room3 = "3.0.1"
+room3 = "3.0.3"
 sqlite = "2.7.0"
 ksp = "2.3.10"
 multiplatform-nav3-ui = "1.1.1"
 serialization = "1.11.0"
 datastorePreferencesCore = "1.2.1"
-compose-material-icons-extended = "1.7.3"
+compose-material-icons = "1.7.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version = "1.7.3" }
+compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version = "compose-material-icons" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }
