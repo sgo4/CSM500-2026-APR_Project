@@ -3,6 +3,7 @@ package com.sawears.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
@@ -36,7 +37,8 @@ import com.sawears.ui.screens.settings.SettingsViewModel
  */
 @Composable
 fun NavigationRoot(
-    container: AppContainer
+    container: AppContainer,
+    modifier: Modifier = Modifier
 ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
