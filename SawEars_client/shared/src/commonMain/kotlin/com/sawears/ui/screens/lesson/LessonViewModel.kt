@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.sawears.data.io.audioIn.AudioInputSource
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
+import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
@@ -35,19 +36,21 @@ import kotlin.Float
  * Experimental working class for a view model holding lesson state
  *
  * @property lessonId unique identifier mapping lesson to related entities such as settings
- * @property audioPlayer
- * @property estimator
+ * @property audioPlayerFactory creates an instance of platform specific audio player
+ * @property estimator pitch estimator class
  * @property difficultySettingsProvider involved in translating difficulty levels to concrete settings
  * @property audioInputSourceFactory creates audio input source
  */
 class LessonViewModel(
     val lessonId: Int,
-    val audioPlayer: AudioPlayer,
+    audioPlayerFactory: AudioPlayerFactory,
     val estimator: PitchEstimator,
     private val difficultySettingsProvider: DifficultySettingsProvider,
     private val audioInputSourceFactory: AudioInputSourceFactory,
     lessonSettingsRepository: LessonSettingsRepository
 ): ViewModel() {
+
+    val audioPlayer = audioPlayerFactory.create()
 
     /*
     Obtain latest settings for current lesson synchronously. This should work as it is not possible to start a lesson

@@ -4,6 +4,7 @@ import com.sawears.data.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
+import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.ui.screens.lesson.components.PlaybackClock
@@ -31,19 +32,19 @@ interface AppContainer {
     val songRepository: SongRepository
 
     /**
-     * Plaform specific audio player class
+     * Factory for plaform specific [com.sawears.data.io.audioOut.AudioPlayer]
      */
-    val audioPlayer: AudioPlayer
-
-    /**
-     * Pitch estimation
-     */
-    val estimator: PitchEstimator
+    val audioPlayerFactory: AudioPlayerFactory
 
     /**
      * Factory to provide source of audio input, e.g. from microphone
      */
     val audioInputSourceFactory: AudioInputSourceFactory
+
+    /**
+     * Pitch estimation
+     */
+    val estimator: PitchEstimator
 
     /**
      * Monotonic clock for time synchronisation

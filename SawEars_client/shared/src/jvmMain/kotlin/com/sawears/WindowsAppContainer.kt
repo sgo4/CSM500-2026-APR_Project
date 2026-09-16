@@ -7,6 +7,7 @@ import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayer
+import com.sawears.data.io.audioOut.WindowsAudioPlayerFactory
 import com.sawears.data.settings.DataStoreSettingsRepository
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
@@ -32,11 +33,13 @@ class WindowsAppContainer(): AppContainer {
 
     override val songRepository: SongRepository = MidiJsonRepository()
 
-    override val audioPlayer = WindowsAudioPlayer(
-        SineWaveOutputSource()
-    )
+    override val audioInputSourceFactory = AudioInputSourceFactory {
+        WindowsMicAudioInputSource()
+    }
 
-        override val estimator = FastYinEstimator(
+    override val audioPlayerFactory = WindowsAudioPlayerFactory()// TODO
+
+    override val estimator = FastYinEstimator(
             44_100f,
             1024
         )
@@ -48,10 +51,6 @@ class WindowsAppContainer(): AppContainer {
 //        maxPitchHz = 1000
 //    )
 //    override val estimator = DebugEstimator(44_100f,1024)
-
-    override val audioInputSourceFactory = AudioInputSourceFactory {
-        WindowsMicAudioInputSource()
-    }
 
     override val playbackClock = PlaybackClock()
 

@@ -148,7 +148,7 @@ fun NavigationRoot(
                         val viewModel = viewModel {
                             LessonViewModel(
                                 key.lessonId,
-                                container.audioPlayer,
+                                container.audioPlayerFactory,
                                 container.estimator,
                                 container.difficultySettingsProvider,
                                 container.audioInputSourceFactory,

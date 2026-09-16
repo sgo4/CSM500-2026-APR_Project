@@ -10,7 +10,9 @@ import com.sawears.data.database.buildAndroidDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AndroidAudioInputSourceFactory
 import com.sawears.data.io.audioOut.AndroidAudioPlayer
+import com.sawears.data.io.audioOut.AndroidAudioPlayerFactory
 import com.sawears.data.io.audioOut.AudioPlayer
+import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.settings.DataStoreSettingsRepository
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
@@ -33,7 +35,6 @@ import javax.inject.Singleton
 
 /**
  * Hilt dependency injection module for android application
- *
  *
  * Tutorials consulted:
  * - https://www.youtube.com/watch?v=bbMsuI2p1DQ (+ source code https://github.com/philipplackner/DaggerHiltCourse)
@@ -61,7 +62,7 @@ object AppProviderModule {
 
     @Provides
     @Singleton
-    fun provideAudioPlayer(): AudioPlayer = AndroidAudioPlayer(SineWaveOutputSource())
+    fun provideAudioPlayerFactory(): AudioPlayerFactory = AndroidAudioPlayerFactory()
 
     @Provides
     @Singleton
@@ -69,15 +70,6 @@ object AppProviderModule {
         44_100f,
         1024
     )
-
-//        FixedSineEstimator( // TDOD replace with real estimator once build is working
-//        44_100f,
-//        1024,
-//        frequency = 2f,
-//        minPitcHz = 600,
-//        maxPitchHz = 1000
-//    )
-
 
     @Provides
     @Singleton

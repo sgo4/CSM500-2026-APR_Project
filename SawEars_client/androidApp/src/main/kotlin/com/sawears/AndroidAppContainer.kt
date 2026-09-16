@@ -4,6 +4,7 @@ import com.sawears.data.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
+import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.pitch.PitchEstimator
@@ -19,7 +20,7 @@ class AndroidAppContainer
     override val settingsRepository: SettingsRepository,
     override val lessonSettingsRepository: LessonSettingsRepository,
     override val songRepository: SongRepository,
-    override val audioPlayer: AudioPlayer,
+    override val audioPlayerFactory: AudioPlayerFactory,
     override val estimator: PitchEstimator,
     override val audioInputSourceFactory: AudioInputSourceFactory,
     override val playbackClock: PlaybackClock,
