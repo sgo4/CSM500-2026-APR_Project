@@ -61,7 +61,7 @@ fun SettingsGroup(
     ){
         Text(
             text = groupTitle,
-            style = MaterialTheme.typography.titleSmallEmphasized,
+            style = MaterialTheme.typography.titleSmall,
             modifier = modifier.padding(bottom = 8.dp)
         )
 

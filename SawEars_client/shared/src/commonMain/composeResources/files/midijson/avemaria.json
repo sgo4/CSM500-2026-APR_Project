@@ -4,208 +4,208 @@
     "Franz Schubert"
   ],
   "year": 1825,
-  "tempo": 80,
+  "tempo": 50,
   "description": "Originally written under the title 'Ellens dritter Gesang', the work is today more commonly performed as Ave Maria. Sourced from arrangemnent found at: https://www.free-scores.com/PDF_EN/schubert-franz-peter-ave-maria-30236.pdf",
   "notes": [
     {
       "pitch": 70,
-      "duration": 4.5
+      "duration": 4
     },
     {
       "pitch": 69,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 70,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 74,
-      "duration": 5.25
+      "duration": 5
     },
     {
       "pitch": 72,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 70,
-      "duration": 3
+      "duration": 4
     },
     {
       "pitch": -1,
-      "duration": 3
+      "duration": 4
     },
     {
       "pitch": 72,
-      "duration": 3
+      "duration": 4
     },
     {
       "pitch": 70,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 67,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 70,
-      "duration": 3
+      "duration": 4
     },
     {
       "pitch": -1,
-      "duration": 1.5
+      "duration": 2
     },
     {
       "pitch": 74,
-      "duration": 1.5
+      "duration": 2
     },
     {
       "pitch": 74,
-      "duration": 2.25
+      "duration": 3
     },
     {
       "pitch": 70,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 67,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 74,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 76,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 74,
-      "duration": 3
+      "duration": 4
     },
     {
       "pitch": 73,
-      "duration": 2.25
+      "duration": 3
     },
     {
       "pitch": 69,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 72,
-      "duration": 2.25
+      "duration": 3
     },
     {
       "pitch": 70,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 72,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 74,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 75,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 72,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 70,
-      "duration": 4.5
+      "duration": 6
     },
     {
       "pitch": 74,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 72,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 72,
-      "duration": 2.25
+      "duration": 3
     },
     {
       "pitch": 69,
-      "duration": 0.75
+      "duration": 1
     },
     {
       "pitch": 67,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 71,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 74,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 77,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 74,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 71,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 72,
-      "duration": 3.5
+      "duration": 5
     },
     {
       "pitch": 67,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 70,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 69,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 67,
-      "duration": 0.5
+      "duration": 1
     },
     {
       "pitch": 65,
-      "duration": 3
+      "duration": 4
     }
   ]
 }

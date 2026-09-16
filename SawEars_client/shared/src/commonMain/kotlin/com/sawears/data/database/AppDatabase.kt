@@ -64,6 +64,13 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
             year=1939,
             description ="Composed for the 1939 feature film 'The Wizard of Oz'. Source: https://www.sheetmusicplus.com/en/product/over-the-rainbow-from-the-wizard-of-oz-21452402.html",
             resourcePath="files/midijson/somewhereovertherainbow.json"
+        ),
+        SongEntity(
+            id=2,
+            title="Ave Maria",
+            year=1825,
+            description="Originally written under the title 'Ellens dritter Gesang', the work is today more commonly performed as Ave Maria. Sourced from arrangemnent found at: https://www.free-scores.com/PDF_EN/schubert-franz-peter-ave-maria-30236.pdf",
+            resourcePath="files/midijson/avemaria.json"
         )
     )
 
@@ -75,6 +82,10 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
         ComposerEntity(
             id=2,
             name="Harburg Yip"
+        ),
+        ComposerEntity(
+            id=3,
+            name="Franz Schubert"
         )
     )
 
@@ -86,6 +97,10 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
         SongComposerLookupEntity(
             songId=1,
             composerId=2
+        ),
+        SongComposerLookupEntity(
+            songId=2,
+            composerId=3
         )
     )
     // add seed data through dao

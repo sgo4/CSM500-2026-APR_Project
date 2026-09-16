@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
  * Adapted from boilerplate code found at:
  * https://developer.android.com/develop/ui/compose/components/app-bars
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentWithTopBar(
     content: @Composable (PaddingValues) -> Unit,
