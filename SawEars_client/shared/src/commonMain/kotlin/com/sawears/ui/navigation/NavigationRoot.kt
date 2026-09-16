@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.sawears.AppContainer
@@ -27,7 +29,8 @@ import com.sawears.ui.screens.settings.SettingsScreen
 import com.sawears.ui.screens.settings.SettingsViewModel
 
 /**
- * Root for app navigation
+ * Root for app navigation. Provides logic for navigating between
+ * screens.
  *
  * This approach is mostly boilerplate navigation3 code, but was partially adapted
  * from this tutorial by Philip Lackner:
@@ -55,8 +58,25 @@ fun NavigationRoot(
 
 
     NavDisplay(
+        // entry decorators ensure view models are scoped to the screen rather
+        // than the application, preventing bugs causes by multiple screns sharing
+        // the same view model (see:
+        // https://kotlinlang.org/docs/multiplatform/compose-viewmodel.html#viewmodel-scoping-with-navigation-3)
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+
+        ),
         backStack = backStack,
         entryProvider = { key ->
+
+            // home function that returns to menu and safely
+            // clears backstack
+            val home: () -> Unit = {
+                while (backStack.size > 1){
+                    backStack.removeAt(backStack.lastIndex)
+                }
+            }
             when(key) {
                 is Route.MainScreen -> {
                     NavEntry(key){
@@ -66,7 +86,7 @@ fun NavigationRoot(
                                     Route.SongSelectionScreen
                                 )
                             },
-                            onClickHome = { backStack.add(Route.MainScreen)},
+                            onClickHome = home,
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
@@ -75,7 +95,7 @@ fun NavigationRoot(
                 is Route.AccountScreen -> {
                     NavEntry(key){
                         AccountScreen(
-                            onClickHome = { backStack.add(Route.MainScreen)},
+                            onClickHome = home,
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                             onBack = { backStack.removeLastOrNull() }
@@ -100,7 +120,7 @@ fun NavigationRoot(
                                         )
                                     }
                                     is SongSelectionEvent.Error -> {
-                                        println(event.message) // TODO implement error path
+                                        println(event.message)
                                     }
                                 }
 
@@ -116,14 +136,13 @@ fun NavigationRoot(
                             onSelectSong = { songId, resourcePath ->
                                 viewModel.selectSong(songId, resourcePath)
                             },
-                            onClickHome = { backStack.add(Route.MainScreen)},
+                            onClickHome = home,
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
                     }
                 }
                 is Route.LessonScreen -> {
-
 
                     NavEntry(key){
                         val viewModel = viewModel {
@@ -139,7 +158,7 @@ fun NavigationRoot(
 
                         LessonMainScreen(
                             viewModel=viewModel,
-                            onClickHome = { backStack.add(Route.MainScreen)},
+                            onClickHome = home,
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.LessonSettingsScreen(key.lessonId)) }
                         )
@@ -163,7 +182,7 @@ fun NavigationRoot(
                             onUpdatePitchMargin = viewModel::updatePitchMargin,
                             onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
                             onClickAccount = {backStack.add(Route.AccountScreen)},
-                            onClickHome = { backStack.add(Route.MainScreen)}
+                            onClickHome = home
                         )
                     }
                 }
@@ -198,8 +217,8 @@ fun NavigationRoot(
                                     Route.LessonScreen(key.lessonId)
                                 )
                             },
-                            onClickAccount = {backStack.add(Route.AccountScreen)},
-                            onClickHome = { backStack.add(Route.MainScreen)},
+                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickHome = home,
                             onClickSettings = { backStack.add(Route.SettingsScreen) }
                         )
                     }
@@ -209,3 +228,5 @@ fun NavigationRoot(
         }
     )
 }
+
+

@@ -189,6 +189,21 @@ class LessonViewModel(
         }
     }
 
+    /**
+     * Close audio channel and halt pitch prediction
+     */
+    fun stopPitchPrediction(){
+        _state.update {
+            it.copy(
+                recordAudio = false
+            )
+        }
+        pitchCaptureJob?.cancel()
+        _audioInputSource?.close()
+        _audioInputSource = null
+
+    }
+
     /*
      * Get or create an audio input source
      */
@@ -200,18 +215,6 @@ class LessonViewModel(
         _audioInputSource = audioInputSource
 
         return audioInputSource
-    }
-
-    /**
-     * Close audio channel and halt pitch prediction
-     */
-    fun stopPitchPrediction(){
-        _state.update {
-            it.copy(
-                recordAudio = false
-            )
-        }
-        pitchCaptureJob?.cancel()
     }
 
     /**
@@ -313,10 +316,6 @@ class LessonViewModel(
         updateAnimationState(frameDeltaNanos, latestPitch?.frequencyHz?.toFloat()?: -1f)
     }
 
-    /*
-     * Updates animation state
-     *
-     */
     private fun updateAnimationState(frameDeltaNanos: Long, latestPitchHz: Float){
 
         val currentNote = lessonPlayer.currentNote()
@@ -356,11 +355,17 @@ class LessonViewModel(
 
     }
 
+    /**
+     * Safely clear view model and release resources
+     */
     override fun onCleared(){
-        audioPlayer.close() // close audio line
-        _audioInputSource?.close() // close audioinput source
-        pitchCurveInput.close()
+        // clear mic input resources
         stopPitchPrediction()
+        // clear and release speaker out resources
+        playbackJob?.cancel()
+        audioPlayer.close() // close audio out line
+        // close pitchCurveInput
+        pitchCurveInput.close()
     }
 }
 

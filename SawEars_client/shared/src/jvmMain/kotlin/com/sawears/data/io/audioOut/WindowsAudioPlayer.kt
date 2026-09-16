@@ -108,8 +108,9 @@ class WindowsAudioPlayer(
     }
 
     override fun close(){
-        _line?.drain()
         _line?.stop()
+        _line?.flush()
         _line?.close()
+        _line = null
     }
 }

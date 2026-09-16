@@ -114,5 +114,6 @@ class AndroidAudioPlayer(
     override fun close(){
         _track?.stop() // finish playing before closing
         _track?.release()
+        _track = null
     }
 }
