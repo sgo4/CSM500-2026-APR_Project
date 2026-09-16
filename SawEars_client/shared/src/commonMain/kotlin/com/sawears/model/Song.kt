@@ -1,6 +1,6 @@
 package com.sawears.model
 
-import com.sawears.data.midijson.MidiJsonSongDto
+import com.sawears.data.midijson.DTOs.MidiJsonSongDto
 
 
 /**

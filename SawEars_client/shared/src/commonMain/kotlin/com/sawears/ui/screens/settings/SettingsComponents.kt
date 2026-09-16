@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
 import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
-import com.sawears.ui.shared.components.NumericStepper
-import com.sawears.ui.shared.components.Tooltip
+import com.sawears.ui.screens.components.NumericStepper
+import com.sawears.ui.screens.components.Tooltip
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.settings_options_difficulty_label

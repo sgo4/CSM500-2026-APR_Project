@@ -1,5 +1,7 @@
 package com.sawears.data.midijson
 
+import com.sawears.data.midijson.parsers.InvalidMidiJsonException
+import com.sawears.data.midijson.parsers.MidiJsonParser
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

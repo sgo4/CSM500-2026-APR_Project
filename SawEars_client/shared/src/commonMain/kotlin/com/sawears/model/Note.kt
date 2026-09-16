@@ -2,7 +2,7 @@ package com.sawears.model
 
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
-import com.sawears.data.midijson.MidiJsonSongNoteDto
+import com.sawears.data.midijson.DTOs.MidiJsonSongNoteDto
 
 /**
  * Domain layer note representation

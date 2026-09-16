@@ -9,8 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.sawears.ui.shared.components.ContentWithTopBar
-import com.sawears.ui.theme.SawEarsTheme
+import com.sawears.ui.screens.components.ContentWithTopBar
 
 /**
  * Theme generated using material foundations theme builder, based on primary colours

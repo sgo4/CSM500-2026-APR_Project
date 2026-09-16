@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.ui.tooling.preview.Preview
 import com.sawears.data.database.SongEntity
-import com.sawears.ui.shared.components.ContentWithTopBar
+import com.sawears.ui.screens.components.ContentWithTopBar
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.songselection_page_title
@@ -21,7 +21,7 @@ import sawears.shared.generated.resources.songselection_page_title
  * @param state
  * @param onSearch callback function for search
  * @param onSelectSong callback function when a song is selected
- * @param onClickMenu callback for menu button
+ * @param onClickHome callback for menu button
  * @param onClickAccount callback for account button
  * @param onClickSettings callback for settings button
  */
@@ -30,7 +30,7 @@ fun SongSelectionScreen(
     state: SongSelectionState,
     onSearch: (String) -> Unit,
     onSelectSong: (Int, String) -> Unit,
-    onClickMenu: () -> Unit,
+    onClickHome: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
@@ -48,7 +48,7 @@ fun SongSelectionScreen(
             )
         },
         title = stringResource(Res.string.songselection_page_title),
-        onClickMenu = onClickMenu,
+        onClickMenu = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )

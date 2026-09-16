@@ -1,4 +1,4 @@
-package com.sawears.ui.shared.components
+package com.sawears.ui.screens.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

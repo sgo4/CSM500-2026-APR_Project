@@ -1,5 +1,6 @@
-package com.sawears.data.midijson
+package com.sawears.data.midijson.parsers
 
+import com.sawears.data.midijson.DTOs.MidiJsonFileDto
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
@@ -19,7 +20,7 @@ internal class MidiJsonParser(
      *
      * @param jsonText
      */
-    fun parse(jsonText: String): MidiJsonFileDto{
+    fun parse(jsonText: String): MidiJsonFileDto {
         try {
             return json.decodeFromString<MidiJsonFileDto>(jsonText)
         } catch (e: SerializationException){

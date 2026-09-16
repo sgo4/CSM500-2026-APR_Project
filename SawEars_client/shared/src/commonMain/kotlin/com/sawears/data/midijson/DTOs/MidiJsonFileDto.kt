@@ -1,5 +1,6 @@
-package com.sawears.data.midijson
+package com.sawears.data.midijson.DTOs
 
+import com.sawears.data.midijson.DTOs.MidiJsonFileNoteDto
 import kotlinx.serialization.Serializable
 
 /**

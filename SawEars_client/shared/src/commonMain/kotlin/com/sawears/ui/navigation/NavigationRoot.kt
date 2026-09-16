@@ -3,10 +3,8 @@ package com.sawears.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -34,11 +32,11 @@ import com.sawears.ui.screens.settings.SettingsViewModel
  * from this tutorial by Philip Lackner:
  * https://www.youtube.com/watch?v=G_e9XL5tI6U
  *
+ * @param container application level DI container
  */
 @Composable
 fun NavigationRoot(
-    container: AppContainer,
-    modifier: Modifier = Modifier
+    container: AppContainer
 ) {
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -66,7 +64,7 @@ fun NavigationRoot(
                                     Route.SongSelectionScreen
                                 )
                             },
-                            onClickMenu = { openMenu() },
+                            onClickHome = { backStack.add(Route.MainScreen)},
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
@@ -75,7 +73,7 @@ fun NavigationRoot(
                 is Route.AccountScreen -> {
                     NavEntry(key){
                         AccountScreen(
-                            onClickMenu = { openMenu() },
+                            onClickHome = { backStack.add(Route.MainScreen)},
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                             onBack = { backStack.removeLastOrNull() }
@@ -116,7 +114,7 @@ fun NavigationRoot(
                             onSelectSong = { songId, resourcePath ->
                                 viewModel.selectSong(songId, resourcePath)
                             },
-                            onClickMenu = { openMenu() },
+                            onClickHome = { backStack.add(Route.MainScreen)},
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
@@ -139,7 +137,7 @@ fun NavigationRoot(
 
                         LessonMainScreen(
                             viewModel=viewModel,
-                            onClickMenu = { openMenu() },
+                            onClickHome = { backStack.add(Route.MainScreen)},
                             onClickAccount = { backStack.add(Route.AccountScreen) },
                             onClickSettings = { backStack.add(Route.LessonSettingsScreen(key.lessonId)) }
                         )
@@ -163,7 +161,7 @@ fun NavigationRoot(
                             onUpdatePitchMargin = viewModel::updatePitchMargin,
                             onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
                             onClickAccount = {backStack.add(Route.AccountScreen)},
-                            onClickMenu = {openMenu()}
+                            onClickHome = { backStack.add(Route.MainScreen)}
                         )
                     }
                 }
@@ -199,7 +197,7 @@ fun NavigationRoot(
                                 )
                             },
                             onClickAccount = {backStack.add(Route.AccountScreen)},
-                            onClickMenu = {openMenu()},
+                            onClickHome = { backStack.add(Route.MainScreen)},
                             onClickSettings = { backStack.add(Route.SettingsScreen) }
                         )
                     }
@@ -208,13 +206,4 @@ fun NavigationRoot(
             }
         }
     )
-}
-
-
-
-/**
- * Common open menu action
- */
-fun openMenu(){
-    //TODO
 }

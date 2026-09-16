@@ -1,4 +1,4 @@
-package com.sawears.ui.shared.components
+package com.sawears.ui.screens.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info

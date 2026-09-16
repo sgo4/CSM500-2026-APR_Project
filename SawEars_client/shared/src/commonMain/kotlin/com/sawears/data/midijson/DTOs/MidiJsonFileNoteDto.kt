@@ -1,4 +1,4 @@
-package com.sawears.data.midijson
+package com.sawears.data.midijson.DTOs
 
 import kotlinx.serialization.Serializable
 

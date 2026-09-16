@@ -5,25 +5,48 @@ import com.sawears.ui.screens.lessonsettings.LessonMode
 
 /**
  * Player class that controlls the main animations
- * //TODO update kdoc
+ *
+ * // TODO this may be more suited to the model module
+ *
+ * @param lessonState an initial [LessonUiState] from which to initialize player values
  */
 class LessonPlayer(
     lessonState: LessonUiState
 ){
 
-    val playBackHeadPosition = lessonState.playBackHeadPosition
-    val canvasWidthBeats = lessonState.canvasWidthBeats
-    val song = lessonState.song
-    val tempoBpm = lessonState.tempoBpm
+    /**
+     * Position of the playback head as a fraction of screen width
+     */
+    private val playBackHeadPosition = lessonState.playBackHeadPosition
+
+    /*
+     * Number of beats to display on a single frame (higher number of beats on screen = smaller individual notes)
+     */
+    private val canvasWidthBeats = lessonState.canvasWidthBeats
+
+    private val song = lessonState.song
+
+    private val tempoBpm = lessonState.tempoBpm
+
+    // TODO this can be made private by making tests refer to a playback snapshot
     var playBackHeadBeats: Float = 0f
-    var noteTransitions = FloatArray(song.notes.size)
-    var currentNoteIdx = 0
-    var currentWindowStartBeats = 0f
-    var currentWindowEndBeats = currentWindowStartBeats + canvasWidthBeats
-    var latestConsumedNoteIdx = -1
-    var consumedNotesBeats = 0f
-    val pastBeats = canvasWidthBeats * playBackHeadPosition
-    val futureBeats = canvasWidthBeats * (1-playBackHeadPosition)
+        private set
+
+    /*
+     * Stores a record of the end of each note (in beats) in order to facilitate identifying current note
+     */
+    private var noteTransitions = FloatArray(song.notes.size)
+    private var currentNoteIdx = 0
+    /*
+    The beat on which the current animation frame starts (e.g. a single 5 beat frame might show beat 5 to beat 10)
+     */
+    private var currentWindowStartBeats = 0f
+
+    private var currentWindowEndBeats = currentWindowStartBeats + canvasWidthBeats
+    private var latestConsumedNoteIdx = -1
+    private var consumedNotesBeats = 0f
+    private val pastBeats = canvasWidthBeats * playBackHeadPosition
+    private val futureBeats = canvasWidthBeats * (1-playBackHeadPosition)
 
 
     init {
@@ -35,11 +58,11 @@ class LessonPlayer(
         }
     }
 
-    /**
+    /*
      * Calculate which notes are in view (fully or partially) at current time
      * based on current position of playback head
      */
-    fun notesInView(): List<DisplayNote>{
+    private fun notesInView(): List<DisplayNote>{
 
         while (currentNoteIdx < noteTransitions.size && playBackHeadBeats >= noteTransitions[currentNoteIdx]){
             currentNoteIdx ++ // update current note idx
@@ -96,6 +119,8 @@ class LessonPlayer(
      * @param frameDeltaMillis time elapsed since last frame in milliseconds
      * @param mode determines behaviour of next frame
      * @param isOnPitch whether user is currently "on pitch" (affects animation progress)
+     *
+     * @return [PlaybackSnapshot] containing details of next frame
      */
     fun nextFrame(
         frameDeltaMillis: Float,

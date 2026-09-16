@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.sawears.ui.shared.components.ContentWithTopBar
+import com.sawears.ui.screens.components.ContentWithTopBar
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.account_page_buttons_home
@@ -23,7 +23,7 @@ import sawears.shared.generated.resources.account_page_placeholdertext
  */
 @Composable
 fun AccountScreen(
-    onClickMenu: () -> Unit,
+    onClickHome: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
     onBack: () -> Unit
@@ -50,7 +50,7 @@ fun AccountScreen(
             }
         },
         title = "Account",
-        onClickMenu = onClickMenu,
+        onClickMenu = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )

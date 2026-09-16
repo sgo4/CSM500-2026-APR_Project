@@ -1,11 +1,9 @@
 package com.sawears.data
 
 import com.sawears.model.Song
-import com.sawears.data.midijson.MidiJsonParser
-import com.sawears.data.midijson.toMidiJsonSongDto
+import com.sawears.data.midijson.parsers.MidiJsonParser
+import com.sawears.data.midijson.DTOs.toMidiJsonSongDto
 import com.sawears.model.toSong
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import sawears.shared.generated.resources.Res
 
 

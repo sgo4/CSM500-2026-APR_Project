@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
 import com.sawears.ui.screens.lessonsettings.LessonMode
-import com.sawears.ui.shared.components.ContentWithTopBar
+import com.sawears.ui.screens.components.ContentWithTopBar
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.common_buttons_done
@@ -31,7 +31,7 @@ import sawears.shared.generated.resources.settings_section_titles_lesson
  * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
  * @param onUpdatePitchMargin update margin either side of melody range
  * @param onClickDone return to home screen
- * @param onClickMenu
+ * @param onClickHome
  * @param onClickAccount
  */
 @Composable
@@ -43,7 +43,7 @@ fun SettingsScreen(
     onUpdateMode: (LessonMode) -> Unit,
     onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: () -> Unit,
-    onClickMenu: () -> Unit,
+    onClickHome: () -> Unit,
     onClickAccount: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -61,7 +61,7 @@ fun SettingsScreen(
             )
         },
         title = stringResource(Res.string.settings_page_title),
-        onClickMenu = onClickMenu,
+        onClickMenu = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = { } // we're already on the settings page so this function doesn't need to do anything
     )

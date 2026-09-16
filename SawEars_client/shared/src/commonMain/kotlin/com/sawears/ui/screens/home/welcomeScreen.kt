@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.sawears.ui.shared.components.ContentWithTopBar
+import com.sawears.ui.screens.components.ContentWithTopBar
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.app_name
@@ -20,7 +20,7 @@ import sawears.shared.generated.resources.home_page_loading
 @Composable
 fun MainScreen(
     onOpenLesson: () -> Unit,
-    onClickMenu: () -> Unit,
+    onClickHome: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
@@ -42,7 +42,7 @@ fun MainScreen(
             }
         },
         title = stringResource(Res.string.app_name),
-        onClickMenu = onClickMenu,
+        onClickMenu = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )

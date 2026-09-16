@@ -15,8 +15,8 @@ import com.sawears.model.Song
 import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.lessonsettings.LessonSettings
-import com.sawears.ui.shared.components.ContentWithTopBar
-import com.sawears.ui.shared.components.NumericStepper
+import com.sawears.ui.screens.components.ContentWithTopBar
+import com.sawears.ui.screens.components.NumericStepper
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.common_buttons_done
@@ -37,7 +37,7 @@ import sawears.shared.generated.resources.settings_section_titles_song
  * @param onUpdateTempo change song tempo
  * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
  * @param onUpdatePitchMargin update margin either side of melody range
- * @param onClickMenu
+ * @param onClickHome
  * @param onClickAccount
  */
 @Composable
@@ -51,7 +51,7 @@ fun LessonSettingsScreen(
     onUpdateMode: (LessonMode) -> Unit,
     onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: (Int) -> Unit,
-    onClickMenu: () -> Unit,
+    onClickHome: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
@@ -72,7 +72,7 @@ fun LessonSettingsScreen(
             )
         },
         title = "Lesson Settings",
-        onClickMenu = onClickMenu,
+        onClickMenu = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )

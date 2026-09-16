@@ -1,4 +1,4 @@
-package com.sawears.ui.shared.components
+package com.sawears.ui.screens.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -14,6 +14,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,7 +66,7 @@ fun ContentWithTopBar(
                     navigationIcon = {
                         IconButton(onClick = onClickMenu) {
                             Icon(
-                                imageVector = Icons.Filled.Menu,
+                                imageVector = Icons.Filled.Home,
                                 contentDescription = "Menu"
                             )
                         }

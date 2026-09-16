@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.model.pitch.PitchResult
 import com.sawears.ui.screens.lesson.components.LessonCanvas
-import com.sawears.ui.shared.components.ContentWithTopBar
+import com.sawears.ui.screens.components.ContentWithTopBar
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.lesson_button_pauseaudio_description
@@ -47,10 +47,10 @@ import sawears.shared.generated.resources.lesson_button_restartlesson_descriptio
  */
 @Composable
 fun LessonMainScreen(
-   viewModel: LessonViewModel,
-   onClickMenu: () -> Unit = {},
-   onClickAccount: () -> Unit = {},
-   onClickSettings: () -> Unit = {}
+    viewModel: LessonViewModel,
+    onClickHome: () -> Unit = {},
+    onClickAccount: () -> Unit = {},
+    onClickSettings: () -> Unit = {}
 ){
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
@@ -75,7 +75,7 @@ fun LessonMainScreen(
             modifier = Modifier.padding(innerPadding)
         )},
         title = lessonState.song.title,
-        onClickMenu = onClickMenu,
+        onClickMenu = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings,
         showTopBar = showTopBar
