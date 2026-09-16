@@ -1,0 +1,211 @@
+{
+  "title": "Ave Maria",
+  "composers": [
+    "Franz Schubert"
+  ],
+  "year": 1825,
+  "tempo": 80,
+  "description": "Originally written under the title 'Ellens dritter Gesang', the work is today more commonly performed as Ave Maria. Sourced from arrangemnent found at: https://www.free-scores.com/PDF_EN/schubert-franz-peter-ave-maria-30236.pdf",
+  "notes": [
+    {
+      "pitch": 70,
+      "duration": 4.5
+    },
+    {
+      "pitch": 69,
+      "duration": 0.75
+    },
+    {
+      "pitch": 70,
+      "duration": 0.75
+    },
+    {
+      "pitch": 74,
+      "duration": 5.25
+    },
+    {
+      "pitch": 72,
+      "duration": 0.75
+    },
+    {
+      "pitch": 70,
+      "duration": 3
+    },
+    {
+      "pitch": -1,
+      "duration": 3
+    },
+    {
+      "pitch": 72,
+      "duration": 3
+    },
+    {
+      "pitch": 70,
+      "duration": 0.75
+    },
+    {
+      "pitch": 69,
+      "duration": 0.75
+    },
+    {
+      "pitch": 67,
+      "duration": 0.75
+    },
+    {
+      "pitch": 69,
+      "duration": 0.75
+    },
+    {
+      "pitch": 70,
+      "duration": 3
+    },
+    {
+      "pitch": -1,
+      "duration": 1.5
+    },
+    {
+      "pitch": 74,
+      "duration": 1.5
+    },
+    {
+      "pitch": 74,
+      "duration": 2.25
+    },
+    {
+      "pitch": 70,
+      "duration": 0.75
+    },
+    {
+      "pitch": 69,
+      "duration": 0.75
+    },
+    {
+      "pitch": 67,
+      "duration": 0.75
+    },
+    {
+      "pitch": 74,
+      "duration": 0.75
+    },
+    {
+      "pitch": 76,
+      "duration": 0.75
+    },
+    {
+      "pitch": 74,
+      "duration": 3
+    },
+    {
+      "pitch": 73,
+      "duration": 2.25
+    },
+    {
+      "pitch": 69,
+      "duration": 0.75
+    },
+    {
+      "pitch": 72,
+      "duration": 2.25
+    },
+    {
+      "pitch": 70,
+      "duration": 0.75
+    },
+    {
+      "pitch": 69,
+      "duration": 0.5
+    },
+    {
+      "pitch": 72,
+      "duration": 0.5
+    },
+    {
+      "pitch": 74,
+      "duration": 0.5
+    },
+    {
+      "pitch": 75,
+      "duration": 0.5
+    },
+    {
+      "pitch": 72,
+      "duration": 0.5
+    },
+    {
+      "pitch": 69,
+      "duration": 0.5
+    },
+    {
+      "pitch": 70,
+      "duration": 4.5
+    },
+    {
+      "pitch": 74,
+      "duration": 0.75
+    },
+    {
+      "pitch": 72,
+      "duration": 0.75
+    },
+    {
+      "pitch": 72,
+      "duration": 2.25
+    },
+    {
+      "pitch": 69,
+      "duration": 0.75
+    },
+    {
+      "pitch": 67,
+      "duration": 0.5
+    },
+    {
+      "pitch": 71,
+      "duration": 0.5
+    },
+    {
+      "pitch": 74,
+      "duration": 0.5
+    },
+    {
+      "pitch": 77,
+      "duration": 0.5
+    },
+    {
+      "pitch": 74,
+      "duration": 0.5
+    },
+    {
+      "pitch": 71,
+      "duration": 0.5
+    },
+    {
+      "pitch": 72,
+      "duration": 3.5
+    },
+    {
+      "pitch": 67,
+      "duration": 0.5
+    },
+    {
+      "pitch": 69,
+      "duration": 0.5
+    },
+    {
+      "pitch": 70,
+      "duration": 0.5
+    },
+    {
+      "pitch": 69,
+      "duration": 0.5
+    },
+    {
+      "pitch": 67,
+      "duration": 0.5
+    },
+    {
+      "pitch": 65,
+      "duration": 3
+    }
+  ]
+}
