@@ -31,7 +31,9 @@ import kotlin.math.ln
 @Composable
 fun LessonCanvas(
     lessonState: LessonUiState,
-    pitchDetectionAnimationState: State<PitchDetectionAnimationState>
+    pitchDetectionAnimationState: State<PitchDetectionAnimationState>,
+    showPlaybackHead: Boolean = true,
+    showOctaveLines: Boolean = false
 ){
 
     Canvas(Modifier.fillMaxSize()){
@@ -68,7 +70,11 @@ fun LessonCanvas(
             return@Canvas
         }
 
-        drawOctaveBoundaries(
+        if (showOctaveLines) drawOctaveBoundaries(
+            dimensions
+        )
+
+        if (showPlaybackHead) drawPlaybackHead(
             dimensions
         )
 
@@ -195,7 +201,7 @@ fun DrawScope.drawNote(
  */
 fun DrawScope.drawOctaveBoundaries(
     dimensions: LessonCanvasDimensions,
-    colour: Color = Color(0xFF343A40)
+    colour: Color = Color(0xFF343A40) // TODO this should not be hardcode
 ){
 
     val firstMidiLine = ceil(dimensions.minPitchMidi / 12f).toInt() * 12
@@ -217,6 +223,21 @@ fun DrawScope.drawOctaveBoundaries(
 
         midiLine += 12 // note: 12 semitones in an octave
     }
+}
+
+/**
+ * Generate centre line to mark playback head
+ */
+fun DrawScope.drawPlaybackHead(
+    dimensions: LessonCanvasDimensions,
+    colour: Color = Color(0xFF343A40) // TODO should not be hardcoded
+){
+    val xCoord = dimensions.canvasWidthPx * dimensions.playBackHeadPosition
+    drawLine(
+        colour,
+        Offset(xCoord,dimensions.canvasHeightPx),
+        Offset(xCoord,0f)
+    )
 }
 
 

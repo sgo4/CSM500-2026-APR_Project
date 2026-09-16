@@ -22,8 +22,8 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -120,9 +120,9 @@ fun LessonMainScreenContent(
             ){
                 Icon(
                     imageVector = if (lessonState.audioPaused){
-                        Icons.Filled.VolumeUp
+                        Icons.AutoMirrored.Filled.VolumeUp
                     } else {
-                        Icons.Filled.VolumeOff
+                        Icons.AutoMirrored.Filled.VolumeOff
                     },
                     contentDescription = if (lessonState.audioPaused)
                         stringResource(Res.string.lesson_button_playaudio_description)
@@ -164,18 +164,20 @@ private fun DebugText(
 ){
 
     var showDebug by rememberSaveable { mutableStateOf(true)}
-    Box(
-        modifier = Modifier
-            .clickable(
-                onClick = {showDebug = !showDebug} // tap debug to hide it
-            )
-    ){
-        Text(
-        """${lessonUiState.song} || 
+    if (showDebug) {
+        Box(
+            modifier = Modifier
+                .clickable(
+                    onClick = { showDebug = !showDebug } // tap debug to hide it
+                )
+        ) {
+            Text(
+                """${lessonUiState.song} || 
             |tempo=${lessonUiState.tempoBpm} ||
             |pitchMargin=${lessonUiState.pitchDisplayMarginMidi}
             |leniencyCents=${lessonUiState.leniencyThresholdCents}""".trimMargin()
-        )
+            )
+        }
     }
 
 }

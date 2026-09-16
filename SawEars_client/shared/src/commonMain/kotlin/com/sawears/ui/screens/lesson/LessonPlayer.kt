@@ -71,7 +71,7 @@ class LessonPlayer(
                 res.add(
                     DisplayNote(
                         idx = noteIdx,
-                        note.pitchMidi.toFloat(),
+                        note.pitchMidi,
                         durationRelative,
                         cummulativeBeats,
                         isCurrentNote = noteIdx == currentNoteIdx
