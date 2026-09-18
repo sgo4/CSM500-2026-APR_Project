@@ -18,6 +18,7 @@ import androidx.sqlite.execSQL
                ],
     version = 1
 )
+
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
@@ -35,22 +36,29 @@ expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
 /**
  * Function to seed startup data
  *
- * @param db a built room database to seed
+ * @param db an [AppDatabase] object to seed
  */
 suspend fun seedDatabase(
     db: AppDatabase
 ): AppDatabase {
 
     // seed data if needed
-    val SEEDVERSION = 1
+    val seedVersion = 1
     val seedDao = db.seedDao()
 
     // add seed data (if not already seeded)
-    addSeedData(SEEDVERSION, seedDao)
+    addSeedData(seedVersion, seedDao)
 
     return db
 }
 
+/**
+ * Seeds initial local data for songs packaged with the application
+ *
+ * @param seedVersion used to allow future updates to be pushed while
+ *  avoiding seeding the same data multiple times
+ * @param seedDao a [SeedDao] to handle database operations
+ */
 suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
     // terminate if already seeded
     if (seedDao.seeded(seedVersion)){
@@ -60,10 +68,10 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
     val songs = listOf(
         SongEntity(
             id=1,
-            title="Somewhere Over the Rainbow",
+            title="Happy Birthday",
             year=1939,
-            description ="Composed for the 1939 feature film 'The Wizard of Oz'. Source: https://www.sheetmusicplus.com/en/product/over-the-rainbow-from-the-wizard-of-oz-21452402.html",
-            resourcePath="files/midijson/somewhereovertherainbow.json"
+            description ="Traditional",
+            resourcePath="files/midijson/happybirthday.json"
         ),
         SongEntity(
             id=2,
@@ -71,24 +79,36 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
             year=1825,
             description="Originally written under the title 'Ellens dritter Gesang', the work is today more commonly performed as Ave Maria. Sourced from arrangemnent found at: https://www.free-scores.com/PDF_EN/schubert-franz-peter-ave-maria-30236.pdf",
             resourcePath="files/midijson/avemaria.json"
-        )
+        ),
+        SongEntity(
+            id=3,
+            title="Somewhere Over the Rainbow",
+            year=1939,
+            description ="Composed for the 1939 feature film 'The Wizard of Oz'. Source: https://www.sheetmusicplus.com/en/product/over-the-rainbow-from-the-wizard-of-oz-21452402.html",
+            resourcePath="files/midijson/harktheheraldangelssing.json"
+        ),
     )
 
     val composers = listOf(
         ComposerEntity(
             id=1,
-            name="Arlen Harold"
+            name="Mildred J. Hill"
         ),
         ComposerEntity(
             id=2,
-            name="Harburg Yip"
+            name="Patty S. Hill"
         ),
         ComposerEntity(
             id=3,
             name="Franz Schubert"
+        ),
+        ComposerEntity(
+            id=4,
+            name="Charles Wesley"
         )
     )
 
+    // map songs to composers
     val lookups = listOf(
         SongComposerLookupEntity(
             songId=1,
@@ -101,14 +121,18 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
         SongComposerLookupEntity(
             songId=2,
             composerId=3
-        )
+        ),
+        SongComposerLookupEntity(
+            songId=3,
+            composerId=4
+        ),
+
     )
-    // add seed data through dao
+
     seedDao.seedSongs(songs)
     seedDao.seedComposers(composers)
     seedDao.seedSongComposerLookup(lookups)
 
-    //update seed version
     seedDao.updateSeedVersion(
         DatabaseMetadataEntity(
             seedVersion = seedVersion
