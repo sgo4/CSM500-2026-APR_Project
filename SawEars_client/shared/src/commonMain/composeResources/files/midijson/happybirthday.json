@@ -30,7 +30,11 @@
     },
     {
       "pitch": 64,
-      "duration": 6
+      "duration": 3
+    },
+        {
+      "pitch": -1,
+      "duration": 3
     },
     {
       "pitch": 60,
@@ -54,7 +58,11 @@
     },
     {
       "pitch": 65,
-      "duration": 6
+      "duration": 3
+    },
+    {
+      "pitch": -1,
+      "duration": 3
     },
     {
       "pitch": 60,
@@ -64,8 +72,8 @@
       "pitch": 60,
       "duration": 0.75
     },
-    {
-      "pitch": 60,
+        {
+      "pitch": 72,
       "duration": 3
     },
     {
@@ -105,8 +113,12 @@
       "duration": 3
     },
     {
-      "pitch": 67,
-      "duration": 6
+      "pitch": 65,
+      "duration": 3
+    },
+    {
+      "pitch": -1,
+      "duration": 3
     }
   ]
 }

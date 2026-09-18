@@ -82,9 +82,9 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
         ),
         SongEntity(
             id=3,
-            title="Somewhere Over the Rainbow",
+            title="Hark the Herald Angels Sing",
             year=1939,
-            description ="Composed for the 1939 feature film 'The Wizard of Oz'. Source: https://www.sheetmusicplus.com/en/product/over-the-rainbow-from-the-wizard-of-oz-21452402.html",
+            description ="Traditional",
             resourcePath="files/midijson/harktheheraldangelssing.json"
         ),
     )

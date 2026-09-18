@@ -4,212 +4,224 @@
     "Charles Wesley"
   ],
   "year": 1739,
-  "tempo": 50,
+  "tempo": 70,
   "description": "Traditional Christmas carol",
   "notes": [
     {
       "pitch": 60,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 2.25
+      "duration": 4.5
     },
     {
       "pitch": 64,
-      "duration": 0.75
+      "duration": 1.5
     },
     {
       "pitch": 65,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 2.25
+      "duration": 4.5
     },
     {
       "pitch": 70,
-      "duration": 0.75
+      "duration": 1.5
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 3
+      "duration": 6
     },
     {
       "pitch": 60,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 2.25
+      "duration": 4.5
     },
     {
       "pitch": 64,
-      "duration": 0.75
+      "duration": 1.5
     },
     {
       "pitch": 65,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 2.25
+      "duration": 4.5
     },
     {
       "pitch": 65,
-      "duration": 0.75
+      "duration": 1.5
     },
     {
       "pitch": 64,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 62,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 60,
-      "duration": 3
+      "duration": 6
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 70,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 72,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 70,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 69,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 74,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 74,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 74,
-      "duration": 2.25
+      "duration": 4.5
     },
     {
       "pitch": 72,
-      "duration": 0.75
+      "duration": 1.5
     },
     {
       "pitch": 70,
-      "duration": 1.5
+      "duration": 3.0
+    },
+    {
+      "pitch": 69,
+      "duration": 3.0
+    },
+    {
+      "pitch": 70,
+      "duration": 6
+    },
+    {
+      "pitch": 67,
+      "duration": 3.0
     },
     {
       "pitch": 69,
@@ -217,39 +229,27 @@
     },
     {
       "pitch": 70,
-      "duration": 3
-    },
-    {
-      "pitch": 67,
       "duration": 1.5
-    },
-    {
-      "pitch": 69,
-      "duration": 0.75
-    },
-    {
-      "pitch": 70,
-      "duration": 0.75
     },
     {
       "pitch": 72,
-      "duration": 2.25
-    },
-    {
-      "pitch": 65,
-      "duration": 0.75
+      "duration": 4.5
     },
     {
       "pitch": 65,
       "duration": 1.5
+    },
+    {
+      "pitch": 65,
+      "duration": 3.0
     },
     {
       "pitch": 67,
-      "duration": 1.5
+      "duration": 3.0
     },
     {
       "pitch": 65,
-      "duration": 3
+      "duration": 6
     }
   ]
 }
