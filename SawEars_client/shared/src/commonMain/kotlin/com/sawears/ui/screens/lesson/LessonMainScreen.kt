@@ -150,6 +150,7 @@ fun LessonMainScreenContent(
 
         LessonCanvas(
             lessonState,
+            viewModel.frameRenderState,
             pitchDetectionAnimationState
         )
     }

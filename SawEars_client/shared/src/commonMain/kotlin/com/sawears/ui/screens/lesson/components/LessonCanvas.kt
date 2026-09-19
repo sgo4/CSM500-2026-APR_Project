@@ -14,9 +14,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sawears.ui.screens.lesson.CanvasAnimationState
 import com.sawears.ui.screens.lesson.DisplayNote
 import com.sawears.ui.screens.lesson.LessonUiState
 import com.sawears.ui.screens.lesson.PitchDetectionAnimationState
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.ceil
 import kotlin.math.ln
 
@@ -26,15 +29,22 @@ import kotlin.math.ln
  * Canvas for piano roll style lesson
  *
  * @param lessonState UI state holder containing immutable animation variables
- * @param PitchDetectionAnimationState Holder for pitch detection specific animation state
+ * @param frameRenderState frame specific animation state
+ * @param PitchDetectionAnimationState holder for pitch detection specific animation state
+ * @param showPlaybackHead if true, a line will be shown to indicate playback head position
+ * @param showOctaveLines if true, octave dividers will be shown on screen
  */
 @Composable
 fun LessonCanvas(
     lessonState: LessonUiState,
+    frameRenderState: StateFlow<CanvasAnimationState>,
     pitchDetectionAnimationState: State<PitchDetectionAnimationState>,
     showPlaybackHead: Boolean = true,
     showOctaveLines: Boolean = false
 ){
+
+    // collect frame specific animation state
+    val frameRenderState = frameRenderState.collectAsStateWithLifecycle()
 
     Canvas(Modifier.fillMaxSize()){
 
@@ -80,6 +90,7 @@ fun LessonCanvas(
 
         drawPianoRoll(
             lessonState,
+            frameRenderState.value,
             dimensions
         )
 
@@ -92,12 +103,18 @@ fun LessonCanvas(
     }
 }
 
+/**
+ * Draw function that draws the piano roll display on screen
+ *
+ * @param lessonState
+ */
 fun DrawScope.drawPianoRoll(
     lessonState: LessonUiState,
+    frameRenderState: CanvasAnimationState,
     dimensions: LessonCanvasDimensions
 ){
 
-    val notesInView = lessonState.notesInView
+    val notesInView = frameRenderState.notesInView
     // calculate noteheight as canvas height / range of displayable notes
     val noteHeightPx = dimensions.canvasHeightPx / (dimensions.maxPitchMidi - dimensions.minPitchMidi)
     // calculate startX
@@ -106,13 +123,13 @@ fun DrawScope.drawPianoRoll(
 
     for (note in notesInView){
 
-        val percentAccurate = lessonState
+        val percentAccurate = frameRenderState
             .noteAccuracies
             .firstOrNull { it.idx == note.idx }
             ?.percentOnPitch
             ?: 0f
 
-        val distanceFromHeadBeats = note.startsOnBeat - lessonState.playBackHeadBeats
+        val distanceFromHeadBeats = note.startsOnBeat - frameRenderState.playBackHeadBeats
         val startX = headPx + (distanceFromHeadBeats * pxPerBeat)
         val noteWidthPx = note.durationRelative * pxPerBeat
         drawNote(

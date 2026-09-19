@@ -76,7 +76,11 @@ class LessonViewModel(
         initialSettings.tempo,
         initialSettings.mode
     ))
+    private val _frameRenderState = MutableStateFlow(CanvasAnimationState(
+        playBackHeadBeats=0f
+    ))
     val lessonState = _state.asStateFlow()
+    val frameRenderState = _frameRenderState.asStateFlow()
 
     // audio in
     private var pitchCaptureJob: Job? = null
@@ -152,10 +156,14 @@ class LessonViewModel(
                 _state.update {
                     it.copy(
                         song = settings.song,
-                        notesInView=emptyList(),
                         tempoBpm = settings.tempo,
-                        playBackHeadBeats = 0f,
                         audioPaused = true
+                    )
+                }
+                _frameRenderState.update {
+                    it.copy(
+                        playBackHeadBeats = 0f,
+                        notesInView=emptyList(),
                     )
                 }
 
@@ -275,7 +283,6 @@ class LessonViewModel(
         } else {
             audioPlayer.play()
         }
-
     }
 
     /**
@@ -310,10 +317,14 @@ class LessonViewModel(
 
         _state.update {
             it.copy(
-                notesInView=emptyList(),
                 tempoBpm = lessonSettings.value.tempo,
-                playBackHeadBeats = 0f,
                 audioPaused = true
+            )
+        }
+        _frameRenderState.update {
+            it.copy(
+                playBackHeadBeats = 0f,
+                notesInView=emptyList(),
             )
         }
 
@@ -362,12 +373,12 @@ class LessonViewModel(
         )
         // update accuracy tracker
         accuracyTracker.update(
-            lessonState.value.notesInView,
+            frameRenderState.value.notesInView,
             animationSnapshot.playBackHeadBeats,
             isOnPitch
         )
         // update state
-        _state.update {
+        _frameRenderState.update {
             it.copy(
                 notesInView = animationSnapshot.notesInView,
                 noteAccuracies = accuracyTracker.noteAccuracies,

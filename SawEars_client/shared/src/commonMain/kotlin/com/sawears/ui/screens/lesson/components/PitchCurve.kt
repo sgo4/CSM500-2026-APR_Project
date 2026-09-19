@@ -67,7 +67,7 @@ fun DrawScope.drawPitchCurve(
         }
     }
 
-	drawPath(
+    drawPath(
         path=path,
         color=colour,
         style = Stroke(
