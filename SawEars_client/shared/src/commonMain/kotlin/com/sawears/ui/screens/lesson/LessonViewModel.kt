@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -124,7 +126,11 @@ class LessonViewModel(
             .launchIn(viewModelScope)
     }
 
+    /*
+     * Observe settings related to lesson / audio playback
+     */
     private fun observePlaybackSettings(){
+
         lessonSettings.map { settings ->
             PlaybackSettings(
                 song = settings.song,
@@ -172,22 +178,34 @@ class LessonViewModel(
      */
     fun startPitchPrediction(){
 
-        val audioInputSource = getAudioInputSource()
+        // handle case where pitch capture is already active
+        if (pitchCaptureJob?.isActive == true) return
 
-        pitchCaptureJob?.cancel()
         _state.update {
             it.copy(
                 recordAudio = true
             )
         }
 
+        // ensure blocking pitch operations happen on IO coroutine
         pitchCaptureJob = viewModelScope.launch(Dispatchers.IO){
-            while (isActive){
-                val frame = audioInputSource.readFrame() ?: break
-                val pitchResult = estimator.estimate(frame)
-                pitchResult.frequencyHz?.let{
+
+            var audioInputSource: AudioInputSource? = null
+            try {
+                audioInputSource = getAudioInputSource()
+                while (isActive) {
+
+                    val frame = audioInputSource.readFrame() ?: break
+
+                    val pitchResult = estimator.estimate(frame)
+
+                    // submit pitch result without any checks - let receiving functions
+                    // decide how to handle null frequencies etc.
                     pitchCurveInput.submitPitch(pitchResult)
+
                 }
+            } finally {
+                audioInputSource?.close()
             }
         }
     }
@@ -202,6 +220,7 @@ class LessonViewModel(
             )
         }
         pitchCaptureJob?.cancel()
+        pitchCaptureJob = null
         _audioInputSource?.close()
         _audioInputSource = null
 
