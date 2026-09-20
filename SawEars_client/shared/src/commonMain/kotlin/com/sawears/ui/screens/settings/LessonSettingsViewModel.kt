@@ -23,10 +23,13 @@ import kotlinx.coroutines.launch
  * This viewmodel inherits from settings view model as it offers changes to both global,
  * persistent settings and local lesson settings
  *
- * Implementation note: Intended behaviour is that controlling settings for a given lesson
+ * Implementation notes:
+ * - Intended behaviour is that controlling settings for a given lesson
  * also changes it globally via the settings repository, with the exception of settings related
  * to a specific song (e.g. tempo). This class is also where auto transposition is triggered in
  * response to range changes.
+ * - Lesson must already have been registered in the settings repository before initializing
+ * view model, otherwise an error will be thrown
  *
  * @property lessonId id representing the lesson to allow settings to be mapped to lesson
  * @param lessonSettingsRepository a [LessonSettingsRepository] storing lesson specific settings
@@ -39,9 +42,6 @@ class LessonSettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val autoTranspose: Boolean = true
 ): SettingsViewModel(settingsRepository) {
-
-
-
 
     val lessonSettings: StateFlow<LessonSettings> = lessonSettingsRepository
         .settingsFor(lessonId)
@@ -64,6 +64,13 @@ class LessonSettingsViewModel(
      * @param tempoBpm
      */
     fun updateTempo(tempoBpm: Int){
+        // tempo cannot be 0 or negative
+        if (tempoBpm < 1) {
+            setError(SettingsError.InvalidTempo)
+            return
+        }
+
+        clearError()
 
         // update setting (local only)
        lessonSettingsRepository.set(

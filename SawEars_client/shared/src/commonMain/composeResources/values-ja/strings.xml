@@ -36,6 +36,7 @@
     <string name="settings_errors_failed_to_persist">保存に失敗しました</string>
     <string name="settings_errors_range_too_small_for_song">警告：現在の曲に対して音域が小さすぎます。この曲はお使いの楽器では演奏できない可能性があります。</string>
     <string name="settings_errors_range_less_than_one">音域の最小値は最大値以下である必要があります</string>
+    <string name="settings_errors_negative_pitch_margin">ピッチ表示の余白を負の値にすることはできません</string>
     <!-- song selection screen -->
     <string name="songselection_page_title">曲の選択</string>
     <string name="songselection_searchbar_placeholder">検索</string>

@@ -1,12 +1,10 @@
-package com.sawears.ui.screens.lesson
+package com.sawears.ui.screens.settings
 
 import com.sawears.data.settings.AppSettings
 import com.sawears.mocks.MockSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
-import com.sawears.ui.screens.settings.SettingsError
-import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -23,7 +21,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 
-// TODO move folder
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
 
@@ -238,8 +235,11 @@ class SettingsViewModelTest {
 
     @Test
     fun `pitchMargin works with invalid input`() = runTest {
-        TODO("Add validation logic for pitch margin")
-        val settingsRepository: SettingsRepository = MockSettingsRepository()
+        val settingsRepository: SettingsRepository = MockSettingsRepository(
+            AppSettings(
+                pitchDisplayMarginMidi = 5 // make initial value explicit
+            )
+        )
         val settingsViewModel = SettingsViewModel(
             settingsRepository
         )
@@ -248,9 +248,11 @@ class SettingsViewModelTest {
             settingsViewModel.settings.collect { }
         }
         advanceUntilIdle()
+
+        settingsViewModel.updatePitchMargin(-1)
+        advanceUntilIdle()
+        assertEquals(5,settingsViewModel.settings.value.pitchDisplayMarginMidi)
+        assertEquals(SettingsError.NegativePitchMargin, settingsViewModel.error.value)
     }
-
-
-
 
 }

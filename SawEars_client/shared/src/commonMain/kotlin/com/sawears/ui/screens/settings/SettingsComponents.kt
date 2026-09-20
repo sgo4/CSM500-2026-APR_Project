@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.settings_errors_failed_to_persist
+import sawears.shared.generated.resources.settings_errors_negative_pitch_margin
 import sawears.shared.generated.resources.settings_errors_range_less_than_one
 import sawears.shared.generated.resources.settings_errors_range_too_small_for_song
 import sawears.shared.generated.resources.settings_options_difficulty_label
@@ -261,6 +262,8 @@ fun SettingsErrorMsg(
             text = when (error){
                 SettingsError.FailedToPersist -> stringResource(Res.string.settings_errors_failed_to_persist)
                 SettingsError.RangeLessThanOne -> stringResource(Res.string.settings_errors_range_less_than_one)
+                SettingsError.NegativePitchMargin -> stringResource(Res.string.settings_errors_negative_pitch_margin)
+                SettingsError.InvalidTempo -> "Invalid tempo" // this is not actually reachable in current code
             },
             color = MaterialTheme.colorScheme.error
         )

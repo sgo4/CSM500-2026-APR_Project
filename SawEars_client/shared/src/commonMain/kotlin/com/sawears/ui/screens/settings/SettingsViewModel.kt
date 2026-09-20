@@ -116,6 +116,9 @@ open class SettingsViewModel(
     }
 
     open fun updatePitchMargin(marginMidi: Int){
+
+        if (!validatePitchMargin(marginMidi)) return
+        clearError()
         try {
             viewModelScope.launch {
                 settingsRepository.setPitchDisplayMargin(marginMidi)
@@ -123,6 +126,17 @@ open class SettingsViewModel(
         } catch (e: Exception){
             setError(SettingsError.FailedToPersist)
         }
+    }
+
+    /*
+    Validates pitch margin not negative
+     */
+    protected fun validatePitchMargin(marginMidi: Int): Boolean{
+        if (marginMidi < 0){
+            setError(SettingsError.NegativePitchMargin)
+            return false
+        }
+        return true
     }
 
     protected fun setError(error: SettingsError){
@@ -149,4 +163,8 @@ sealed interface SettingsError {
      * Represents a failure to save data to the settings repository
      */
     data object FailedToPersist : SettingsError
+
+    data object NegativePitchMargin : SettingsError
+
+    data object InvalidTempo: SettingsError
 }
