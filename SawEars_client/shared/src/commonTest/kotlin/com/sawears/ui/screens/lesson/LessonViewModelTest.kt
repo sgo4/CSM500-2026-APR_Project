@@ -4,6 +4,7 @@ import com.sawears.data.settings.AppSettings
 import com.sawears.mocks.MockSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.settings.Difficulty
+import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.settings.SettingsError
 import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
@@ -186,6 +187,67 @@ class SettingsViewModelTest {
             listOf(1, 2, 3, 4, 5),
             Difficulty.entries.map { it.level }
         )
+    }
+
+    // mode
+    @Test
+    fun `mode updates work as expected`() = runTest {
+        val settingsRepository: SettingsRepository = MockSettingsRepository()
+        val settingsViewModel = SettingsViewModel(
+            settingsRepository
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            settingsViewModel.settings.collect { }
+        }
+        advanceUntilIdle()
+
+        val testCase = listOf(
+            LessonMode.PRACTICE,
+            LessonMode.PERFORMANCE
+        )
+        testCase.forEach { mode ->
+            settingsViewModel.updateMode(mode)
+            advanceUntilIdle()
+            assertEquals(mode, settingsViewModel.settings.value.mode)
+        }
+    }
+
+    // pitch margin
+    @Test
+    fun `pitchMargin works with valid input`() = runTest {
+        val settingsRepository: SettingsRepository = MockSettingsRepository(
+            AppSettings(
+                pitchDisplayMarginMidi = 5 // make initial value explicit
+            )
+        )
+        val settingsViewModel = SettingsViewModel(
+            settingsRepository
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            settingsViewModel.settings.collect { }
+        }
+        advanceUntilIdle()
+
+        settingsViewModel.updatePitchMargin(10)
+        advanceUntilIdle()
+        assertEquals(10,settingsViewModel.settings.value.pitchDisplayMarginMidi)
+
+    }
+
+    @Test
+    fun `pitchMargin works with invalid input`() = runTest {
+        TODO("Add validation logic for pitch margin")
+        val settingsRepository: SettingsRepository = MockSettingsRepository()
+        val settingsViewModel = SettingsViewModel(
+            settingsRepository
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            settingsViewModel.settings.collect { }
+        }
+        advanceUntilIdle()
     }
 
 

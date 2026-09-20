@@ -27,7 +27,19 @@ class MockSettingsRepository(
         }
     }
 
-    override suspend fun setMode(mode: LessonMode) = Unit
+    override suspend fun setMode(mode: LessonMode) {
+        _settings.update {
+            it.copy(
+                mode=mode
+            )
+        }
+    }
 
-    override suspend fun setPitchDisplayMargin(marginMidi: Int) = Unit
+    override suspend fun setPitchDisplayMargin(marginMidi: Int) {
+        _settings.update {
+            it.copy(
+                pitchDisplayMarginMidi = marginMidi
+            )
+        }
+    }
 }
