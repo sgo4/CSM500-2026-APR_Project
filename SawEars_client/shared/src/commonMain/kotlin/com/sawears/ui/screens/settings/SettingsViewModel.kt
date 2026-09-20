@@ -48,7 +48,6 @@ open class SettingsViewModel(
         )
     }
 
-
     open fun updateRangeMax(rangeMaxMidi: Int){
         updateRange(
             rangeMinMidi=settings.value.rangeMinMidi,
@@ -95,14 +94,15 @@ open class SettingsViewModel(
             "Int value outside range of possible difficulty enums"
         }
 
-        val difficultyEnum = Difficulty.entries[difficulty-1]
-        try {
-            viewModelScope.launch {
+        val difficultyEnum = Difficulty.from(difficulty)
+        viewModelScope.launch {
+            try {
                 settingsRepository.setDifficulty(difficultyEnum)
+            } catch (e: Exception){
+                setError(SettingsError.FailedToPersist)
             }
-        } catch (e: Exception){
-            setError(SettingsError.FailedToPersist)
         }
+
     }
 
     open fun updateMode(mode: LessonMode){

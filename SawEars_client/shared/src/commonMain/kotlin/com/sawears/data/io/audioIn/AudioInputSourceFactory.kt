@@ -10,3 +10,7 @@ package com.sawears.data.io.audioIn
 fun interface AudioInputSourceFactory {
     fun create(): AudioInputSource
 }
+
+
+class Mock
+

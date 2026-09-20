@@ -10,3 +10,19 @@ interface AudioInputSource: AutoCloseable {
     val sampleRate: Int
     fun readFrame(): AudioFrame?
 }
+
+class MockAudioInputSource(): AudioInputSource{
+    override val frameSize: Int
+        get() = 0
+    override val sampleRate: Int
+        get() = 0
+
+    override fun readFrame(): AudioFrame? {
+        return null
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
+    }
+
+}
