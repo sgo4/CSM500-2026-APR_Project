@@ -87,7 +87,7 @@ fun LessonSettingsScreen(
             )
         },
         title = "Lesson Settings",
-        onClickMenu = onClickHome,
+        onClickHome = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )

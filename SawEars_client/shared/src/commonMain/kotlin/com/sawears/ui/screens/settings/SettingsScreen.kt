@@ -76,7 +76,7 @@ fun SettingsScreen(
             )
         },
         title = stringResource(Res.string.settings_page_title),
-        onClickMenu = onClickHome,
+        onClickHome = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = { } // we're already on the settings page so this function doesn't need to do anything
     )

@@ -75,7 +75,7 @@ fun LessonMainScreen(
             modifier = Modifier.padding(innerPadding)
         )},
         title = lessonState.song.title,
-        onClickMenu = onClickHome,
+        onClickHome = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings,
         showTopBar = showTopBar

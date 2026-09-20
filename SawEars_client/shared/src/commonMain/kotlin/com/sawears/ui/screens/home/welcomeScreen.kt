@@ -42,7 +42,7 @@ fun MainScreen(
             }
         },
         title = stringResource(Res.string.app_name),
-        onClickMenu = onClickHome,
+        onClickHome = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )

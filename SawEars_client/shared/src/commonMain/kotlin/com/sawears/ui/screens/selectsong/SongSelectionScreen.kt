@@ -48,7 +48,7 @@ fun SongSelectionScreen(
             )
         },
         title = stringResource(Res.string.songselection_page_title),
-        onClickMenu = onClickHome,
+        onClickHome = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )
@@ -80,7 +80,7 @@ fun SongSelectionScreenPreview(){
             )
         },
         title = stringResource(Res.string.songselection_page_title),
-        onClickMenu = {},
+        onClickHome = {},
         onClickAccount = {},
         onClickSettings = {}
     )

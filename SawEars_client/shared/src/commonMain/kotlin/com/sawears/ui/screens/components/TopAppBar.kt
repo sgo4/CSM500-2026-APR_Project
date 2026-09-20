@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun ContentWithTopBar(
     content: @Composable (PaddingValues) -> Unit,
     title: String,
-    onClickMenu: () -> Unit,
+    onClickHome: () -> Unit,
     onClickAccount: () -> Unit,
     onClickSettings: () -> Unit,
     showTopBar: Boolean = true
@@ -64,7 +64,7 @@ fun ContentWithTopBar(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = onClickMenu) {
+                        IconButton(onClick = onClickHome) {
                             Icon(
                                 imageVector = Icons.Filled.Home,
                                 contentDescription = "Menu"
@@ -108,7 +108,7 @@ fun ContentWithTopBarPreview(){
         content = {ExampleContent()},
         title = "Sawears",
         onClickAccount = {},
-        onClickMenu = {},
+        onClickHome = {},
         onClickSettings = {}
     )
 }
