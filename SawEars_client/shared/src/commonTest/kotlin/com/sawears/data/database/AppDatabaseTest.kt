@@ -1,5 +1,6 @@
 package com.sawears.data.database
 
+import androidx.compose.runtime.Composer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.BeforeTest
@@ -7,7 +8,9 @@ import kotlin.test.AfterTest
 import kotlinx.coroutines.flow.first
 import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.sawears.model.Song
 import kotlinx.coroutines.test.runTest
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 
@@ -247,5 +250,191 @@ class AppDatabaseTests {
                     }
         )
     }
+
+    /**
+     * Test initial database seeding
+     */
+    @Test
+    fun `adding seed data works as intended`() = runTest{
+        val songDao = db.songDao()
+        // some token data to seed
+        val seedData = SeedData(
+            songs=listOf(
+                SongEntity(
+                    id=1,
+                    title="Never Gonna Give You Up",
+                    year=1987,
+                    description="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    resourcePath="nevergonnagiveyouup.json"
+                )
+            ),
+            composers=listOf(
+                ComposerEntity(
+                    id=1,
+                    name = "Rick Astley"
+                )
+            ),
+            lookups = listOf(
+                SongComposerLookupEntity(
+                    songId=1,
+                    composerId=1
+                )
+            )
+        )
+
+
+        val seedVersion = 1
+        val seedDao = db.seedDao()
+        // verify that database not previously seeded
+        assertFalse(seedDao.seeded(seedVersion))
+        seedDatabase(db,seedVersion,seedData)
+
+        // check that the song was seeded
+        assertEquals(
+            expected=1,
+            actual=songDao
+                .searchByTitleExact("Never Gonna Give You Up")
+                .size
+        )
+
+        // check that seed version was updated
+        assertTrue(seedDao.seeded(seedVersion))
+    }
+
+    /**
+     * Tests that successive seeds for same version
+     */
+    @Test
+    fun `database seeding is idempotent`() = runTest{
+        val songDao = db.songDao()
+        // some token data to seed
+        val seedData = SeedData(
+            songs=listOf(
+                SongEntity(
+                    id=1,
+                    title="Never Gonna Give You Up",
+                    year=1987,
+                    description="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    resourcePath="nevergonnagiveyouup.json"
+                )
+            ),
+            composers=listOf(
+                ComposerEntity(
+                    id=1,
+                    name = "Rick Astley"
+                )
+            ),
+            lookups = listOf(
+                SongComposerLookupEntity(
+                    songId=1,
+                    composerId=1
+                )
+            )
+        )
+
+
+        val seedVersion = 1
+        val seedDao = db.seedDao()
+
+        // seed data base twice in succession
+        seedDatabase(db,seedVersion,seedData)
+        seedDatabase(db,seedVersion,seedData)
+
+        // check that the song was seeded once
+        assertEquals(
+            expected=1,
+            actual=songDao
+                .searchByTitleExact("Never Gonna Give You Up")
+                .size
+        )
+
+        // check that seed version was updated
+        assertTrue(seedDao.seeded(seedVersion))
+    }
+
+    @Test
+    fun `updating seed version`() = runTest {
+
+        val songDao = db.songDao()
+        // some token data to seed
+        val seedData = SeedData(
+            songs=listOf(
+                SongEntity(
+                    id=1,
+                    title="Never Gonna Give You Up",
+                    year=1987,
+                    description="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    resourcePath="nevergonnagiveyouup.json"
+                )
+            ),
+            composers=listOf(
+                ComposerEntity(
+                    id=1,
+                    name = "Rick Astley"
+                )
+            ),
+            lookups = listOf(
+                SongComposerLookupEntity(
+                    songId=1,
+                    composerId=1
+                )
+            )
+        )
+
+        // seed initial version
+        val seedVersion = 1
+        val seedDao = db.seedDao()
+        seedDatabase(db,seedVersion,seedData)
+
+
+        // some new token data to seed
+        val newSeedData = SeedData(
+            songs=listOf(
+                SongEntity(
+                    id=2,
+                    title="The Ballad of Testing SawEars",
+                    year=1987,
+                    description="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    resourcePath="nevergonnagiveyouup.json"
+                )
+            ),
+            composers=listOf(
+                ComposerEntity(
+                    id=2,
+                    name = "Soeren Otter-Sharp"
+                )
+            ),
+            lookups = listOf(
+                SongComposerLookupEntity(
+                    songId=2,
+                    composerId=2
+                )
+            )
+        )
+
+        // update seed version
+        val updatedSeedVersion = 2
+        seedDatabase(db,updatedSeedVersion,newSeedData)
+
+        // check that the new song was seeded
+        assertEquals(
+            expected=1,
+            actual=songDao
+                .searchByTitleExact("The Ballad of Testing SawEars")
+                .size
+        )
+
+        // check that old data not removed
+        assertEquals(
+            expected=1,
+            actual=songDao
+                .searchByTitleExact("Never Gonna Give You Up")
+                .size
+        )
+
+        // check that seed version was updated
+        assertTrue(seedDao.seeded(updatedSeedVersion))
+    }
 }
+
 

@@ -3,6 +3,7 @@ package com.sawears.data.database
 import androidx.room3.Dao
 import androidx.room3.Insert
 import androidx.room3.Query
+import androidx.room3.Upsert
 
 
 /**
@@ -13,6 +14,7 @@ import androidx.room3.Query
  * - these functions are modelled as non-suspend as this work is intended to run only once, when the app
  *   is first started so some additional startup overhead is worth it to avoid needing to add downstream
  *   checks that the work has been completed
+ * - seed operations are upsert to make successive calls idempotent
  */
 @Dao
 interface SeedDao {
@@ -38,16 +40,16 @@ interface SeedDao {
     )
     suspend fun seeded(seedVersion: Int): Boolean
 
-    @Insert
+    @Upsert
     suspend fun updateSeedVersion(metadataEntity: DatabaseMetadataEntity)
 
-    @Insert
+    @Upsert
     suspend fun seedSongs(songs: List<SongEntity>)
 
-    @Insert
+    @Upsert
     suspend fun seedComposers(composers: List<ComposerEntity>)
 
-    @Insert
+    @Upsert
     suspend fun seedSongComposerLookup(lookups: List<SongComposerLookupEntity>)
 
 }

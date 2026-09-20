@@ -4,10 +4,6 @@ import androidx.room3.ConstructedBy
 import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.RoomDatabaseConstructor
-import androidx.room3.migration.Migration
-import androidx.sqlite.SQLiteConnection
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import androidx.sqlite.execSQL
 
 @Database(
     entities = [
@@ -32,22 +28,26 @@ expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase
 }
 
-
+fun getSeedVersion(): Int {
+    return 1
+}
 /**
  * Function to seed startup data
  *
  * @param db an [AppDatabase] object to seed
+ * @param seedVersion version id to track updates
  */
 suspend fun seedDatabase(
-    db: AppDatabase
+    db: AppDatabase,
+    seedVersion: Int = getSeedVersion(),
+    seedData: SeedData = getSeedData()
 ): AppDatabase {
 
     // seed data if needed
-    val seedVersion = 1
     val seedDao = db.seedDao()
 
     // add seed data (if not already seeded)
-    addSeedData(seedVersion, seedDao)
+    addSeedData(seedVersion, seedDao, seedData)
 
     return db
 }
@@ -58,13 +58,36 @@ suspend fun seedDatabase(
  * @param seedVersion used to allow future updates to be pushed while
  *  avoiding seeding the same data multiple times
  * @param seedDao a [SeedDao] to handle database operations
+ * @param seedData a [SeedData] object containing data to seed
  */
-suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
+suspend fun addSeedData(
+    seedVersion: Int,
+    seedDao: SeedDao,
+    seedData: SeedData
+){
     // terminate if already seeded
     if (seedDao.seeded(seedVersion)){
         return
     }
 
+    seedDao.seedSongs(seedData.songs)
+    seedDao.seedComposers(seedData.composers)
+    seedDao.seedSongComposerLookup(seedData.lookups)
+
+    seedDao.updateSeedVersion(
+        DatabaseMetadataEntity(
+            seedVersion = seedVersion
+        )
+    )
+}
+
+data class SeedData(
+    val songs: List<SongEntity>,
+    val composers: List<ComposerEntity>,
+    val lookups: List<SongComposerLookupEntity>
+)
+
+private fun getSeedData(): SeedData {
     val songs = listOf(
         SongEntity(
             id=1,
@@ -125,18 +148,8 @@ suspend fun addSeedData(seedVersion: Int, seedDao: SeedDao){
         SongComposerLookupEntity(
             songId=3,
             composerId=4
-        ),
-
-    )
-
-    seedDao.seedSongs(songs)
-    seedDao.seedComposers(composers)
-    seedDao.seedSongComposerLookup(lookups)
-
-    seedDao.updateSeedVersion(
-        DatabaseMetadataEntity(
-            seedVersion = seedVersion
         )
     )
+    return SeedData(songs,composers,lookups)
 }
 
