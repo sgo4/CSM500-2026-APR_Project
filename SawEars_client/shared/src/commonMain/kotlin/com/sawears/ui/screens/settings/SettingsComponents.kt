@@ -27,8 +27,12 @@ import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.components.NumericStepper
 import com.sawears.ui.screens.components.Tooltip
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.settings_errors_failed_to_persist
+import sawears.shared.generated.resources.settings_errors_range_less_than_one
+import sawears.shared.generated.resources.settings_errors_range_too_small_for_song
 import sawears.shared.generated.resources.settings_options_difficulty_label
 import sawears.shared.generated.resources.settings_options_difficulty_tooltip
 import sawears.shared.generated.resources.settings_options_displaymargin_label
@@ -178,7 +182,7 @@ fun DifficultySettingRow(
 
 @Composable
 fun ModeSettingRow(
-    onUpdateMode: (LessonMode) -> Unit,
+    onUpdateMode: (LessonMode) -> Unit
 ){
     SettingRow(
         label=stringResource(Res.string.settings_options_mode_label),
@@ -236,12 +240,40 @@ fun DisplayMarginSettingRow(
     }
 }
 
+/**
+ * Display settings related error messages, e.g. invalid ranges
+ *
+ * Shows blank text if no error to hold space in the UI and prevent
+ * layout shifting on error.
+ *
+ * @param error any reported error
+ * @param overrideText allows error message to be overridden with custom warnign
+ */
+@Composable
+fun SettingsErrorMsg(
+    error: SettingsError?,
+    overrideText: String? = null
+){
+    overrideText?.let { text ->
+        Text(text)
+    } ?: error?.let { error ->
+        Text(
+            text = when (error){
+                SettingsError.FailedToPersist -> stringResource(Res.string.settings_errors_failed_to_persist)
+                SettingsError.RangeLessThanOne -> stringResource(Res.string.settings_errors_range_less_than_one)
+            },
+            color = MaterialTheme.colorScheme.error
+        )
+    } ?: Text("")
+}
+
 @Preview
 @Composable
 fun SettingsScreenPreview(){
     SettingsScreen(
         settings = AppSettings(),
-        {Int -> },
+        error = MutableStateFlow(null),
+        { Int -> },
         {Int -> },
         {Int ->},
         {},

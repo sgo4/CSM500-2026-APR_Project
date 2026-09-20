@@ -11,18 +11,12 @@ interface SettingsRepository {
     val settings: Flow<AppSettings>
 
     /**
-     * Set minimum range, used in calculating transpositions
+     * Set intstrument range as single operation
      *
-     * @param pitchMidi
+     * @param rangeMinMidi
+     * @param rangeMaxMidi
      */
-    suspend fun setRangeMinMidi(pitchMidi: Int)
-
-    /**
-     * Set max range, used in calculating transpositions
-     *
-     * @param pitchMidi
-     */
-    suspend fun setRangeMaxMidi(pitchMidi: Int)
+    suspend fun setRange(rangeMinMidi: Int, rangeMaxMidi: Int)
 
     /**
      * Set difficulty for Lesson settings

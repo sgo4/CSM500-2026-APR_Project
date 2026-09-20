@@ -33,6 +33,9 @@
     <string name="settings_options_displaymargin_tooltip">Controls margin to display around melody, e.g. if set to 5 the highest note displayed will be 5 midi notes higher than the highest note in the melody.</string>
     <string name="settings_options_tempo_label">Tempo</string>
     <string name="settings_options_tempo_tooltip">Control lesson tempo in BPM</string>
+    <string name="settings_errors_failed_to_persist">Failed to save</string>
+    <string name="settings_errors_range_too_small_for_song">Warning: Range too small for current song. This song may not be playable for your instrument.</string>
+    <string name="settings_errors_range_less_than_one">Range min must be less than or equal to range max</string>
     <!-- song selection screen -->
     <string name="songselection_page_title">Song Selection</string>
     <string name="songselection_searchbar_placeholder">Search</string>

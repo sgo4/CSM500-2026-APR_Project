@@ -53,16 +53,17 @@ class DataStoreSettingsRepository(
 
         }
 
-    override suspend fun setRangeMinMidi(pitchMidi: Int){
-        dataStore.edit { preferences ->
-            preferences[RANGE_MIN_KEY] = pitchMidi
-        }
-    }
 
-    override suspend fun setRangeMaxMidi(pitchMidi: Int){
+    override suspend fun setRange(rangeMinMidi: Int, rangeMaxMidi: Int){
+
+        require(rangeMinMidi < rangeMaxMidi)
+
         dataStore.edit { preferences ->
-            preferences[RANGE_MAX_KEY] = pitchMidi
+            preferences[RANGE_MIN_KEY] = rangeMinMidi
+            preferences[RANGE_MAX_KEY] = rangeMaxMidi
+
         }
+
     }
 
     override suspend fun setDifficulty(difficulty: Difficulty){
@@ -80,6 +81,8 @@ class DataStoreSettingsRepository(
     }
 
     override suspend fun setPitchDisplayMargin(marginMidi: Int){
+
+        require(marginMidi >= 0) // margin must not be negative
         dataStore.edit { preferences ->
             preferences[MARGIN_KEY] = marginMidi
         }

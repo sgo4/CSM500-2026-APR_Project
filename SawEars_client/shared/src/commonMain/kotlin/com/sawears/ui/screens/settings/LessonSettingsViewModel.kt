@@ -7,19 +7,30 @@ import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.Song
 import com.sawears.model.TranspositionException
 import com.sawears.model.settings.Difficulty
+import com.sawears.ui.screens.settings.SettingsError
 import com.sawears.ui.screens.settings.SettingsViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /**
  * View model for lesson settings screen
+ *
  * This viewmodel inherits from settings view model as it offers changes to both global,
  * persistent settings and local lesson settings
  *
+ * Implementation note: Intended behaviour is that controlling settings for a given lesson
+ * also changes it globally via the settings repository, with the exception of settings related
+ * to a specific song (e.g. tempo). This class is also where auto transposition is triggered in
+ * response to range changes.
+ *
  * @property lessonId id representing the lesson to allow settings to be mapped to lesson
- * @param lessonSettingsRepository local settings repository storing settings for specific lessons
- * @param settingsRepository repository allowing certain global changes to be persisted
+ * @param lessonSettingsRepository a [LessonSettingsRepository] storing lesson specific settings
+ * @param settingsRepository a [SettingsRepository] allowing application level settings to be persisted
  * @param autoTranspose flag controlling whether changing rangeMin / rangeMax trigger transposition
  */
 class LessonSettingsViewModel(
@@ -29,6 +40,9 @@ class LessonSettingsViewModel(
     private val autoTranspose: Boolean = true
 ): SettingsViewModel(settingsRepository) {
 
+
+
+
     val lessonSettings: StateFlow<LessonSettings> = lessonSettingsRepository
         .settingsFor(lessonId)
         .stateIn(
@@ -37,6 +51,12 @@ class LessonSettingsViewModel(
         initialValue = lessonSettingsRepository.get(lessonId)
         ?: error("Unable to find settings for lesson $lessonId")
     )
+
+    // tracks whether instrument range is wide enough to transpose song into
+    val _transpositionStatus = MutableStateFlow(
+        inRange()
+    )
+    val transpositionStatus = _transpositionStatus.asStateFlow()
 
     /**
      * Update tempo, scoped to the lesson locally
@@ -55,87 +75,89 @@ class LessonSettingsViewModel(
     }
 
     /**
-     * Update range min, locally and globally
+     * Update instrument range, locally and globally.
      *
-     * Implementation note: when updating rangeMin or rangeMax
+     * Implementation note: when updating instrument range (max or min)
      * from the lesson settings screen, the song will automatically be
      * transposed to centre the melody on the instrument's playable range.
      *
      * This setting can be disabled by changing the autoTranspose flag at the view model level,
      * but for initial release, auto transposition is intended default behaviour.
-     *
-     * @param pitchMidi
      */
-    override fun updateRangeMin(pitchMidi: Int){
+    override fun updateRange(rangeMinMidi: Int, rangeMaxMidi: Int){
+        if (!validateRange(rangeMinMidi, rangeMaxMidi)) return
 
-        // handle auto transposition if configured
-        var song: Song = lessonSettings.value.song
-        if (autoTranspose){
-            try {
-                song = song
-                    .adaptForRange(
-                        pitchMidi,
-                        lessonSettings.value.rangeMax
-                    )
-            } catch (e: TranspositionException){
-                error("$e. Range ${lessonSettings.value.rangeMin} - ${lessonSettings.value.rangeMax} is not large enough for selected song.")
+        var song = lessonSettings.value.song
 
+        // this is where auto transposition is applied, if autoTranspose flag set to tue
+        try {
+            if (autoTranspose) {
+                song = song.adaptForRange(rangeMinMidi, rangeMaxMidi)
+                _transpositionStatus.value = true
+            } else {
+                _transpositionStatus.value = inRange()
             }
+        } catch (e: TranspositionException) {
+            // allow small ranges to be set without triggering error, but record state
+            // to show warning in UI
+            _transpositionStatus.value = false
         }
 
-        // update setting locally
-        lessonSettingsRepository.set(
-            lessonId,
-            lessonSettings.value.copy(
-                song = song,
-                rangeMin = pitchMidi
-            )
-        )
+        viewModelScope.launch {
+            try {
+                settingsRepository.setRange(rangeMinMidi, rangeMaxMidi)
 
-        // update setting globally
-        super.updateRangeMin(pitchMidi)
+                lessonSettingsRepository.set(
+                    lessonId,
+                    lessonSettings.value.copy(
+                        song = song,
+                        rangeMax = rangeMaxMidi,
+                        rangeMin = rangeMinMidi
+                    )
+                )
+                clearError()
+            } catch (e: Exception) {
+                setError(SettingsError.FailedToPersist)
+            }
+        }
+    }
+
+    /*
+    Validates whether instrument range >= song range
+     */
+    private fun inRange(): Boolean {
+        return  (lessonSettings.value.rangeMax - lessonSettings.value.rangeMin) >=
+                (lessonSettings.value.song.songMaxMidi - lessonSettings.value.song.songMinMidi)
+    }
+    /**
+     * Update range min, locally and globally
+     *
+     * If [autoTranspose] flag is true, updating this setting
+     * will trigger song transposition.
+     *
+     * @param rangeMinMidi
+     */
+    override fun updateRangeMin(rangeMinMidi: Int){
+        val rangeMaxMidi = lessonSettings.value.rangeMax
+        updateRange(rangeMinMidi, rangeMaxMidi)
 
     }
 
     /**
      * Update range max, locally and globally
      *
-     * Implementation note: when updating rangeMin or rangeMax
-     * from the lesson settings screen, the song will automatically be
-     * transposed to centre the melody on the instrument's playable range.
+     * If [autoTranspose] flag is true, updating this setting
+     * will trigger song transposition.
      *
-     * This setting can be disabled by changing the autoTranspose flag at the view model level,
-     * but for initial release, auto transposition is intended default behaviour.
-     *
-     * @param pitchMidi
+     * @param rangeMaxMidi
      */
-    override fun updateRangeMax(pitchMidi: Int){
-        // handle auto transposition if configured
-        var song: Song = lessonSettings.value.song
-        if (autoTranspose){
-            try {
-                song = song
-                    .adaptForRange(
-                        lessonSettings.value.rangeMin,
-                        pitchMidi
-                    )
-            } catch (e: TranspositionException){
-                error("$e. Range ${lessonSettings.value.rangeMin} - ${lessonSettings.value.rangeMax} is not large enough for selected song.")
-
-            }
-        }
-
-        // update setting locally
-        lessonSettingsRepository.set(
-            lessonId,
-            lessonSettings.value.copy(
-                song = song,
-                rangeMax = pitchMidi
-            )
-        )
-        // update setting globally
-        super.updateRangeMax(pitchMidi)
+    override fun updateRangeMax(rangeMaxMidi: Int){
+        val rangeMinMidi = lessonSettings.value.rangeMin
+        updateRange(rangeMinMidi, rangeMaxMidi)
     }
+
+
+
 
     /**
      * Update difficulty, locally and globally
@@ -186,7 +208,7 @@ class LessonSettingsViewModel(
                 pitchDisplayMarginMidi = marginMidi
             )
         )
-        // update setting globally
+        // persist lesson in settings repository
         super.updatePitchMargin(marginMidi)
     }
 
@@ -194,7 +216,14 @@ class LessonSettingsViewModel(
 
 /**
  * Class to hold local lesson settings
- * //TODO Kdoc
+ *
+ * @property song
+ * @property tempo
+ * @property difficulty
+ * @property mode
+ * @property rangeMin
+ * @property rangeMax
+ * @property pitchDisplayMarginMidi
  */
 data class LessonSettings(
     val song: Song,
@@ -211,3 +240,4 @@ enum class LessonMode {
     PRACTICE,
     PERFORMANCE
 }
+

@@ -175,6 +175,7 @@ fun NavigationRoot(
                         val settings = viewModel.settings.collectAsStateWithLifecycle()
                         SettingsScreen(
                             settings=settings.value,
+                            error=viewModel.error,
                             onUpdateMin=viewModel::updateRangeMin,
                             onUpdateMax=viewModel::updateRangeMax,
                             onUpdateMode=viewModel::updateMode,
@@ -206,6 +207,8 @@ fun NavigationRoot(
                         LessonSettingsScreen(
                             lessonId = key.lessonId,
                             settings = settings.value,
+                            error = viewModel.error,
+                            transpositionStatus = viewModel.transpositionStatus,
                             onUpdateMin = viewModel::updateRangeMin,
                             onUpdateMax= viewModel::updateRangeMax,
                             onUpdateDifficulty = viewModel::updateDifficulty,
