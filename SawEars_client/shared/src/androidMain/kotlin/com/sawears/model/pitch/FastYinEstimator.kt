@@ -5,9 +5,11 @@ import com.sawears.data.io.audioIn.AudioFrame
 
 /**
  * Yin estimator based on the TarsosDSP Fast Yin implementation
- *
  * Adapted to use common interface
  * Source: https://github.com/JorenSix/TarsosDSP/
+ *
+ * @author Joren Six
+ * @author Soeren Otter-Sharp
  */
 class FastYinEstimator(
     override val sampleRate: Float,

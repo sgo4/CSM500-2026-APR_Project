@@ -1,6 +1,5 @@
 package com.sawears.data.database
 
-import androidx.compose.runtime.Composer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.BeforeTest
@@ -8,7 +7,6 @@ import kotlin.test.AfterTest
 import kotlinx.coroutines.flow.first
 import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.sawears.model.Song
 import kotlinx.coroutines.test.runTest
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -16,6 +14,9 @@ import kotlin.test.assertTrue
 
 /**
  * Test class for Room storage model.
+ *
+ * Note: Per room recommendations, jvm tests are preferred over android local tests,
+ * see: https://developer.android.com/training/data-storage/room/testing-db
  *
  * Sources:
  * - https://developer.android.com/training/data-storage/room/testing-db
