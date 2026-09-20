@@ -1,8 +1,10 @@
 package com.sawears.ui.screens.lesson
 
+import com.sawears.data.settings.AppSettings
 import com.sawears.mocks.MockSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.model.settings.Difficulty
+import com.sawears.ui.screens.settings.SettingsError
 import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,12 +33,103 @@ class SettingsViewModelTest {
         Dispatchers.setMain(testDispatcher)
     }
 
-
     @AfterTest
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
+    // range updates
+    /**
+     * Test range min updates through settingsViewModel with normal input
+     */
+    @Test
+    fun `update rangeMin works with correct unput`() = runTest {
+        val settingsRepository: SettingsRepository = MockSettingsRepository(
+            AppSettings(
+                rangeMinMidi = 70, // use known start values for range min / max
+                rangeMaxMidi = 80
+            )
+        )
+
+        val settingsViewModel = SettingsViewModel(
+            settingsRepository
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            settingsViewModel.settings.collect {}
+        }
+        advanceUntilIdle()
+        // perform a valid update (70 -> 71)
+        settingsViewModel.updateRangeMin(71)
+        advanceUntilIdle()
+        // check that it worked
+        assertEquals(71,settingsViewModel.settings.value.rangeMinMidi)
+        // error should be clear after valid update
+        assertEquals(null,settingsViewModel.error.value)
+    }
+
+    /**
+     * Test range max updates through settingsViewModel with normal input
+     */
+    @Test
+    fun `update rangeMax works with correct unput`() = runTest {
+        val settingsRepository: SettingsRepository = MockSettingsRepository(
+            AppSettings(
+                rangeMinMidi = 70, // use known start values for range min / max
+                rangeMaxMidi = 80
+            )
+        )
+
+        val settingsViewModel = SettingsViewModel(
+            settingsRepository
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            settingsViewModel.settings.collect {}
+        }
+        advanceUntilIdle()
+
+        // perform a valid update (80 -> 81)
+        settingsViewModel.updateRangeMax(81)
+        advanceUntilIdle()
+
+        // check that it worked
+        assertEquals(81,settingsViewModel.settings.value.rangeMaxMidi)
+        // error should be clear after valid update
+        assertEquals(null,settingsViewModel.error.value)
+    }
+
+    /**
+     * Test expected behaviour if user attempts to set range < 1, i.e. refuse to update
+     * and report and error
+     */
+    @Test
+    fun `update range throws error on invalid input`() = runTest {
+        val settingsRepository: SettingsRepository = MockSettingsRepository(
+            AppSettings(
+                rangeMinMidi = 70, // use known start values for range min / max
+                rangeMaxMidi = 80
+            )
+        )
+
+        val settingsViewModel = SettingsViewModel(
+            settingsRepository
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            settingsViewModel.settings.collect {}
+        }
+
+        advanceUntilIdle()
+
+        // try to make difference between min and max < 1
+        settingsViewModel.updateRangeMax(70)
+        advanceUntilIdle()
+        // rangeMax should not have updated
+        assertEquals(80,settingsViewModel.settings.value.rangeMaxMidi)
+        // error should be reported
+        assertEquals(SettingsError.RangeLessThanOne, settingsViewModel.error.value)
+    }
 
     // difficulty
     /**
@@ -70,12 +163,10 @@ class SettingsViewModelTest {
             advanceUntilIdle()
             assertEquals(expected, settingsViewModel.settings.value.difficulty)
         }
-
     }
 
     @Test
     fun `update difficulty fails with invalid values`() = runTest {
-
 
         val settingsRepository: SettingsRepository = MockSettingsRepository()
         val settingsViewModel = SettingsViewModel(
@@ -96,4 +187,8 @@ class SettingsViewModelTest {
             Difficulty.entries.map { it.level }
         )
     }
+
+
+
+
 }

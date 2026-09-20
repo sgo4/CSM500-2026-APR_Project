@@ -8,15 +8,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class MockSettingsRepository(): SettingsRepository {
+class MockSettingsRepository(
+    appSettings: AppSettings = AppSettings()
+): SettingsRepository {
 
-    private val _settings = MutableStateFlow(AppSettings())
+    private val _settings = MutableStateFlow(appSettings)
     override val settings: StateFlow<AppSettings> = _settings
 
     override suspend fun setDifficulty(difficulty: Difficulty) {
         _settings.update { it.copy(difficulty = difficulty) }
     }
-    override suspend fun setRange(rangeMinMidi: Int, rangeMaxMidi: Int) = Unit
+    override suspend fun setRange(rangeMinMidi: Int, rangeMaxMidi: Int) {
+        _settings.update {
+            it.copy(
+                rangeMinMidi = rangeMinMidi,
+                rangeMaxMidi = rangeMaxMidi
+            )
+        }
+    }
 
     override suspend fun setMode(mode: LessonMode) = Unit
 
