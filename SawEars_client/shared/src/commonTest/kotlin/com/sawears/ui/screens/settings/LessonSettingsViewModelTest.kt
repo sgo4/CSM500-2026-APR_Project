@@ -227,8 +227,7 @@ class LessonSettingsViewModelTest {
             viewModel.lessonSettings.value.tempo
         )
     }
-
-
+    
     /**
      * For tempo, invalid input is any tempo < 1
      * No hard upper limit is imposed on tempo
@@ -264,7 +263,7 @@ class LessonSettingsViewModelTest {
 
         // test both 0 and negative input
         val invalidTempos = listOf(0, -1)
-        
+
         invalidTempos.forEach { tempo ->
             viewModel.updateTempo(tempo)
             advanceUntilIdle()
