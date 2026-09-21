@@ -6,7 +6,6 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.mocks.MockSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.mocks.mockSong
-import com.sawears.model.settings.Difficulty
 import com.sawears.model.useCases.RegisterLesson
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.lessonsettings.LessonSettingsViewModel
@@ -40,8 +39,6 @@ import kotlin.test.assertNotEquals
  * expected behaviour of which is for the melody to automatically be transposed to be centred
  * on the instrument range (where possible) whenever the range is updated and when the view model
  * is initialized on song selection.
- *
- * // TODO handle initial transposition case
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LessonSettingsViewModelTest {
@@ -74,7 +71,6 @@ class LessonSettingsViewModelTest {
             appSettings!!,
             lessonSettingsRepository!!
         )
-
 
     }
 
@@ -110,6 +106,38 @@ class LessonSettingsViewModelTest {
         }
 
         assertEquals("Unable to find settings for lesson 1", exception.message)
+    }
+
+    @Test
+    fun `initialization triggers autotransposition if flag set`() = runTest {
+        // register lesson for mock song
+        val lessonId = 1
+        val song = mockSong(
+            pitches = listOf(0) // choose initial pitch not within default range
+        )
+        registerLesson!!.register(
+            song,
+            lessonId
+        )
+
+        // initialize viewmodel
+        val viewModel = LessonSettingsViewModel(
+            lessonId = 1,
+            lessonSettingsRepository = lessonSettingsRepository!!,
+            settingsRepository = settingsRepository!!,
+            autoTranspose = true // auto transposition flag set to true
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            viewModel.lessonSettings.collect {}
+        }
+        advanceUntilIdle()
+
+        // song note should now be exactly equidistant between range max and min
+        assertEquals(
+            80f,
+            viewModel.lessonSettings.value.song.notes.get(0).pitchMidi
+        )
     }
 
     /**
@@ -289,7 +317,7 @@ class LessonSettingsViewModelTest {
         // verify that range min was changed to 97
         assertEquals(
             97,
-            lessonSettings.value.rangeMin
+            viewModel.lessonSettings.value.rangeMin
         )
     }
 

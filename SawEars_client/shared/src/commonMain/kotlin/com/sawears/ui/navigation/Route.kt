@@ -28,4 +28,6 @@ sealed interface Route: NavKey {
     @Serializable
     data class LessonScreen(val lessonId: Int): Route, NavKey
 
+    @Serializable
+    data class ErrorScreen(val message: String): Route, NavKey
 }

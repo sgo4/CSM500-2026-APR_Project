@@ -21,10 +21,9 @@ import kotlinx.coroutines.launch
 /**
  * View model for lesson settings screen
  *
- * This viewmodel inherits from settings view model as it offers changes to both global,
- * persistent settings and local lesson settings
- *
  * Implementation notes:
+ * - [LessonSettingsViewModel] owns transposition logic, ensuring songs are always transposed to the
+ *  centre of an instrument's range (where possible)
  * - Intended behaviour is that controlling settings for a given lesson
  * also changes it globally via the settings repository, with the exception of settings related
  * to a specific song (e.g. tempo). This class is also where auto transposition is triggered in
@@ -67,10 +66,20 @@ class LessonSettingsViewModel(
     private val rangeUpdates =
         Channel<RangeUpdate>(capacity = Channel.UNLIMITED)
 
+    // tracks whether instrument range is wide enough to transpose song into
+    val _transpositionStatus = MutableStateFlow(
+        inRange(
+            currentRepositorySettings().rangeMin,
+            currentRepositorySettings().rangeMax,
+            currentRepositorySettings().song
+        )
+    )
+    val transpositionStatus = _transpositionStatus.asStateFlow()
+
     /*
     Launch a coroutine to track range updates, ensuring they are sent to the repository
     sequentially in the order the requests are made.
-     */
+    */
     init {
         viewModelScope.launch {
             for (range in rangeUpdates) {
@@ -87,18 +96,36 @@ class LessonSettingsViewModel(
         }
     }
 
+    /*
+    Handle initial autoTransposition when viewModel is first initialized.
+    This ensures the song will be correctly transposed if the user does not
+    adjust the intrument range
+     */
+    init {
+        if (autoTranspose){
+            val settings = currentRepositorySettings()
 
+            val transposedSong = try {
+                settings.song.adaptForRange(
+                    settings.rangeMin,
+                    settings.rangeMax
+                ).also {
+                    _transpositionStatus.value = true
+                }
+            } catch (e: TranspositionException){
+                settings.song.also {
+                    _transpositionStatus.value = false
+                }
+            }
 
-
-    // tracks whether instrument range is wide enough to transpose song into
-    val _transpositionStatus = MutableStateFlow(
-        inRange(
-            currentRepositorySettings().rangeMin,
-            currentRepositorySettings().rangeMax,
-            currentRepositorySettings().song
-        )
-    )
-    val transpositionStatus = _transpositionStatus.asStateFlow()
+            lessonSettingsRepository.set(
+                lessonId,
+                lessonSettings.value.copy(
+                    song = transposedSong
+                )
+            )
+        }
+    }
 
 
     /**

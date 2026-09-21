@@ -46,4 +46,6 @@
     <string name="lesson_button_playaudio_description">音声を再生</string>
     <string name="lesson_button_pauseaudio_description">音声を一時停止</string>
     <string name="lesson_button_restartlesson_description">レッスンを再開</string>
+    <!-- error screen -->
+    <string name="error_page">エラー</string>
 </resources>

@@ -17,6 +17,8 @@ import com.sawears.AppContainer
 import com.sawears.ui.screens.lesson.LessonMainScreen
 import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.ui.screens.account.AccountScreen
+import com.sawears.ui.screens.error.GenericErrorScreen
+import com.sawears.ui.screens.home.ErrorScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
@@ -43,6 +45,7 @@ fun NavigationRoot(
     container: AppContainer,
     modifier: Modifier = Modifier
 ) {
+
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
             serializersModule = SerializersModule {
@@ -55,8 +58,6 @@ fun NavigationRoot(
         Route.MainScreen
     )
 
-
-
     NavDisplay(
         // entry decorators ensure view models are scoped to the screen rather
         // than the application, preventing bugs causes by multiple screns sharing
@@ -65,11 +66,9 @@ fun NavigationRoot(
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
-
         ),
         backStack = backStack,
         entryProvider = { key ->
-
             // home function that returns to menu and safely
             // clears backstack
             val home: () -> Unit = {
@@ -77,6 +76,13 @@ fun NavigationRoot(
                     backStack.removeAt(backStack.lastIndex)
                 }
             }
+            val onClickSettings: () -> Unit = {
+                backStack.add(Route.SettingsScreen)
+            }
+            val onClickAccount: () -> Unit = {
+                backStack.add(Route.AccountScreen)
+            }
+
             when(key) {
                 is Route.MainScreen -> {
                     NavEntry(key){
@@ -87,8 +93,8 @@ fun NavigationRoot(
                                 )
                             },
                             onClickHome = home,
-                            onClickAccount = { backStack.add(Route.AccountScreen) },
-                            onClickSettings = { backStack.add(Route.SettingsScreen) },
+                            onClickAccount = onClickAccount,
+                            onClickSettings = onClickSettings,
                         )
                     }
                 }
@@ -96,7 +102,7 @@ fun NavigationRoot(
                     NavEntry(key){
                         AccountScreen(
                             onClickHome = home,
-                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickAccount = { }, // already on account screen
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                             onBack = { backStack.removeLastOrNull() }
                         )
@@ -104,7 +110,6 @@ fun NavigationRoot(
                 }
                 is Route.SongSelectionScreen -> {
                     NavEntry(key){
-
                         val viewModel = viewModel {SongSelectionViewModel(
                             container.db.songDao(),
                             songRepository = container.songRepository,
@@ -120,11 +125,11 @@ fun NavigationRoot(
                                         )
                                     }
                                     is SongSelectionEvent.Error -> {
-                                        println(event.message)
+                                        backStack.add(
+                                            Route.ErrorScreen(event.message)
+                                        )
                                     }
                                 }
-
-
                             }
                         }
                         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -159,7 +164,7 @@ fun NavigationRoot(
                         LessonMainScreen(
                             viewModel=viewModel,
                             onClickHome = home,
-                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickAccount = onClickAccount,
                             onClickSettings = { backStack.add(Route.LessonSettingsScreen(key.lessonId)) }
                         )
                     }
@@ -182,13 +187,13 @@ fun NavigationRoot(
                             onUpdateDifficulty = viewModel::updateDifficulty,
                             onUpdatePitchMargin = viewModel::updatePitchMargin,
                             onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
-                            onClickAccount = {backStack.add(Route.AccountScreen)},
+                            onClickAccount = onClickAccount,
                             onClickHome = home
                         )
                     }
                 }
-                is Route.LessonSettingsScreen ->{
 
+                is Route.LessonSettingsScreen ->{
                     NavEntry(key){
 
                         val viewModel = viewModel {
@@ -199,10 +204,7 @@ fun NavigationRoot(
                             )
                         }
 
-
-
                         val settings = viewModel.lessonSettings.collectAsStateWithLifecycle()
-
 
                         LessonSettingsScreen(
                             lessonId = key.lessonId,
@@ -220,12 +222,24 @@ fun NavigationRoot(
                                     Route.LessonScreen(key.lessonId)
                                 )
                             },
-                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickAccount = onClickAccount,
                             onClickHome = home,
-                            onClickSettings = { backStack.add(Route.SettingsScreen) }
+                            onClickSettings = {} // settings button does nothing on lesson settings screen
                         )
                     }
                 }
+
+                is Route.ErrorScreen -> {
+                    NavEntry(key){
+                        GenericErrorScreen(
+                            errorMsg = key.message,
+                            onClickHome = home,
+                            onClickSettings = onClickSettings,
+                            onClickAccount = onClickAccount
+                        )
+                    }
+                }
+
                 else -> error("Unknown nav key")
             }
         }

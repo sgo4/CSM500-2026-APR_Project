@@ -21,7 +21,7 @@ import sawears.shared.generated.resources.songselection_page_title
  * @param state
  * @param onSearch callback function for search
  * @param onSelectSong callback function when a song is selected
- * @param onClickHome callback for menu button
+ * @param onClickHome callback for home button
  * @param onClickAccount callback for account button
  * @param onClickSettings callback for settings button
  */

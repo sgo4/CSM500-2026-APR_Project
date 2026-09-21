@@ -69,34 +69,24 @@ class SongSelectionViewModel(
      *
      * 1. Loads song into memory
      * 2. Registers song with lesson settings repository
-     * 3. If autoTransposition flag is true, transposes song to best fit instrument range
-     * 4. Sends event indicating outcome
+     * 3. Sends event indicating outcome
+     *
+     * TODO kdoc
      */
-    fun selectSong(songId: Int, resourcePath: String, defaultTempo: Int = 80, autoTranspose: Boolean = true){
-
+    fun selectSong(
+        songId: Int,
+        resourcePath: String
+    ){
         viewModelScope.launch {
-            var song = songRepository.load(resourcePath)
+            val song = songRepository.load(resourcePath)
 
             if (song == null){
+                // TODO this should be a string resource
                 _events.send(SongSelectionEvent.Error("Could not load song with id $songId from path $resourcePath"))
                 return@launch
             }
 
             val globalSettings = globalSettingsRepository.settings.first()
-
-            /*
-            If autotransposition flag set, transpose song to fit range defined in global settings as soon as it's loaded
-             */
-            if (autoTranspose){
-                try {
-                    song = song.adaptForRange(
-                        globalSettings.rangeMinMidi,
-                        globalSettings.rangeMaxMidi
-                    )
-                } catch (e: TranspositionException){
-                    _events.send(SongSelectionEvent.Error("$e. Try adjusting instrument range in settings or pick a song with a smaller range"))
-                }
-            }
 
             /*
             Register lesson with lesson settings repository (this allows a specific lesson to be mapped
@@ -111,9 +101,6 @@ class SongSelectionViewModel(
                 SongSelectionEvent.OpenLessonSettings(songId)
             )
         }
-
-
-
     }
 }
 
@@ -121,10 +108,21 @@ class SongSelectionViewModel(
  * Events broadcast to inform wider program of outcome of suspend operations
  */
 sealed interface SongSelectionEvent {
+    /**
+     * Event indicating song was successfully selected, and user
+     * progressed to Lesson Settings screen
+     *
+     * @param lessonId
+     */
     data class OpenLessonSettings(
         val lessonId: Int
     ) : SongSelectionEvent
 
+    /**
+     * Event indicatng some error occured during song selection
+     *
+     * @param message
+     */
     data class Error(
         val message: String
     ) : SongSelectionEvent

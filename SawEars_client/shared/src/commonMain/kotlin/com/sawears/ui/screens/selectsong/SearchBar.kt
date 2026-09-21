@@ -35,6 +35,11 @@ import sawears.shared.generated.resources.songselection_searchbar_placeholder
  * Search bar for song selection page
  *
  * Boilerplate code adapted from: https://developer.android.com/develop/ui/compose/components/search-bar
+ *
+ * @param textFieldState [TextFieldState] object tracking search bar state
+ * @param onSearch search callback
+ * @param onSelectSong callback for selecting a song
+ * @param searchResults a list of [SongEntity] matching search criteria
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
