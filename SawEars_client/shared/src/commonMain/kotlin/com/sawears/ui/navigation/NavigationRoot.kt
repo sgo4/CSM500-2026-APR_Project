@@ -29,6 +29,7 @@ import com.sawears.ui.screens.selectsong.SongSelectionViewModel
 import com.sawears.ui.screens.settings.LessonSettingsScreen
 import com.sawears.ui.screens.settings.SettingsScreen
 import com.sawears.ui.screens.settings.SettingsViewModel
+import org.jetbrains.compose.resources.getString
 
 /**
  * Root for app navigation. Provides logic for navigating between
@@ -124,9 +125,15 @@ fun NavigationRoot(
                                             Route.LessonSettingsScreen(event.lessonId)
                                         )
                                     }
-                                    is SongSelectionEvent.Error -> {
+                                    is SongSelectionEvent.SelectionError -> {
+
+                                        val msg = getString(
+                                            event.message
+                                        )
                                         backStack.add(
-                                            Route.ErrorScreen(event.message)
+                                            Route.ErrorScreen(
+                                                msg
+                                            )
                                         )
                                     }
                                 }

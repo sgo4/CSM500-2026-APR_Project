@@ -5,7 +5,7 @@ import com.sawears.model.Song
 
 
 fun mockSong(
-    pitches: List<Int> = emptyList(),
+    pitches: List<Int> = listOf(1),
     durations: List<Int>? = null,
     tempo: Int = 80,
     description: String ="",
@@ -32,7 +32,7 @@ fun mockSong(
         composers=composers,
         year=year,
         notes=notes,
-        tempo =tempo,
+        tempo=tempo,
         description=description
     )
 }

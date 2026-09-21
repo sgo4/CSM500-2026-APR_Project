@@ -5,7 +5,7 @@ import com.sawears.data.midijson.parsers.MidiJsonParser
 import com.sawears.data.midijson.DTOs.toMidiJsonSongDto
 import com.sawears.model.toSong
 import sawears.shared.generated.resources.Res
-
+import org.jetbrains.compose.resources.MissingResourceException
 
 /**
  * Public facing interface for song data, agnostic of source format
@@ -31,9 +31,13 @@ class MidiJsonRepository(): SongRepository {
      */
     override suspend fun load(filepath: String): Song? {
         
-        val midijson = Res
-            .readBytes(filepath)
-            .decodeToString()
+        val midijson = try {
+            Res
+                .readBytes(filepath)
+                .decodeToString()
+        } catch (e: MissingResourceException){
+            return null
+        }
         val parser = MidiJsonParser()
         return parser
             .parse(midijson)

@@ -48,7 +48,6 @@ class LessonSettingsViewModelTest {
     private var settingsRepository: SettingsRepository? = null
     private var lessonSettingsRepository: LessonSettingsRepository? = null
     private var viewModel: LessonSettingsViewModel? = null
-
     private var registerLesson: RegisterLesson? = null
 
 
@@ -71,12 +70,12 @@ class LessonSettingsViewModelTest {
             appSettings!!,
             lessonSettingsRepository!!
         )
-
     }
 
     @AfterTest
     fun tearDown() {
         Dispatchers.resetMain()
+        appSettings = null
         lessonSettingsRepository = null
         viewModel = null
     }

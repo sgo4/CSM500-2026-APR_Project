@@ -4,6 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import com.sawears.AppContainer
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.StringResource
 
 /**
  * Collection of routes for navigation

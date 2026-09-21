@@ -24,7 +24,7 @@ import kotlin.test.assertTrue
  */
 class AppDatabaseTests {
 
-    lateinit var db: AppDatabase
+    private lateinit var db: AppDatabase
 
     @BeforeTest
     fun createDb() {

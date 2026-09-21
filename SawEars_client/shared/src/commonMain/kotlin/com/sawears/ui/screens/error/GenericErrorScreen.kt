@@ -1,11 +1,19 @@
 package com.sawears.ui.screens.error
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.sawears.ui.screens.components.ContentWithTopBar
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.error_page
@@ -24,17 +32,21 @@ fun GenericErrorScreen(
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     ContentWithTopBar(
         content = { innerPadding ->
-                    Box(
-                        modifier=modifier.padding(innerPadding)
-                    ){
-                        Text(errorMsg)
-                    }
-                  },
+            Box(
+                modifier=modifier.padding(innerPadding)
+            ){
+                Text(
+                    errorMsg
+                )
+            }
+        },
         title = stringResource(Res.string.error_page),
         onClickHome = onClickHome,
         onClickAccount = onClickAccount,
         onClickSettings = onClickSettings
     )
+
 }

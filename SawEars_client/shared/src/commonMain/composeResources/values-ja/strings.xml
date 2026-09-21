@@ -40,6 +40,7 @@
     <!-- song selection screen -->
     <string name="songselection_page_title">曲の選択</string>
     <string name="songselection_searchbar_placeholder">検索</string>
+    <string name="songselection_errors_failed_to_load">曲を読み込めませんでした。</string>
     <!-- lesson main screen -->
     <string name="lesson_button_playlesson_description">レッスンを再生</string>
     <string name="lesson_button_pauselesson_description">レッスンを一時停止</string>

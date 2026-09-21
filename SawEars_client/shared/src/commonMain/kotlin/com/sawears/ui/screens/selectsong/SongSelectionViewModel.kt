@@ -7,18 +7,27 @@ import com.sawears.data.SongRepository
 import com.sawears.data.database.SongDao
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.model.TranspositionException
 import com.sawears.model.useCases.RegisterLesson
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
+import sawears.shared.generated.resources.Res
+import sawears.shared.generated.resources.songselection_errors_failed_to_load
 
 /**
  * View model for song selection screen
  *
- * Partly adapted from source code by Philip Lackner:
- *  https://github.com/philipplackner/RoomGuideAndroid/
+ * Implementation notes:
+ * - Song selection owns process of creating lesson as an object known by the lesson settings
+ * repository
+ * - Search is always fuzzy and in alphabetical order
+ * - Blank search field shows all results
+ *
+ * Sources consulted:
+ * - Partly adapted from source code by Philip Lackner found at:
+ *      https://github.com/philipplackner/RoomGuideAndroid/
  */
 class SongSelectionViewModel(
     private val dao: SongDao,
@@ -57,6 +66,10 @@ class SongSelectionViewModel(
         initialValue = SongSelectionState()
     )
 
+    init {
+        _searchQuery.value = "" // send blank query on initialization
+    }
+
     /**
      * Fuzzy search by title (e.g. "ever" will match both "Never Gonna Give You Up" and "Together Forever")
      */
@@ -71,7 +84,8 @@ class SongSelectionViewModel(
      * 2. Registers song with lesson settings repository
      * 3. Sends event indicating outcome
      *
-     * TODO kdoc
+     * @param songId
+     * @param resourcePath path to resource
      */
     fun selectSong(
         songId: Int,
@@ -81,8 +95,10 @@ class SongSelectionViewModel(
             val song = songRepository.load(resourcePath)
 
             if (song == null){
-                // TODO this should be a string resource
-                _events.send(SongSelectionEvent.Error("Could not load song with id $songId from path $resourcePath"))
+                _events.send(SongSelectionEvent.SelectionError(
+                        message=Res.string.songselection_errors_failed_to_load
+                    )
+                )
                 return@launch
             }
 
@@ -123,7 +139,7 @@ sealed interface SongSelectionEvent {
      *
      * @param message
      */
-    data class Error(
-        val message: String
+    data class SelectionError(
+        val message: StringResource
     ) : SongSelectionEvent
 }

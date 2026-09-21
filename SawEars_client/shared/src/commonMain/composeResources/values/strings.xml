@@ -40,6 +40,7 @@
     <!-- song selection screen -->
     <string name="songselection_page_title">Song Selection</string>
     <string name="songselection_searchbar_placeholder">Search</string>
+    <string name="songselection_errors_failed_to_load">Could not load song</string>
     <!-- lesson main screen -->
     <string name="lesson_button_playlesson_description">Play lesson</string>
     <string name="lesson_button_pauselesson_description">Pause lesson</string>

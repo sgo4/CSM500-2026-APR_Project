@@ -28,7 +28,7 @@ interface SongDao {
     /**
      * Get the current list of all songs
      */
-    @Query("SELECT * FROM SongEntity")
+    @Query("SELECT * FROM SongEntity ORDER BY title")
     fun getAll(): Flow<List<SongEntity>>
 
     /**
@@ -37,6 +37,7 @@ interface SongDao {
     @Query("""
         SELECT * FROM SongEntity
         WHERE title = :title
+        ORDER BY title
     """
     )
     suspend fun searchByTitleExact(title: String): List<SongEntity>
