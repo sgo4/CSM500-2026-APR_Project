@@ -9,6 +9,7 @@ import com.sawears.model.TranspositionException
 import com.sawears.model.settings.Difficulty
 import com.sawears.ui.screens.settings.SettingsError
 import com.sawears.ui.screens.settings.SettingsViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,11 +53,53 @@ class LessonSettingsViewModel(
         ?: error("Unable to find settings for lesson $lessonId")
     )
 
+
+    private data class RangeUpdate(
+        val minMidi: Int,
+        val maxMidi: Int
+    )
+
+    /*
+     Channel to ensure that range updates are made sequentially,
+     avoiding a potential race condition if range update methods
+     are called
+     */
+    private val rangeUpdates =
+        Channel<RangeUpdate>(capacity = Channel.UNLIMITED)
+
+    /*
+    Launch a coroutine to track range updates, ensuring they are sent to the repository
+    sequentially in the order the requests are made.
+     */
+    init {
+        viewModelScope.launch {
+            for (range in rangeUpdates) {
+                try {
+                    settingsRepository.setRange(
+                        range.minMidi,
+                        range.maxMidi
+                    )
+                    clearError()
+                } catch (e: Exception){
+                    setError(SettingsError.FailedToPersist)
+                }
+            }
+        }
+    }
+
+
+
+
     // tracks whether instrument range is wide enough to transpose song into
     val _transpositionStatus = MutableStateFlow(
-        inRange()
+        inRange(
+            currentRepositorySettings().rangeMin,
+            currentRepositorySettings().rangeMax,
+            currentRepositorySettings().song
+        )
     )
     val transpositionStatus = _transpositionStatus.asStateFlow()
+
 
     /**
      * Update tempo, scoped to the lesson locally
@@ -94,48 +137,53 @@ class LessonSettingsViewModel(
     override fun updateRange(rangeMinMidi: Int, rangeMaxMidi: Int){
         if (!validateRange(rangeMinMidi, rangeMaxMidi)) return
 
-        var song = lessonSettings.value.song
+        val settings = currentRepositorySettings()
 
         // this is where auto transposition is applied, if autoTranspose flag set to tue
-        try {
+        val transposedSong = try {
             if (autoTranspose) {
-                song = song.adaptForRange(rangeMinMidi, rangeMaxMidi)
-                _transpositionStatus.value = true
+                settings.song
+                    .adaptForRange(rangeMinMidi, rangeMaxMidi)
+                    .also {
+                        _transpositionStatus.value = true
+                    }
             } else {
-                _transpositionStatus.value = inRange()
+                settings.song.also{
+                    _transpositionStatus.value = inRange(rangeMinMidi,rangeMaxMidi,it)
+                }
             }
         } catch (e: TranspositionException) {
             // allow small ranges to be set without triggering error, but record state
             // to show warning in UI
-            _transpositionStatus.value = false
-        }
-
-        viewModelScope.launch {
-            try {
-                settingsRepository.setRange(rangeMinMidi, rangeMaxMidi)
-
-                lessonSettingsRepository.set(
-                    lessonId,
-                    lessonSettings.value.copy(
-                        song = song,
-                        rangeMax = rangeMaxMidi,
-                        rangeMin = rangeMinMidi
-                    )
-                )
-                clearError()
-            } catch (e: Exception) {
-                setError(SettingsError.FailedToPersist)
+            settings.song.also {
+                _transpositionStatus.value = false
             }
         }
+
+        // set new values at lesson level
+        lessonSettingsRepository.set(
+            lessonId,
+            lessonSettings.value.copy(
+                song = transposedSong,
+                rangeMax = rangeMaxMidi,
+                rangeMin = rangeMinMidi
+            )
+        )
+        clearError()
+        // send updates to channel to update app level repository
+        rangeUpdates.trySend(
+            RangeUpdate(
+                rangeMinMidi,
+                rangeMaxMidi
+            )
+        )
+
     }
 
     /*
     Validates whether instrument range >= song range
      */
-    private fun inRange(): Boolean {
-        return  (lessonSettings.value.rangeMax - lessonSettings.value.rangeMin) >=
-                (lessonSettings.value.song.songMaxMidi - lessonSettings.value.song.songMinMidi)
-    }
+
     /**
      * Update range min, locally and globally
      *
@@ -145,8 +193,8 @@ class LessonSettingsViewModel(
      * @param rangeMinMidi
      */
     override fun updateRangeMin(rangeMinMidi: Int){
-        val rangeMaxMidi = lessonSettings.value.rangeMax
-        updateRange(rangeMinMidi, rangeMaxMidi)
+        val settings = currentRepositorySettings()
+        updateRange(rangeMinMidi, settings.rangeMax)
 
     }
 
@@ -159,11 +207,14 @@ class LessonSettingsViewModel(
      * @param rangeMaxMidi
      */
     override fun updateRangeMax(rangeMaxMidi: Int){
-        val rangeMinMidi = lessonSettings.value.rangeMin
-        updateRange(rangeMinMidi, rangeMaxMidi)
+        val settings = currentRepositorySettings()
+        updateRange(settings.rangeMin, rangeMaxMidi)
     }
 
-
+    private fun inRange(rangeMinMidi: Int, rangeMaxMidi: Int, song: Song): Boolean {
+        return  (rangeMaxMidi - rangeMinMidi) >=
+                (song.songMaxMidi - song.songMinMidi)
+    }
 
 
     /**
@@ -218,6 +269,12 @@ class LessonSettingsViewModel(
         // persist lesson in settings repository
         super.updatePitchMargin(marginMidi)
     }
+
+    private fun currentRepositorySettings(): LessonSettings =
+        requireNotNull(lessonSettingsRepository.get(lessonId)){
+            "Unable to find settings for lesson $lessonId"
+        }
+
 
 }
 

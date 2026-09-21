@@ -28,6 +28,21 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 
 
+/**
+ * Test the expected behaviour of the lesson settings view model
+ *
+ * App wide settings (range, mode, difficulty, pitch margin) should be
+ * updated both at the app and lesson settings level, handling invalid input appropriately.
+ *
+ * Song specific settings such as tempo should only be updated at lesson settings level.
+ *
+ * This view model also handles transposition in accordance with project objective O7, the
+ * expected behaviour of which is for the melody to automatically be transposed to be centred
+ * on the instrument range (where possible) whenever the range is updated and when the view model
+ * is initialized on song selection.
+ *
+ * // TODO handle initial transposition case
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LessonSettingsViewModelTest {
 
@@ -190,6 +205,95 @@ class LessonSettingsViewModelTest {
     }
 
     @Test
+    fun `autotransposition does not occur if flag disabled`() = runTest  {
+        // register lesson for mock song
+        val lessonId = 1
+        val song = mockSong(
+            pitches = listOf(60)
+        )
+        registerLesson!!.register(
+            song,
+            lessonId
+        )
+
+        val viewModel = LessonSettingsViewModel(
+            lessonId = 1,
+            lessonSettingsRepository = lessonSettingsRepository!!,
+            settingsRepository = settingsRepository!!,
+            autoTranspose = false
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            viewModel.lessonSettings.collect {}
+        }
+
+        advanceUntilIdle()
+
+        // change range
+        viewModel.updateRangeMax(99)
+        advanceUntilIdle()
+        viewModel.updateRangeMin(97)
+        advanceUntilIdle()
+
+        // song note should be same as initially set
+        assertEquals(
+            60f,
+            viewModel.lessonSettings.value.song.notes.get(0).pitchMidi
+        )
+    }
+
+    /**
+     * Since updating the settings repository is a suspend operation, it's possible
+     * for successive updates to be handled incorrectly as updates are not necessarily
+     * processed in order.
+     *
+     * For example, with starting range 70 - 71, increasing rangeMax then rangeMin should
+     * be valid and result in range 71-72, but if rangeMin is called before rangeMax update
+     * coroutine completes, it will still see the old value of rangeMax, and the resulting range
+     * 71- 71 would be classed as invalid.
+     *
+     * This test ensures the implementation accounts for this, e.g. by serializing updates.
+     */
+    @Test
+    fun `successive range updates do not trigger race condition`() = runTest {
+        // register lesson for mock song
+        val lessonId = 1
+        val song = mockSong(
+            pitches = listOf(60)
+        )
+        registerLesson!!.register(
+            song,
+            lessonId
+        )
+
+        val viewModel = LessonSettingsViewModel(
+            lessonId = 1,
+            lessonSettingsRepository = lessonSettingsRepository!!,
+            settingsRepository = settingsRepository!!,
+            autoTranspose = true
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            viewModel.lessonSettings.collect {}
+        }
+
+        advanceUntilIdle()
+
+        // perform two range updates in sequence with no advanceUntilIdle call, where the second will only be valid
+        // after the first completes. In this case raising rangeMin to 97 is only valid AFTER rangeMax
+        // has been raised to 99, otherwise rangeMin would be > rangeMax
+        viewModel.updateRangeMax(99)
+        viewModel.updateRangeMin(97)
+        advanceUntilIdle()
+
+        // verify that range min was changed to 97
+        assertEquals(
+            97,
+            lessonSettings.value.rangeMin
+        )
+    }
+
+    @Test
     fun `update tempo updates at lesson level only`() = runTest{
         // register lesson for mock song
         val lessonId = 1
@@ -227,7 +331,7 @@ class LessonSettingsViewModelTest {
             viewModel.lessonSettings.value.tempo
         )
     }
-    
+
     /**
      * For tempo, invalid input is any tempo < 1
      * No hard upper limit is imposed on tempo
