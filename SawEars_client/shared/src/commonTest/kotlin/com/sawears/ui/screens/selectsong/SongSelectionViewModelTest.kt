@@ -267,6 +267,61 @@ class SongSelectionViewModelTest {
             results
         )
     }
+
+    /**
+     * If search 1 returns songs a,b, c and search 2 returns songs c, d the results after search
+     * 1 then search 2 should only be c, d, i.e. the results of the earlier search should not
+     * be retained.
+     */
+    @Test
+    fun `sequential searches overwrite previous results`() = runTest {
+        val dao = db.songDao()
+        // populate db with some fake songs
+        // include some songs with same substring
+        val mockSongTitles = listOf(
+            "SUBSTRING",
+            "containsSUBSTRINGcontains",
+            "endswithSUBSTRING",
+            "SUBSTRINGstartswith",
+            "Song5" // shoud not be returned
+        )
+
+        mockSongTitles.map {
+            mockSong(title = it)
+        }.forEachIndexed { index, song ->
+            dao.upsert(
+                SongEntity(
+                    id = index,
+                    title = song.title,
+                    description = song.description ?: "",
+                    year = song.year ?: 0,
+                    resourcePath = ""
+                )
+            )
+        }
+        advanceUntilIdle()
+
+        val viewModel = SongSelectionViewModel(
+            dao = dao,
+            songRepository = MidiJsonRepository(),
+            lessonSettingsRepository = lessonSettingsRepository!!,
+            globalSettingsRepository = settingsRepository!!
+        )
+
+        // perform two searches in quick succession
+        viewModel.searchTitleFuzzy("SUBSTRING")
+        viewModel.searchTitleFuzzy("Song5")
+        advanceUntilIdle()
+
+        // search results should only reflect the second search
+        val results = getSearchResults(viewModel,1)
+        assertEquals(
+            listOf(
+                "Song5"
+            ),
+            results
+        )
+    }
 }
 
 /**

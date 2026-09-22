@@ -18,7 +18,6 @@ import com.sawears.ui.screens.lesson.LessonMainScreen
 import com.sawears.ui.screens.lesson.LessonViewModel
 import com.sawears.ui.screens.account.AccountScreen
 import com.sawears.ui.screens.error.GenericErrorScreen
-import com.sawears.ui.screens.home.ErrorScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
