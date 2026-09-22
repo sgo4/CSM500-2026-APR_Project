@@ -41,7 +41,7 @@ data class Note(
      * @param semitones the number of semitones +/- to transpose
      * @return a new Note with updated pitch
      */
-    fun transpose(semitones: Float): Note {
+    fun transpose(semitones: Int): Note {
 
         // do not transpose negative note values as these represent rests
         if (pitchMidi < 0){

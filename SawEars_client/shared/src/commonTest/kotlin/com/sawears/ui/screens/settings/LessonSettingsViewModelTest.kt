@@ -89,17 +89,11 @@ class LessonSettingsViewModelTest {
     fun `initialization throws error if lessonId not registered`() = runTest {
 
         val exception = assertFailsWith<IllegalStateException> {
-            val settingsRepository = MockSettingsRepository(
-                AppSettings(
-                    rangeMinMidi = 70,
-                    rangeMaxMidi = 90
-                )
-            )
 
             val viewModel = LessonSettingsViewModel(
                 lessonId = 1,
                 lessonSettingsRepository = EphemeralLessonSettingsRepository(),
-                settingsRepository = settingsRepository,
+                settingsRepository = settingsRepository!!,
                 autoTranspose = true
             )
         }
@@ -213,7 +207,10 @@ class LessonSettingsViewModelTest {
 
         advanceUntilIdle()
 
-        // change range to be < song range (initial defaults are 70 - 90
+        // viewModel initialization triggers autotransposition so record song notes after transposition
+        val initialSongRange = viewModel.lessonSettings.value.song.notes.map { it.pitchMidi }
+
+        // change range to be < song range (initial defaults are 70 - 90, so change max to 79)
         viewModel.updateRangeMax(79)
         advanceUntilIdle()
 
@@ -222,7 +219,7 @@ class LessonSettingsViewModelTest {
 
         // check that transposition did not occur
         assertEquals(
-            listOf(60f,70f),
+            initialSongRange,
             viewModel.lessonSettings.value.song.notes.map { it.pitchMidi }
         )
 
@@ -320,6 +317,10 @@ class LessonSettingsViewModelTest {
         )
     }
 
+    /**
+     * Tempo is considered to be specific to a given lesson/song so is only expected to be reflected in lesson
+     * settings.
+     */
     @Test
     fun `update tempo updates at lesson level only`() = runTest{
         // register lesson for mock song
@@ -555,4 +556,5 @@ class LessonSettingsViewModelTest {
             viewModel.settings.value.pitchDisplayMarginMidi
         )
     }
+
 }

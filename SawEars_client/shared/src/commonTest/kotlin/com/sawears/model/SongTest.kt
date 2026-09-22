@@ -16,6 +16,8 @@ class SongTest {
     )
     /**
      * Tests that a Song can be correctly transposed to fit within a given range
+     *
+     * Tests both odd and even ranges.
      */
     @Test
     fun `transpose song to fit target range`(){
@@ -28,10 +30,16 @@ class SongTest {
                 floatArrayOf(9f,10f,11f)
             ),
             TranspositionTestCase(
-                floatArrayOf(1f,6f,10f),
+                floatArrayOf(1f,2f,3f,4f,5f,6f,7f,8f,9f,10f),
                 20,
                 40,
-                floatArrayOf(26f,31f,35f)
+                floatArrayOf(25f,26f,27f,28f,29f,30f,31f,32f,33f,34f)
+            ),
+            TranspositionTestCase(
+                floatArrayOf(1f,2f,3f,4f,5f,6f,7f,8f,9f,10f),
+                21,
+                41,
+                floatArrayOf(26f,27f,28f,29f,30f,31f,32f,33f,34f,35f)
             ),
             TranspositionTestCase(
                 floatArrayOf(2f,4f,6f,8f),
@@ -88,7 +96,7 @@ class SongTest {
     fun `range transposition fails with negative range boundaries`(){
 
         val song = generateTestSong(
-            floatArrayOf(1f,2f) // song with a really big range!
+            floatArrayOf(1f,2f)
         )
 
         val rangeMin = -1 // negative range

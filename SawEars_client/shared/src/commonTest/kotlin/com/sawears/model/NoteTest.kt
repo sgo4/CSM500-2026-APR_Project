@@ -92,7 +92,7 @@ class NoteTest {
 
     private data class TranspositionTestCase(
         val pitchMidi: Float,
-        val semitones: Float,
+        val semitones: Int,
         val transposedPitch: Float
     )
 
@@ -102,17 +102,17 @@ class NoteTest {
         val cases = listOf(
             TranspositionTestCase(
                 60f,
-                1f,
+                1,
                 61f
             ),
             TranspositionTestCase(
                 60f,
-                -1f,
+                -1,
                 59f
             ),
             TranspositionTestCase(
                 70f,
-                -10f,
+                -10,
                 60f
             )
         )
@@ -137,7 +137,7 @@ class NoteTest {
         )
 
         assertFailsWith<TranspositionException>{
-            note.transpose(-1f)
+            note.transpose(-1)
          }
     }
 }

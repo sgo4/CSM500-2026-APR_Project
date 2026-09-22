@@ -1,6 +1,7 @@
 package com.sawears.model
 
 import com.sawears.data.midijson.DTOs.MidiJsonSongDto
+import kotlin.math.roundToInt
 
 
 /**
@@ -28,7 +29,7 @@ data class Song(
     /**
      * Return a transposed Song object by a defined number of semitones
      */
-    fun transpose(semitones: Float): Song {
+    fun transpose(semitones: Int): Song {
         val transposedNotes = notes.map {
             it.transpose(semitones)
         }
@@ -76,7 +77,9 @@ data class Song(
 
         // attempt to center melody on instrument range
         val targetRangeCentre = rangeMinMidi + (rangeMaxMidi - rangeMinMidi) / 2
-        val songRangeCentre = songMinMidi + (songMaxMidi - songMinMidi) / 2
+        // round to avoid half semitones
+        // use roundToInt as this more closely mimics rounding in other languages (i.e. 0.5 rounded up)
+        val songRangeCentre = (songMinMidi + (songMaxMidi - songMinMidi) / 2).roundToInt()
         // calculate distance between centres (in semitones)
         val transpositionDistance = targetRangeCentre - songRangeCentre
         // return new Song object with melody transposed

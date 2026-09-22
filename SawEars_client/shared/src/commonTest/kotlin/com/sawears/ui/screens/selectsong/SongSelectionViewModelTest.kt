@@ -3,7 +3,6 @@ package com.sawears.ui.screens.selectsong
 import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.sawears.data.MidiJsonRepository
-import com.sawears.data.SongRepository
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
@@ -19,9 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
