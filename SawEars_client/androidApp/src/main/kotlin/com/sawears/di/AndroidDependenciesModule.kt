@@ -19,6 +19,8 @@ import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.data.settings.createDataStore
+import com.sawears.diagnostics.NoOpRealTimeLatencyTracker
+import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.model.pitch.FastYinEstimator
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.estimators.FixedSineEstimator
@@ -79,6 +81,10 @@ object AppProviderModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         buildAndroidDatabase(context)
+
+    @Provides
+    @Singleton
+    fun provideLatencyTracker(): RealTimeLatencyTracker = NoOpRealTimeLatencyTracker()
 }
 
 @Module

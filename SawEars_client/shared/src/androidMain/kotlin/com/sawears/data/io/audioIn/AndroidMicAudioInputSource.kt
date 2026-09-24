@@ -43,6 +43,8 @@ constructor(
     @Volatile
     private var closed = false
 
+    private var frameId = 0L
+
     // android specific audio recorder
     private val recorder: AudioRecord
 
@@ -117,7 +119,7 @@ constructor(
         }
 
         // Copy so previously returned frames are not overwritten by the next read.
-        return AudioFrame(samples.copyOf(), System.nanoTime())
+        return AudioFrame(frameId++, samples.copyOf(), System.nanoTime())
     }
 
     override fun close() {

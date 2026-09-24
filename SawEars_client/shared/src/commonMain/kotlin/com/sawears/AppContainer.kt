@@ -7,6 +7,7 @@ import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
+import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.settings.DifficultySettingsProvider
@@ -62,5 +63,11 @@ interface AppContainer {
      * Converts difficulty levels to concrete application settings
      */
     val difficultySettingsProvider: DifficultySettingsProvider
+
+    /**
+     * Tracks latency for real time processing. For production, a no op version should be
+     * supplied.
+     */
+    val latencyTracker: RealTimeLatencyTracker
 
 }

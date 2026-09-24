@@ -163,7 +163,8 @@ fun NavigationRoot(
                                 container.estimator,
                                 container.difficultySettingsProvider,
                                 container.audioInputSourceFactory,
-                                container.lessonSettingsRepository
+                                container.lessonSettingsRepository,
+                                container.latencyTracker
                             )
                         }
 

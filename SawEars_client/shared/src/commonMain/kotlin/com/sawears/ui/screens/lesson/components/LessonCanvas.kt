@@ -1,7 +1,9 @@
 package com.sawears.ui.screens.lesson.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Path
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -15,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sawears.diagnostics.RealTimeLatencyStage
+import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.ui.screens.lesson.CanvasAnimationState
 import com.sawears.ui.screens.lesson.DisplayNote
 import com.sawears.ui.screens.lesson.LessonUiState
@@ -31,6 +35,7 @@ import kotlin.math.ln
  * @param lessonState UI state holder containing immutable animation variables
  * @param frameRenderState frame specific animation state
  * @param PitchDetectionAnimationState holder for pitch detection specific animation state
+ * @param latencyTracker tracker for providing latency metrics
  * @param showPlaybackHead if true, a line will be shown to indicate playback head position
  * @param showOctaveLines if true, octave dividers will be shown on screen
  */
@@ -39,14 +44,22 @@ fun LessonCanvas(
     lessonState: LessonUiState,
     frameRenderState: StateFlow<CanvasAnimationState>,
     pitchDetectionAnimationState: State<PitchDetectionAnimationState>,
+    latencyTracker: RealTimeLatencyTracker,
     showPlaybackHead: Boolean = true,
     showOctaveLines: Boolean = false
 ){
 
     // collect frame specific animation state
     val frameRenderState = frameRenderState.collectAsStateWithLifecycle()
+    val lineColor = MaterialTheme.colorScheme.onSurface
 
-    Canvas(Modifier.fillMaxSize()){
+    Canvas(
+        Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surface
+            )
+    ){
 
         val pitchFrame = pitchDetectionAnimationState.value
 
@@ -80,12 +93,15 @@ fun LessonCanvas(
             return@Canvas
         }
 
+
         if (showOctaveLines) drawOctaveBoundaries(
-            dimensions
+            dimensions,
+            lineColor
         )
 
         if (showPlaybackHead) drawPlaybackHead(
-            dimensions
+            dimensions,
+            lineColor
         )
 
         drawPianoRoll(
@@ -94,12 +110,24 @@ fun LessonCanvas(
             dimensions
         )
 
+
+        val latestSample = pitchFrame.pitchSamples.lastOrNull()
+        latestSample?.let {
+            latencyTracker.recordAtStage(it.frameId, RealTimeLatencyStage.CURVE_DRAWING_STARTED)
+        }
+
         drawPitchCurve(
             pitchFrame.pitchSamples,
             dimensions,
             pitchFrame.frameNanos,
-            pitchFrame.offsetNanos
-        )
+            pitchFrame.offsetNanos,
+            lineColor
+        ).also{
+            latestSample?.let {
+                latencyTracker.recordAtStage(it.frameId, RealTimeLatencyStage.CURVE_DRAWING_COMPLETED)
+            }
+        }
+
     }
 }
 
@@ -218,7 +246,7 @@ fun DrawScope.drawNote(
  */
 fun DrawScope.drawOctaveBoundaries(
     dimensions: LessonCanvasDimensions,
-    colour: Color = Color(0xFF343A40) // TODO this should not be hardcode
+    colour: Color
 ){
 
     val firstMidiLine = ceil(dimensions.minPitchMidi / 12f).toInt() * 12
@@ -247,7 +275,7 @@ fun DrawScope.drawOctaveBoundaries(
  */
 fun DrawScope.drawPlaybackHead(
     dimensions: LessonCanvasDimensions,
-    colour: Color = Color(0xFF343A40) // TODO should not be hardcoded
+    colour: Color
 ){
     val xCoord = dimensions.canvasWidthPx * dimensions.playBackHeadPosition
     drawLine(

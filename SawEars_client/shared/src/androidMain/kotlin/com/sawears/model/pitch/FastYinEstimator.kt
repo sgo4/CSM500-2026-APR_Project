@@ -17,6 +17,6 @@ class FastYinEstimator(
 ): PitchEstimator {
     private val estimator = FastYin(sampleRate, frameSize)
     override fun estimate(frame: AudioFrame): PitchResult {
-        return PitchResult(estimator.getPitch(frame.samples).pitch.toDouble(), frame.timeStampNanos.toDouble())
+        return PitchResult(frame.frameId,estimator.getPitch(frame.samples).pitch.toDouble(), frame.timeStampNanos)
     }
 }

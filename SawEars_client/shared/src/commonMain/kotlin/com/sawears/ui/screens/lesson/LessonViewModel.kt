@@ -8,6 +8,8 @@ import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
+import com.sawears.diagnostics.RealTimeLatencyStage
+import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
 import com.sawears.model.Song
@@ -42,6 +44,8 @@ import kotlin.Float
  * @property estimator pitch estimator class
  * @property difficultySettingsProvider involved in translating difficulty levels to concrete settings
  * @property audioInputSourceFactory creates audio input source
+ * @param lessonSettingsRepository
+ * @property latencyTracker tracks processing latency for audio frames. Use a no op implementation for production.
  */
 class LessonViewModel(
     val lessonId: Int,
@@ -49,7 +53,8 @@ class LessonViewModel(
     val estimator: PitchEstimator,
     private val difficultySettingsProvider: DifficultySettingsProvider,
     private val audioInputSourceFactory: AudioInputSourceFactory,
-    lessonSettingsRepository: LessonSettingsRepository
+    lessonSettingsRepository: LessonSettingsRepository,
+    val latencyTracker: RealTimeLatencyTracker
 ): ViewModel() {
 
     val audioPlayer = audioPlayerFactory.create()
@@ -204,13 +209,15 @@ class LessonViewModel(
                 while (isActive) {
 
                     val frame = audioInputSource.readFrame() ?: break
-
-                    val pitchResult = estimator.estimate(frame)
+                    latencyTracker.recordAtStage(frame.frameId, RealTimeLatencyStage.FRAME_READ)
+                    latencyTracker.recordAtStage(frame.frameId, RealTimeLatencyStage.ESTIMATION_STARTED)
+                    val pitchResult = estimator.estimate(frame).also{
+                        latencyTracker.recordAtStage(frame.frameId, RealTimeLatencyStage.ESTIMATION_COMPLETE)
+                    }
 
                     // submit pitch result without any checks - let receiving functions
                     // decide how to handle null frequencies etc.
                     pitchCurveInput.submitPitch(pitchResult)
-
                 }
             } finally {
                 audioInputSource?.close()

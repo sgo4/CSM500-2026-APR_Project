@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sawears.diagnostics.RealTimeLatencyStage
 import com.sawears.model.pitch.PitchResult
 import com.sawears.ui.screens.lesson.components.LessonCanvas
 import com.sawears.ui.screens.components.ContentWithTopBar
@@ -151,7 +152,8 @@ fun LessonMainScreenContent(
         LessonCanvas(
             lessonState,
             viewModel.frameRenderState,
-            pitchDetectionAnimationState
+            pitchDetectionAnimationState,
+            viewModel.latencyTracker
         )
     }
 }
@@ -180,7 +182,6 @@ private fun DebugText(
             )
         }
     }
-
 }
 
 
@@ -235,7 +236,7 @@ fun providePitchDetectionstate(
             // calculate an offset between youngest sample and current time,
             // in order to treat youngest sample as age=0
             val pitchOffset = pitchSamples.lastOrNull()
-                ?.let { (currentSystemTime - it.timeStampNanos).toLong()}
+                ?.let { (currentSystemTime - it.timeStampNanos)}
                 ?: 0L
             val oldestAllowed =
                 System.nanoTime() - (currentWindow * 1_000_000_000).toLong() - pitchOffset
@@ -250,6 +251,7 @@ fun providePitchDetectionstate(
 
             if (!paused){
                 val latestPitch = pitchSamples.lastOrNull()
+
                 viewModel.onPlaybackFrame(frameDeltaNanos, latestPitch)
             }
 
@@ -259,6 +261,13 @@ fun providePitchDetectionstate(
                 frameNanos = currentSystemTime,
                 offsetNanos = pitchOffset
             )
+            // record latency metric
+            pitchSamples.lastOrNull()?.let{
+                viewModel.latencyTracker.recordAtStage(
+                    it.frameId,
+                    RealTimeLatencyStage.ANIMATION_STATE_EMITTED
+                )
+            }
         }
     }
 }

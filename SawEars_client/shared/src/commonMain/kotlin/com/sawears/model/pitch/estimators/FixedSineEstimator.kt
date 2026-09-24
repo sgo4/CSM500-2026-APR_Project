@@ -30,8 +30,9 @@ class FixedSineEstimator(
         val frequencyHz = sinePositionToHz(sinePosition)
 
         return PitchResult(
+            frame.frameId,
             frequencyHz,
-            currentTimeNanos.toDouble()
+            currentTimeNanos
         )
     }
 

@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.sawears.diagnostics.RealTimeLatencyTracker
 
 /**
  * Draw a curve representing current pitch + recent pitch history.
@@ -26,7 +27,7 @@ fun DrawScope.drawPitchCurve(
     dimensions: LessonCanvasDimensions,
     systemTime: Long,
     timeOffset: Long,
-    colour: Color = Color(0xFF405061)
+    colour: Color
 ){
 
     val path = Path()
@@ -105,6 +106,7 @@ class PitchCurveInput(
 
         pendingSamples.trySend(
             PitchResult(
+                pitchResult.frameId,
                 validatedPitch,
                 pitchResult.timeStampNanos
             )

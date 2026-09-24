@@ -47,6 +47,8 @@ class WindowsMicAudioInputSource(
     @Volatile
     private var closed = false
 
+    private var frameId = 0L
+
     init {
         val minimumBufferBytes = frameSize * 2
         val requestedBufferBytes = max(minimumBufferBytes * 4, 4096)
@@ -98,7 +100,7 @@ class WindowsMicAudioInputSource(
         }
 
         // Copy so previously returned frames are not overwritten by the next read.
-        return AudioFrame(samples.copyOf(), System.nanoTime())
+        return AudioFrame(frameId++, samples.copyOf(), System.nanoTime())
     }
 
     override fun close() {

@@ -19,8 +19,9 @@ class DebugEstimator(
 
 
         return PitchResult(
+            frame.frameId,
             frequencyHz + (-3..3).random(), // give some natural variance
-            System.nanoTime().toDouble()
+            System.nanoTime()
         )
     }
 }
