@@ -24,6 +24,7 @@ import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.model.pitch.FastYinEstimator
 import com.sawears.model.pitch.PitchEstimator
 import com.sawears.model.pitch.estimators.FixedSineEstimator
+import com.sawears.model.settings.DifficultySettingsProvider
 import com.sawears.model.settings.StandardDifficultySettingsProvider
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import dagger.Binds
@@ -107,6 +108,6 @@ abstract class AppBindingsModule {
     @Singleton
     abstract fun bindDifficultySettingsProvider(
         implementation: StandardDifficultySettingsProvider
-    )
+    ): DifficultySettingsProvider
 
 }
