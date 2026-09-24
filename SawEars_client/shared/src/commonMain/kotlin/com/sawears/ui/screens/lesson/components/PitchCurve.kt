@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import com.sawears.diagnostics.RealTimeLatencyTracker
+import kotlinx.coroutines.flow.receiveAsFlow
 
 /**
  * Draw a curve representing current pitch + recent pitch history.
@@ -91,6 +92,8 @@ class PitchCurveInput(
         capacity = capacity,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
+    // expose flow for consumption
+    val samples = pendingSamples.receiveAsFlow()
 
     /**
      * Take pitch from a pitch model

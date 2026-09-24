@@ -67,7 +67,7 @@ class NoOpLatencyResultsWriter: RealTimeLatencyResultsWriter{
  */
 class DiagnosticRealTimeLatencyTracker(
     writer: ResultsWriter,
-    limit: Int=5_000,
+    limit: Int=3_000,
     lastStage: RealTimeLatencyStage = RealTimeLatencyStage.CURVE_DRAWING_COMPLETED
 ): RealTimeLatencyTracker{
     private val marks = Channel<RealTimeLatencyMark>(

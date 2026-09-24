@@ -33,6 +33,8 @@ import com.sawears.diagnostics.RealTimeLatencyStage
 import com.sawears.model.pitch.PitchResult
 import com.sawears.ui.screens.lesson.components.LessonCanvas
 import com.sawears.ui.screens.components.ContentWithTopBar
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.lesson_button_pauseaudio_description
@@ -142,11 +144,11 @@ fun LessonMainScreenContent(
         }
 
         val pitchDetectionAnimationState = providePitchDetectionstate(
-            viewModel,
-            lessonState.paused,
+            viewModel = viewModel,
+            paused = lessonState.paused,
             pitchCurveDurationSeconds = ( // calculate length of pitch history (i.e. proportion of time window before playback head)
-                    lessonState.durationSeconds * lessonState.playBackHeadPosition
-                    )
+                        lessonState.durationSeconds * lessonState.playBackHeadPosition
+                        )
         )
 
         LessonCanvas(
@@ -201,6 +203,14 @@ data class PitchDetectionAnimationState(
 /**
  * Converts pitch samples into observable UI state
  *
+ * Implementation note: In a previous iteration, receiving new estimates and updating
+ * state were combined in a single routine that runs with frame nanos, however this was
+ * found to contribute to processing latency as it meant new pitch samples could only be
+ * received on frame refresh. Instead, two separate routines are used:
+ *
+ * 1. Received pitch estimates continuously as flow
+ * 2. Provides new animation state tied to frame rate
+ *
  * @param viewModel
  * @param paused
  * @param pitchCurveDurationSeconds
@@ -212,61 +222,73 @@ fun providePitchDetectionstate(
     pitchCurveDurationSeconds: Float
 ): State<PitchDetectionAnimationState>{
 
-    val currentWindow by rememberUpdatedState(pitchCurveDurationSeconds)
+    val windowDurationSeconds by rememberUpdatedState(pitchCurveDurationSeconds)
 
     return produceState(
         initialValue = PitchDetectionAnimationState(),
         viewModel,
         paused
     ){
+        coroutineScope {
 
-        val pitchSamples = ArrayDeque<PitchResult>()
-        var previousFrameNanos = withFrameNanos { it }
+            val pitchSamples = ArrayDeque<PitchResult>()
+            var latestPitch: PitchResult? = null
 
-        while (true){
-            val currentFrameNanos = withFrameNanos { it }
-            val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
-            previousFrameNanos = currentFrameNanos
+            // one routine receives samples continuously
+            launch {
+                viewModel.pitchCurveInput.samples.collect { pitch ->
 
-            // add latest pitch samples
-            viewModel.pitchCurveInput.drainInto(pitchSamples)
+                    latestPitch = pitch
+                    pitchSamples.addLast(pitch)
 
-            val currentSystemTime = System.nanoTime()
+                    val windowDurationNanos = (windowDurationSeconds * 1_000_000_000).toLong()
 
-            // calculate an offset between youngest sample and current time,
-            // in order to treat youngest sample as age=0
-            val pitchOffset = pitchSamples.lastOrNull()
-                ?.let { (currentSystemTime - it.timeStampNanos)}
-                ?: 0L
-            val oldestAllowed =
-                System.nanoTime() - (currentWindow * 1_000_000_000).toLong() - pitchOffset
+                    val currentSystemTime = System.nanoTime()
 
-            while (
-                pitchSamples.isNotEmpty() &&
-                pitchSamples.first().timeStampNanos < oldestAllowed
+                    // calculate an offset between youngest sample and current time,
+                    // in order to treat youngest sample as age=0
+                    val pitchOffset = currentSystemTime - latestPitch.timeStampNanos
+                    // calculate age of oldest sample to show
+                    val oldestAllowed = currentSystemTime - windowDurationNanos - pitchOffset
+                    // remove samples too old to show on screen
+                    while (
+                        pitchSamples.isNotEmpty() &&
+                        pitchSamples.first().timeStampNanos < oldestAllowed
+                    ) {
+                        pitchSamples.removeFirst()
+                    }
 
-            ) {
-                pitchSamples.removeFirst()
+                    value = PitchDetectionAnimationState(
+                        pitchSamples = pitchSamples.toList(),
+                        frameNanos = pitch.timeStampNanos,
+                        offsetNanos = 0L
+                    ).also{
+                        // record a timestamp when new state emitted for metrics purposes
+                        // Implementation note: use a no op implemnetation in production
+                        viewModel.latencyTracker.recordAtStage(
+                            latestPitch.frameId,
+                            RealTimeLatencyStage.ANIMATION_STATE_EMITTED
+                        )
+                    }
+                }
             }
 
-            if (!paused){
-                val latestPitch = pitchSamples.lastOrNull()
+            // another advances frame only on frame refresh
+            launch {
+                var previousFrameNanos = withFrameNanos { it }
 
-                viewModel.onPlaybackFrame(frameDeltaNanos, latestPitch)
-            }
+                while(true){
+                    val currentFrameNanos = withFrameNanos { it }
+                    val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
+                    previousFrameNanos = currentFrameNanos
 
-            // emit animation state that can be consumed by drawables
-            value = PitchDetectionAnimationState(
-                pitchSamples = pitchSamples.toList(),
-                frameNanos = currentSystemTime,
-                offsetNanos = pitchOffset
-            )
-            // record latency metric
-            pitchSamples.lastOrNull()?.let{
-                viewModel.latencyTracker.recordAtStage(
-                    it.frameId,
-                    RealTimeLatencyStage.ANIMATION_STATE_EMITTED
-                )
+                    if (!paused){
+                        viewModel.onPlaybackFrame(
+                            frameDeltaNanos,
+                            latestPitch
+                        )
+                    }
+                }
             }
         }
     }

@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            // TODO replace with view model?
             var initialized by remember { mutableStateOf(false) }
             var initializationError by remember {mutableStateOf("")}
 
