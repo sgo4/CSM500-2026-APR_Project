@@ -1,9 +1,9 @@
 package com.sawears.data.midijson
 
-import com.sawears.domain.Song
+import com.sawears.domain.songModel.Song
 import com.sawears.data.midijson.parsers.MidiJsonParser
 import com.sawears.data.midijson.DTOs.toMidiJsonSongDto
-import com.sawears.domain.toSong
+import com.sawears.domain.songModel.toSong
 import sawears.shared.generated.resources.Res
 import org.jetbrains.compose.resources.MissingResourceException
 

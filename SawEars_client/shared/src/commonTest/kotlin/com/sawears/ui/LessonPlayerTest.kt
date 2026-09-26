@@ -1,7 +1,7 @@
 package com.sawears.ui
 
-import com.sawears.domain.Note
-import com.sawears.domain.Song
+import com.sawears.domain.songModel.Note
+import com.sawears.domain.songModel.Song
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import com.sawears.ui.screens.lesson.LessonPlayer

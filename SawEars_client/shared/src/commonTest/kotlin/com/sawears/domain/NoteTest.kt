@@ -1,5 +1,7 @@
 package com.sawears.domain
 
+import com.sawears.domain.songModel.Note
+import com.sawears.domain.songModel.TranspositionException
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertEquals

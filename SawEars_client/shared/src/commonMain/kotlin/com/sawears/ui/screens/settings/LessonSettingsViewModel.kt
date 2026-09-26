@@ -4,8 +4,8 @@ package com.sawears.ui.screens.lessonsettings
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.domain.Song
-import com.sawears.domain.TranspositionException
+import com.sawears.domain.songModel.Song
+import com.sawears.domain.songModel.TranspositionException
 import com.sawears.domain.settings.Difficulty
 import com.sawears.ui.screens.settings.SettingsError
 import com.sawears.ui.screens.settings.SettingsViewModel

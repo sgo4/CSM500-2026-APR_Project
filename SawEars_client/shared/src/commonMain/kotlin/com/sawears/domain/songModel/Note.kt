@@ -1,4 +1,4 @@
-package com.sawears.domain
+package com.sawears.domain.songModel
 
 import kotlinx.serialization.Serializable
 import kotlin.math.pow

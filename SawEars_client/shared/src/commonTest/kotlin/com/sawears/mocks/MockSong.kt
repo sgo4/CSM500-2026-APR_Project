@@ -1,7 +1,7 @@
 package com.sawears.mocks
 
-import com.sawears.domain.Note
-import com.sawears.domain.Song
+import com.sawears.domain.songModel.Note
+import com.sawears.domain.songModel.Song
 
 
 fun mockSong(

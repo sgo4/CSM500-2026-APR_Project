@@ -11,7 +11,7 @@ import com.sawears.diagnostics.RealTimeLatencyStage
 import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.ui.screens.lesson.components.PitchCurveInput
 import kotlinx.coroutines.launch
-import com.sawears.domain.Song
+import com.sawears.domain.songModel.Song
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.pitch.PitchResult
 import com.sawears.domain.settings.Difficulty

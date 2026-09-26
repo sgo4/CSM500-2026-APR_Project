@@ -1,6 +1,6 @@
 package com.sawears.ui.screens.lesson
 
-import com.sawears.domain.Song
+import com.sawears.domain.songModel.Song
 import com.sawears.ui.screens.lessonsettings.LessonMode
 
 /**
