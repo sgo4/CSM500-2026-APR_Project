@@ -49,4 +49,9 @@
     <string name="lesson_button_restartlesson_description">レッスンを再開</string>
     <!-- error screen -->
     <string name="error_page">エラー</string>
+    <!-- permissions screen -->
+    <string name="permissions_explanation">SawEarsの動作には、音声録音の権限が必要です。下のボタンを押して、このデバイスでの権限を許可してください。</string>
+    <string name="permissions_grant_permission_button">権限を許可する</string>
+    <string name="permissions_permanently_declined">権限が永続的に拒否されました。アプリを利用するには、アプリの設定から権限を許可してください。</string>
+    <string name="permissions_open_settings_button">アプリの設定を開く</string>
 </resources>

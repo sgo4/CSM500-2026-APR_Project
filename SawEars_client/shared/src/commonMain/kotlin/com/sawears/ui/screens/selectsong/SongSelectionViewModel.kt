@@ -3,11 +3,11 @@ package com.sawears.ui.screens.selectsong
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sawears.data.SongRepository
+import com.sawears.data.midijson.SongRepository
 import com.sawears.data.database.SongDao
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.model.useCases.RegisterLesson
+import com.sawears.domain.useCases.RegisterLesson
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*

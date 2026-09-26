@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sawears.data.settings.AppSettings
-import com.sawears.model.settings.Difficulty
+import com.sawears.domain.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.components.NumericStepper
 import com.sawears.ui.screens.components.Tooltip
@@ -33,7 +33,6 @@ import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.settings_errors_failed_to_persist
 import sawears.shared.generated.resources.settings_errors_negative_pitch_margin
 import sawears.shared.generated.resources.settings_errors_range_less_than_one
-import sawears.shared.generated.resources.settings_errors_range_too_small_for_song
 import sawears.shared.generated.resources.settings_options_difficulty_label
 import sawears.shared.generated.resources.settings_options_difficulty_tooltip
 import sawears.shared.generated.resources.settings_options_displaymargin_label

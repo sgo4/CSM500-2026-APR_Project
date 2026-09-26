@@ -3,17 +3,14 @@ package com.sawears.di
 import android.content.Context
 import com.sawears.AndroidAppContainer
 import com.sawears.AppContainer
-import com.sawears.data.MidiJsonRepository
-import com.sawears.data.SongRepository
+import com.sawears.data.midijson.MidiJsonRepository
+import com.sawears.data.midijson.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.database.buildAndroidDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioOut.AndroidAudioInputSourceFactory
-import com.sawears.data.io.audioOut.AndroidAudioPlayer
 import com.sawears.data.io.audioOut.AndroidAudioPlayerFactory
-import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.AudioPlayerFactory
-import com.sawears.data.io.audioOut.SineWaveOutputSource
 import com.sawears.data.settings.DataStoreSettingsRepository
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
@@ -21,11 +18,10 @@ import com.sawears.data.settings.SettingsRepository
 import com.sawears.data.settings.createDataStore
 import com.sawears.diagnostics.NoOpRealTimeLatencyTracker
 import com.sawears.diagnostics.RealTimeLatencyTracker
-import com.sawears.model.pitch.FastYinEstimator
-import com.sawears.model.pitch.PitchEstimator
-import com.sawears.model.pitch.estimators.FixedSineEstimator
-import com.sawears.model.settings.DifficultySettingsProvider
-import com.sawears.model.settings.StandardDifficultySettingsProvider
+import com.sawears.domain.pitch.FastYinEstimator
+import com.sawears.domain.pitch.PitchEstimator
+import com.sawears.domain.settings.DifficultySettingsProvider
+import com.sawears.domain.settings.StandardDifficultySettingsProvider
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import dagger.Binds
 import dagger.Module
@@ -86,6 +82,11 @@ object AppProviderModule {
     @Provides
     @Singleton
     fun provideLatencyTracker(): RealTimeLatencyTracker = NoOpRealTimeLatencyTracker()
+
+    @Provides
+    @Singleton
+    fun difficultySettingsProvider(): DifficultySettingsProvider =
+        StandardDifficultySettingsProvider()
 }
 
 @Module
@@ -103,11 +104,5 @@ abstract class AppBindingsModule {
     abstract fun bindAppContainer(
         implementation: AndroidAppContainer
     ): AppContainer
-
-    @Binds
-    @Singleton
-    abstract fun bindDifficultySettingsProvider(
-        implementation: StandardDifficultySettingsProvider
-    ): DifficultySettingsProvider
 
 }

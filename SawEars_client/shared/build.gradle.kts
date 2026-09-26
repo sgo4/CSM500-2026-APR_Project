@@ -77,6 +77,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+}
+
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
     add("kspAndroid", libs.androidx.room3.compiler)

@@ -1,4 +1,4 @@
-package com.sawears.model.settings
+package com.sawears.domain.settings
 
 
 /**

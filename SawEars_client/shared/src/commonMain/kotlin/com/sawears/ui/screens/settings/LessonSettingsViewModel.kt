@@ -4,9 +4,9 @@ package com.sawears.ui.screens.lessonsettings
 import androidx.lifecycle.viewModelScope
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.model.Song
-import com.sawears.model.TranspositionException
-import com.sawears.model.settings.Difficulty
+import com.sawears.domain.Song
+import com.sawears.domain.TranspositionException
+import com.sawears.domain.settings.Difficulty
 import com.sawears.ui.screens.settings.SettingsError
 import com.sawears.ui.screens.settings.SettingsViewModel
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**

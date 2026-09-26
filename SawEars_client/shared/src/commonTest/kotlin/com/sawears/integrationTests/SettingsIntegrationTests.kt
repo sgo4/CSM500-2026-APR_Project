@@ -2,24 +2,16 @@ package com.sawears.integrationTests
 
 import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.sawears.data.MidiJsonRepository
+import com.sawears.data.midijson.MidiJsonRepository
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
-import com.sawears.data.settings.LessonSettingsRepository
-import com.sawears.data.settings.SettingsRepository
 import com.sawears.mocks.MockSettingsRepository
-import com.sawears.model.useCases.RegisterLesson
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.data.database.*
-import com.sawears.mocks.mockSong
 import com.sawears.ui.screens.lessonsettings.LessonSettingsViewModel
 import com.sawears.ui.screens.selectsong.SongSelectionViewModel
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -27,14 +19,10 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import sawears.shared.generated.resources.Res
-import sawears.shared.generated.resources.songselection_errors_failed_to_load
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsIntegrationTests{

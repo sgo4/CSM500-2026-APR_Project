@@ -1,13 +1,11 @@
 package com.sawears
 
-import com.sawears.data.MidiJsonRepository
-import com.sawears.data.SongRepository
+import com.sawears.data.midijson.MidiJsonRepository
+import com.sawears.data.midijson.SongRepository
 import com.sawears.data.database.buildWindowsDatabase
 import com.sawears.data.diagnostics.WindowsDiagnosticsCsvWriter
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
 import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
-import com.sawears.data.io.audioOut.SineWaveOutputSource
-import com.sawears.data.io.audioOut.WindowsAudioPlayer
 import com.sawears.data.io.audioOut.WindowsAudioPlayerFactory
 import com.sawears.data.settings.DataStoreSettingsRepository
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
@@ -16,10 +14,9 @@ import com.sawears.data.settings.createDataStore
 import com.sawears.diagnostics.DiagnosticRealTimeLatencyTracker
 import com.sawears.diagnostics.NoOpRealTimeLatencyTracker
 import com.sawears.diagnostics.RealTimeLatencyTracker
-import com.sawears.model.pitch.FastYinEstimator
-import com.sawears.model.pitch.estimators.DebugEstimator
+import com.sawears.domain.pitch.FastYinEstimator
 import com.sawears.ui.screens.lesson.components.PlaybackClock
-import com.sawears.model.settings.StandardDifficultySettingsProvider
+import com.sawears.domain.settings.StandardDifficultySettingsProvider
 
 
 /**

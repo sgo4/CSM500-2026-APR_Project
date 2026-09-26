@@ -1,6 +1,6 @@
 package com.sawears.ui.screens.lesson
 
-import com.sawears.model.pitch.midiToHz
+import com.sawears.domain.pitch.midiToHz
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

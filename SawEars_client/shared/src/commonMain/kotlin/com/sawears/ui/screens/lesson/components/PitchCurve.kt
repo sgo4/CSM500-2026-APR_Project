@@ -4,12 +4,11 @@ package com.sawears.ui.screens.lesson.components
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import com.sawears.model.pitch.PitchResult
+import com.sawears.domain.pitch.PitchResult
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.sawears.diagnostics.RealTimeLatencyTracker
 import kotlinx.coroutines.flow.receiveAsFlow
 
 /**
@@ -114,25 +113,6 @@ class PitchCurveInput(
                 pitchResult.timeStampNanos
             )
         )
-    }
-
-    /**
-     * Drain collected samples into a receiver
-     *
-     * @param receiver
-     */
-    fun drainInto(receiver: MutableList<PitchResult>) {
-        val drained = buildList {
-            while (true) {
-                val result = pendingSamples.tryReceive()
-
-                if (result.isFailure){
-                    break
-                }
-                add(result.getOrThrow())
-            }
-        }
-        receiver.addAll(drained)
     }
 
     fun close() {

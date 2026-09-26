@@ -49,4 +49,10 @@
     <string name="lesson_button_restartlesson_description">Restart lesson</string>
     <!-- error screen -->
     <string name="error_page">Error</string>
+    <!-- permissions screen -->
+    <string name="permissions_explanation">SawEars requires permission to record audio to operate. Press the button below to grant the necessary permissions for this device.</string>
+    <string name="permissions_grant_permission_button">Grant permission</string>
+    <string name="permissions_permanently_declined">Permission was permanently declined. Grant the permission in app settings to continue to the app.</string>
+    <string name="permissions_open_settings_button">Open app settings</string>
+
 </resources>

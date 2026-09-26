@@ -1,4 +1,4 @@
-package com.sawears.model
+package com.sawears.domain
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith

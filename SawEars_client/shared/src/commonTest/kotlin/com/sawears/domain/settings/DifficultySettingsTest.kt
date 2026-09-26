@@ -1,4 +1,4 @@
-package com.sawears.model.settings
+package com.sawears.domain.settings
 
 import com.sawears.ui.screens.lesson.AccuracyTracker
 import junit.framework.TestCase.assertFalse

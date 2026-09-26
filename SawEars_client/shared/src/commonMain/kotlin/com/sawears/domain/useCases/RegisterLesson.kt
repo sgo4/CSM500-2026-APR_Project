@@ -1,8 +1,8 @@
-package com.sawears.model.useCases
+package com.sawears.domain.useCases
 
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.LessonSettingsRepository
-import com.sawears.model.Song
+import com.sawears.domain.Song
 import com.sawears.ui.screens.lessonsettings.LessonSettings
 
 

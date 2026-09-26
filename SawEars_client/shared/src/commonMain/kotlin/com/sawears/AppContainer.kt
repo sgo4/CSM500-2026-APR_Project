@@ -1,16 +1,15 @@
 package com.sawears
 
-import com.sawears.data.SongRepository
+import com.sawears.data.midijson.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
-import com.sawears.data.io.audioOut.AudioPlayer
 import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.ui.screens.lesson.components.PlaybackClock
-import com.sawears.model.pitch.PitchEstimator
-import com.sawears.model.settings.DifficultySettingsProvider
+import com.sawears.domain.pitch.PitchEstimator
+import com.sawears.domain.settings.DifficultySettingsProvider
 
 /**
  * Common interface for dependency injection container

@@ -1,4 +1,4 @@
-package com.sawears.model
+package com.sawears.domain
 
 import kotlinx.serialization.Serializable
 import kotlin.math.pow

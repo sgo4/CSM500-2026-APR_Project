@@ -15,6 +15,7 @@ import javax.inject.Inject
  * Android implementation of factory of AudioInputSource
  *
  * Includes some checks for permissions handling
+ * @param application and [Application] object
  */
 class AndroidAudioInputSourceFactory @Inject constructor(
     private val application: Application

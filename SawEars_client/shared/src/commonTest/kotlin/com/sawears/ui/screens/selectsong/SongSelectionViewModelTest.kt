@@ -2,13 +2,13 @@ package com.sawears.ui.screens.selectsong
 
 import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.sawears.data.MidiJsonRepository
+import com.sawears.data.midijson.MidiJsonRepository
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.mocks.MockSettingsRepository
-import com.sawears.model.useCases.RegisterLesson
+import com.sawears.domain.useCases.RegisterLesson
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.data.database.*
 import com.sawears.mocks.mockSong

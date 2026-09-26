@@ -6,7 +6,7 @@ import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.mocks.MockSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.mocks.mockSong
-import com.sawears.model.useCases.RegisterLesson
+import com.sawears.domain.useCases.RegisterLesson
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.lessonsettings.LessonSettingsViewModel
 import kotlinx.coroutines.Dispatchers

@@ -30,7 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.diagnostics.RealTimeLatencyStage
-import com.sawears.model.pitch.PitchResult
+import com.sawears.domain.pitch.PitchResult
 import com.sawears.ui.screens.lesson.components.LessonCanvas
 import com.sawears.ui.screens.components.ContentWithTopBar
 import kotlinx.coroutines.coroutineScope

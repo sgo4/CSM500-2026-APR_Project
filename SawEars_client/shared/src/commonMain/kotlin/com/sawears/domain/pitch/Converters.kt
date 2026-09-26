@@ -1,4 +1,4 @@
-package com.sawears.model.pitch
+package com.sawears.domain.pitch
 
 import kotlin.math.pow
 

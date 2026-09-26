@@ -2,7 +2,7 @@ package com.sawears.mocks
 
 import com.sawears.data.settings.AppSettings
 import com.sawears.data.settings.SettingsRepository
-import com.sawears.model.settings.Difficulty
+import com.sawears.domain.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

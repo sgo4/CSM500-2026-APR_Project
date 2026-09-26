@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Storage
 import androidx.datastore.preferences.core.Preferences
-import com.sawears.model.settings.Difficulty
+import com.sawears.domain.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 
 /**

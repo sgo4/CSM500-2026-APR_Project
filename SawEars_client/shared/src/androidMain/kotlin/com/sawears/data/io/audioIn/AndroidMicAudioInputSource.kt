@@ -3,8 +3,10 @@ package com.sawears.data.io.audioIn
 import android.Manifest
 import android.media.AudioFormat
 import android.media.AudioRecord
+import android.media.AudioTimestamp
 import android.media.MediaRecorder
 import androidx.annotation.RequiresPermission
+import com.sawears.diagnostics.RealTimeLatencyTracker
 import kotlin.math.max
 
 /**
@@ -18,6 +20,7 @@ class AndroidMicAudioInputSource
 constructor(
     override val frameSize: Int = 1024,
     override val sampleRate: Int = 44_100,
+    val tracker: RealTimeLatencyTracker
 ): AudioInputSource {
 
     init {
@@ -47,6 +50,7 @@ constructor(
 
     // android specific audio recorder
     private val recorder: AudioRecord
+
 
     init {
 
@@ -85,6 +89,11 @@ constructor(
     /**
      * Blocks until one complete frame has been captured.
      *
+     * Note, "frame" here refers to a frame of bufferSize samples, whereas
+     * in android terminology a frame refers to a single sample across all
+     * channels. As audio recording is specified to be mono, we use samples
+     * to represent what android refers to as frames.
+     *
      * Callable from a worker thread / dispatchers.IO
      */
     override fun readFrame(): AudioFrame? {
@@ -102,15 +111,14 @@ constructor(
                 AudioRecord.READ_BLOCKING
             )
 
+
             if (count < 0) {
                 return null
-            }
-
-            if (count == 0) {
+            } else if (count == 0) {
                 continue
+            } else {
+                offset += count
             }
-
-            offset += count
         }
 
         for (sampleIdx in 0 until frameSize) {
@@ -134,4 +142,5 @@ constructor(
             recorder.release()
         }
     }
+
 }

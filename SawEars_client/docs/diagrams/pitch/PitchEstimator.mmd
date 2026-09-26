@@ -1,0 +1,53 @@
+---
+title: Pitch Estimator Interface
+---
+classDiagram
+direction LR
+%% Classes
+class PitchEstimator{
+    <<interface>>
+    +sampleRate Float
+    +frameSize Int
+    +estimate(AudioFrame frame) PitchResult
+    +reset() void
+}
+
+class FastYinEstimator{
+    +sampleRate Float
+    +frameSize Int
+    -estimator FastYin
+    +estimate(AudioFrame frame) PitchResult
+    +reset() void
+}
+
+class tarsos.FastYin{
+    +getPitch(Float[] buffer) tarsos.PitchResult
+}
+
+
+
+
+class PitchResult{
+    +frameId Long
+    +frequencyHz Double?
+    +timeStampNanos Long
+    +confidence Double?
+}
+
+class AudioFrame{
+    +frameId Long
+    +samples FloatArray
+    +timeStampNanos Long
+}
+
+%%Relationships
+%% YinEstimator implements PitchEstimator
+PitchEstimator <|-- FastYinEstimator
+
+%% PitchEstimator dependencies
+PitchEstimator ..> AudioFrame
+PitchEstimator ..> PitchResult
+
+%% FastYin dependencies
+FastYinEstimator ..> tarsos.FastYin
+

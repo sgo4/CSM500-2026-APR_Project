@@ -1,6 +1,6 @@
 package com.sawears.data.io.audioOut
 
-import com.sawears.model.Song
+import com.sawears.domain.Song
 
 /**
  * Model layer audio output interface.

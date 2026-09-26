@@ -1,4 +1,4 @@
-package com.sawears.model
+package com.sawears.domain
 
 import com.sawears.data.midijson.DTOs.MidiJsonSongDto
 import kotlin.math.roundToInt

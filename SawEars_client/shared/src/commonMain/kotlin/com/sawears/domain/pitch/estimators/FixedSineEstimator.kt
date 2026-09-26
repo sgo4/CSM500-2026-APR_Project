@@ -1,8 +1,8 @@
-package com.sawears.model.pitch.estimators
+package com.sawears.domain.pitch.estimators
 
 import com.sawears.data.io.audioIn.AudioFrame
-import com.sawears.model.pitch.PitchEstimator
-import com.sawears.model.pitch.PitchResult
+import com.sawears.domain.pitch.PitchEstimator
+import com.sawears.domain.pitch.PitchResult
 import kotlin.math.PI
 import kotlin.math.sin
 

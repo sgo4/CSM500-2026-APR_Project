@@ -1,4 +1,4 @@
-package com.sawears.model.pitch
+package com.sawears.domain.pitch
 
 /**
  * Model layer representation of the result of a pitch estimation for a single

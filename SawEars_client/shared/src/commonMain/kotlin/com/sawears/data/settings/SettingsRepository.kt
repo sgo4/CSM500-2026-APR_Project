@@ -1,12 +1,8 @@
 package com.sawears.data.settings
 
-import com.sawears.model.settings.Difficulty
+import com.sawears.domain.settings.Difficulty
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.update
 
 /**
  * Repository for app wide settings
