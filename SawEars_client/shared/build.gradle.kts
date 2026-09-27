@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room3)
+    id("org.jetbrains.dokka") version "2.2.0"
 }
 
 kotlin {
@@ -77,6 +79,8 @@ kotlin {
     }
 }
 
+
+// necessary to allow common string resources to be referenced in platform specific code
 compose.resources {
     publicResClass = true
 }
@@ -89,4 +93,14 @@ dependencies {
 
 room3 {
     schemaDirectory("$projectDir/schemas")
+}
+
+dokka {
+    dokkaPublications.html {
+        includes.from(
+            "docs/packages/com.sawears.data.md",
+            "docs/packages/com.sawears.domain.md",
+            "docs/packages/com.sawears.ui.md"
+        )
+    }
 }

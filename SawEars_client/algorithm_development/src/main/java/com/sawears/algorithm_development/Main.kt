@@ -5,10 +5,11 @@ import com.sawears.algorithm_development.io.*
 import com.sawears.algorithm_development.pitch.ConstantEstimator
 import com.sawears.algorithm_development.pitch.RTSwipeEstimator
 import com.sawears.algorithm_development.evaluation.centsDifference
+import com.sawears.algorithm_development.evaluation.windowSizeExperiment
 import java.io.File
 
 
-fun main(){
+fun testWithFixedWaveFile(){
     println("Hello world")
     println("Starting")
     val filePath = "C:\\Users\\sotte\\OneDrive\\Documents\\Audacity\\Project\\AB.wav"
@@ -43,10 +44,19 @@ fun main(){
         val frame = audioSource.readFrame()?: break
         val prediction = estimator.estimate(frame)
         println(prediction.frequency)
-
     }
-
 }
+
+
+
+fun main(){
+    windowSizeExperiment(
+        dataSet = "ChoraleBricks",
+        windowSizes = listOf(256,512,1024,2048),
+        sampleRate = 44_100f
+    )
+}
+
 
 
 

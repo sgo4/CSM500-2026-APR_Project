@@ -55,11 +55,8 @@ class DataSetExperimentRunner(
                 var currentTicks = processed / experimentsPerTick
                 print("Time elapsed: ${timeElapsed/1000.0}\n" +"#".repeat(currentTicks) + " ".repeat(loadingTicks - currentTicks) + "($processed/$n_experiments)" +"\r")
             }
-
         }
     }
-
-
 
     private fun getAudioSource(track: AudioTrack): AudioSource {
         val audioStream = object {}.javaClass.getResourceAsStream(track.path) ?: error("Resource not found")
@@ -73,7 +70,6 @@ class DataSetExperimentRunner(
 
 }
 
-
 /**
  * Parse index for a dataset into a list of AudioTrack objects
  *
@@ -86,60 +82,59 @@ fun parseIndex(dataSet: String, delimiter: String = ";"): List<AudioTrack>{
     ) ?: error("Resource not found")
 
     val rows = index.bufferedReader().useLines {
-        lines ->
-            lines
-                .drop(1)
-                .filter{it.isNotBlank()}
-                .map {
-                    val rowData = it.split(delimiter)
-                    AudioTrack(
-                        rowData[0],
-                        rowData[1]
-                    )
-                }
-                .toList()
-        }
+            lines ->
+        lines
+            .drop(1)
+            .filter{it.isNotBlank()}
+            .map {
+                val rowData = it.split(delimiter)
+                AudioTrack(
+                    rowData[0],
+                    rowData[1]
+                )
+            }
+            .toList()
+    }
     return rows
 }
 
 
+/**
+ * Experiment to test performance with multiple window sizes
+ */
+fun windowSizeExperiment(
+    dataSet: String = "ChoraleBricks",
+    windowSizes: List<Int> = listOf(256,512,1024,2048),
+    sampleRate: Float = 44_100f
+){
 
-
-
-
-
-fun main(){
-
-    val dataSet = "ChoraleBricks"
-    val sampleRate = 44100
-    val frameSize = 256
-    val estimators = listOf(
+    windowSizes.forEach { windowSize ->
+        val estimators = listOf(
 //        RTSwipeEstimator(
-//            sampleRate.toFloat(),
-//            frameSize
+//            sampleRate,
+//            windowSize
 //        ),
-        YinEstimator(
-            sampleRate.toFloat(),
-            frameSize
-        ),
-        DynamicWaveletEstimator(
-            sampleRate.toFloat(),
-            frameSize
-        ),
-        McLeodEstimator(
-            sampleRate.toFloat(),
-            frameSize
+            YinEstimator(
+                sampleRate,
+                windowSize
+            ),
+            DynamicWaveletEstimator(
+                sampleRate,
+                windowSize
+            ),
+            McLeodEstimator(
+                sampleRate,
+                windowSize
+            )
         )
-
-    )
-    val runner = DataSetExperimentRunner(
-        dataSet,
-        estimators,
-        frameSize,
-        "windowSize256"
-    )
-    runner.run()
-
-
+        val runner = DataSetExperimentRunner(
+            dataSet,
+            estimators,
+            windowSize,
+            "windowSize" + windowSize.toString()
+        )
+        runner.run()
+    }
 }
+
 
