@@ -11,6 +11,3 @@ fun interface AudioInputSourceFactory {
     fun create(): AudioInputSource
 }
 
-
-class Mock
-

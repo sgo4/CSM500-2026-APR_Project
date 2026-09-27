@@ -19,8 +19,7 @@ class AndroidMicAudioInputSource
 @RequiresPermission(Manifest.permission.RECORD_AUDIO)
 constructor(
     override val frameSize: Int = 1024,
-    override val sampleRate: Int = 44_100,
-    val tracker: RealTimeLatencyTracker
+    override val sampleRate: Int = 44_100
 ): AudioInputSource {
 
     init {

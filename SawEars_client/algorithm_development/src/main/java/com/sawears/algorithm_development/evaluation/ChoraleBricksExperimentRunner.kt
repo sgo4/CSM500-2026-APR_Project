@@ -7,6 +7,7 @@ import com.sawears.algorithm_development.pitch.PitchEstimator
 import com.sawears.algorithm_development.pitch.RTSwipeEstimator
 import com.sawears.algorithm_development.pitch.YinEstimator
 import com.sawears.algorithm_development.pitch.DynamicWaveletEstimator
+import com.sawears.algorithm_development.pitch.FastYinEstimator
 import com.sawears.algorithm_development.pitch.McLeodEstimator
 import java.io.File
 import kotlin.math.ceil
@@ -114,6 +115,10 @@ fun windowSizeExperiment(
 //            sampleRate,
 //            windowSize
 //        ),
+            FastYinEstimator(
+                sampleRate,
+                windowSize
+            ),
             YinEstimator(
                 sampleRate,
                 windowSize

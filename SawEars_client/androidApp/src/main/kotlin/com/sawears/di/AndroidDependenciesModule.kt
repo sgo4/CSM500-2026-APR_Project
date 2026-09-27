@@ -8,7 +8,7 @@ import com.sawears.data.midijson.SongRepository
 import com.sawears.data.database.AppDatabase
 import com.sawears.data.database.buildAndroidDatabase
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
-import com.sawears.data.io.audioOut.AndroidAudioInputSourceFactory
+import com.sawears.data.io.audioIn.AndroidAudioInputSourceFactory
 import com.sawears.data.io.audioOut.AndroidAudioPlayerFactory
 import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.DataStoreSettingsRepository
