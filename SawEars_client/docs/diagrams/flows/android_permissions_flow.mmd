@@ -1,0 +1,16 @@
+---
+title: Runtime permissions request flow
+---
+flowchart
+direction LR
+
+
+A["App starts"] --> B["Permission granted?"]
+B -->|Yes| C["Continue to home screen"]
+B -->|No| D["Request permission"]
+D --> E["Permission granted"]
+E -->|Yes| C
+E -->|No| F["Has permission already been declined twice?"]
+F -->|Yes| G["Permission  must be enabled in device settings"]
+F -->|No| D
+G --> H["Direct user to device settings"]

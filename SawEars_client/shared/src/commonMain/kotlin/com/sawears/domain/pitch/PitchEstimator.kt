@@ -1,6 +1,6 @@
 package com.sawears.domain.pitch
 
-import com.sawears.data.io.audioIn.AudioFrame
+import com.sawears.data.io.audioIn.AudioWindow
 
 /**
  * Model layer interface representing a pitch estimator
@@ -30,7 +30,7 @@ interface PitchEstimator {
      * sampled at [sampleRate].
      * @return Estimation result including estimated frequency and other information such as timestamp.
      */
-    fun estimate(frame: AudioFrame): PitchResult
+    fun estimate(frame: AudioWindow): PitchResult
 
     /**
      * Reset the estimator enabling the object to be reused

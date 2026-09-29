@@ -1,6 +1,6 @@
 package com.sawears.domain.pitch.estimators
 
-import com.sawears.data.io.audioIn.AudioFrame
+import com.sawears.data.io.audioIn.AudioWindow
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.pitch.PitchResult
 import kotlin.math.PI
@@ -21,7 +21,7 @@ class FixedSineEstimator(
 
     private val amplitude = 1.0
 
-    override fun estimate(frame: AudioFrame): PitchResult {
+    override fun estimate(frame: AudioWindow): PitchResult {
         val currentTimeNanos = System.nanoTime()
 
         val currentTimeSeconds = currentTimeNanos / 1_000_000_000f

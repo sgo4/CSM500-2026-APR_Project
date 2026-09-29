@@ -3,27 +3,25 @@ package com.sawears.data.io.audioIn
 import android.Manifest
 import android.media.AudioFormat
 import android.media.AudioRecord
-import android.media.AudioTimestamp
 import android.media.MediaRecorder
 import androidx.annotation.RequiresPermission
-import com.sawears.diagnostics.RealTimeLatencyTracker
 import kotlin.math.max
 
 /**
  * Main android audio input source, providing stream of normalised PCM samples
  *
- * @property frameSize the number of samples in each output frame
+ * @property windowSize the number of samples in each output frame
  * @property sampleRate in Hz
  */
 class AndroidMicAudioInputSource
 @RequiresPermission(Manifest.permission.RECORD_AUDIO)
 constructor(
-    override val frameSize: Int = 1024,
+    override val windowSize: Int = 1024,
     override val sampleRate: Int = 44_100
 ): AudioInputSource {
 
     init {
-        require(frameSize > 0) {
+        require(windowSize > 0) {
             "frameSize must be greater than zero"
         }
 
@@ -33,9 +31,9 @@ constructor(
     }
 
     // normalised PCM samples
-    private val samples = FloatArray(frameSize)
+    private val samples = FloatArray(windowSize)
     // raw PCM buffer
-    private val rawSamples = ShortArray(frameSize)
+    private val rawSamples = ShortArray(windowSize)
 
     // android specific channel / encoding configurations
     private val channelConfig = AudioFormat.CHANNEL_IN_MONO
@@ -63,7 +61,7 @@ constructor(
             "Unsupported audio configuration: sampleRate=$sampleRate, channelConfig={$channelConfig.toString()},  encoding={$encoding.toString()}"
         }
 
-        val frameBytes = frameSize * 2
+        val frameBytes = windowSize * 2
         val requestedBufferBytes = max(minimumBufferBytes, frameBytes * 4)
 
         recorder = AudioRecord.Builder()
@@ -95,18 +93,18 @@ constructor(
      *
      * Callable from a worker thread / dispatchers.IO
      */
-    override fun readFrame(): AudioFrame? {
+    override fun readWindow(): AudioWindow? {
         if (closed) return null
 
         var offset = 0
 
-        while (offset < frameSize) {
+        while (offset < windowSize) {
             if (closed) return null
 
             val count = recorder.read(
                 rawSamples,
                 offset,
-                frameSize - offset,
+                windowSize - offset,
                 AudioRecord.READ_BLOCKING
             )
 
@@ -120,13 +118,13 @@ constructor(
             }
         }
 
-        for (sampleIdx in 0 until frameSize) {
+        for (sampleIdx in 0 until windowSize) {
             // normalise samples
             samples[sampleIdx] = rawSamples[sampleIdx] / 32768.0f
         }
 
         // Copy so previously returned frames are not overwritten by the next read.
-        return AudioFrame(frameId++, samples.copyOf(), System.nanoTime())
+        return AudioWindow(frameId++, samples.copyOf(), System.nanoTime())
     }
 
     override fun close() {

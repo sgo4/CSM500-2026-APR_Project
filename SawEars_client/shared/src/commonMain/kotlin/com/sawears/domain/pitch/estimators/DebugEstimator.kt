@@ -1,6 +1,6 @@
 package com.sawears.domain.pitch.estimators
 
-import com.sawears.data.io.audioIn.AudioFrame
+import com.sawears.data.io.audioIn.AudioWindow
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.pitch.PitchResult
 
@@ -15,7 +15,7 @@ class DebugEstimator(
     private val frequencyHz: Double = 523.0 // = 72 midi
 ): PitchEstimator {
 
-    override fun estimate(frame: AudioFrame): PitchResult {
+    override fun estimate(frame: AudioWindow): PitchResult {
 
 
         return PitchResult(

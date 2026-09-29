@@ -1,25 +1,23 @@
 package com.sawears.data.io.audioIn
 
-import java.io.Closeable
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.TargetDataLine
 import kotlin.math.max
-import javax.sound.sampled.Mixer
 
 /**
  * Windows implementation of a live audio source, providing stream of samples from default mic
  *
  */
 class WindowsMicAudioInputSource(
-    override val frameSize: Int = 1024,
+    override val windowSize: Int = 1024,
     override val sampleRate: Int = 44_100,
     mixerName: String? = null
 ) : AudioInputSource {
 
     init {
-        require(frameSize > 0) {
+        require(windowSize > 0) {
             "frameSize must be greater than zero"
         }
 
@@ -28,7 +26,7 @@ class WindowsMicAudioInputSource(
         }
     }
 
-    val samples = FloatArray(frameSize)
+    val samples = FloatArray(windowSize)
 
     private val format = AudioFormat(
         AudioFormat.Encoding.PCM_SIGNED,
@@ -40,7 +38,7 @@ class WindowsMicAudioInputSource(
         false   // little-endian
     )
 
-    private val byteBuffer = ByteArray(frameSize * 2)
+    private val byteBuffer = ByteArray(windowSize * 2)
 
     private val line: TargetDataLine = openMicrophoneLine(mixerName)
 
@@ -50,7 +48,7 @@ class WindowsMicAudioInputSource(
     private var frameId = 0L
 
     init {
-        val minimumBufferBytes = frameSize * 2
+        val minimumBufferBytes = windowSize * 2
         val requestedBufferBytes = max(minimumBufferBytes * 4, 4096)
 
         line.open(format, requestedBufferBytes)
@@ -62,7 +60,7 @@ class WindowsMicAudioInputSource(
      *
      * Callable from a worker thread / dispatchers.IO
      */
-    override fun readFrame(): AudioFrame? {
+    override fun readWindow(): AudioWindow? {
         if (closed) return null
 
         var offset = 0
@@ -87,7 +85,7 @@ class WindowsMicAudioInputSource(
             offset += count
         }
 
-        for (sampleIndex in 0 until frameSize) {
+        for (sampleIndex in 0 until windowSize) {
             val byteIndex = sampleIndex * 2
 
             val low = byteBuffer[byteIndex].toInt() and 0xFF
@@ -100,7 +98,7 @@ class WindowsMicAudioInputSource(
         }
 
         // Copy so previously returned frames are not overwritten by the next read.
-        return AudioFrame(frameId++, samples.copyOf(), System.nanoTime())
+        return AudioWindow(frameId++, samples.copyOf(), System.nanoTime())
     }
 
     override fun close() {
@@ -139,19 +137,5 @@ class WindowsMicAudioInputSource(
         }
 
         return mixer.getLine(lineInfo) as TargetDataLine
-    }
-
-    fun findCaptureMixer(format: AudioFormat): Mixer.Info {
-        val requestedLine = DataLine.Info(
-            TargetDataLine::class.java,
-            format
-        )
-
-        return AudioSystem.getMixerInfo()
-            .firstOrNull { mixerInfo ->
-                val mixer = AudioSystem.getMixer(mixerInfo)
-                mixer.isLineSupported(requestedLine)
-            }
-            ?: error("No microphone supports $format")
     }
 }

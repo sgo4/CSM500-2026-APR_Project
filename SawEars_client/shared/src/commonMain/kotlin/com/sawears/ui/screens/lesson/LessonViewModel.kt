@@ -205,7 +205,7 @@ class LessonViewModel(
                 audioInputSource = getAudioInputSource()
                 while (isActive) {
 
-                    val frame = audioInputSource.readFrame() ?: break
+                    val frame = audioInputSource.readWindow() ?: break
                     latencyTracker.recordAtStage(frame.frameId, RealTimeLatencyStage.FRAME_READ)
                     latencyTracker.recordAtStage(frame.frameId, RealTimeLatencyStage.ESTIMATION_STARTED)
                     val pitchResult = estimator.estimate(frame).also{

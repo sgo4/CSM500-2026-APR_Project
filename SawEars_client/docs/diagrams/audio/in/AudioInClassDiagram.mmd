@@ -1,0 +1,32 @@
+classDiagram
+direction TD
+
+class AudioInputSource{
+    <<interface>>
+    +windowSize Int
+    +sampleRate Int
+    +readWindow(): AudioWindow?
+}
+
+class AndroidMicAudioInputSource{
+    +windowSize Int
+    +sampleRate Int
+    +readWindow(): AudioWindow?
+}
+
+class WindowsMicAudioInputSource{
+    +windowSize Int
+    +sampleRate Int
+    +readWindow(): AudioWindow?
+}
+
+
+
+class android.media.AudioRecord{}
+class javax.sound.sampled{}
+
+
+AndroidMicAudioInputSource --|> AudioInputSource
+android.media.AudioRecord <.. AndroidMicAudioInputSource
+javax.sound.sampled <.. WindowsMicAudioInputSource
+WindowsMicAudioInputSource --|> AudioInputSource

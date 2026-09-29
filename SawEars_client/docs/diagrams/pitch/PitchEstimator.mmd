@@ -8,7 +8,7 @@ class PitchEstimator{
     <<interface>>
     +sampleRate Float
     +frameSize Int
-    +estimate(AudioFrame frame) PitchResult
+    +estimate(AudioWindow window) PitchResult
     +reset() void
 }
 
@@ -16,7 +16,7 @@ class FastYinEstimator{
     +sampleRate Float
     +frameSize Int
     -estimator FastYin
-    +estimate(AudioFrame frame) PitchResult
+    +estimate(AudioWindow window) PitchResult
     +reset() void
 }
 
@@ -34,7 +34,7 @@ class PitchResult{
     +confidence Double?
 }
 
-class AudioFrame{
+class AudioWindow{
     +frameId Long
     +samples FloatArray
     +timeStampNanos Long
@@ -45,7 +45,7 @@ class AudioFrame{
 PitchEstimator <|-- FastYinEstimator
 
 %% PitchEstimator dependencies
-PitchEstimator ..> AudioFrame
+PitchEstimator ..> AudioWindow
 PitchEstimator ..> PitchResult
 
 %% FastYin dependencies

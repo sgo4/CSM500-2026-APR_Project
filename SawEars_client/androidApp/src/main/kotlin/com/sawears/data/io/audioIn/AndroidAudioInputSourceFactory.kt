@@ -8,7 +8,12 @@ import androidx.core.content.ContextCompat
 import javax.inject.Inject
 
 /**
- * Android implementation of factory of AudioInputSource
+ * Android implementation of factory producing [AudioInputSource]
+ *
+ * Implementation note:
+ * - The rationale for injecting a factory is to enable android runtime
+ * permissions (specifically RECORD_AUDIO) to be verified before generating
+ * the input source.
  *
  * Includes some checks for permissions handling
  * @property application and [Application] object

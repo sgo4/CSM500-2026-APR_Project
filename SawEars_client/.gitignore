@@ -61,4 +61,5 @@ local.properties
 # large files
 *csv
 *wav
+*png
 */ChoraleBricks/

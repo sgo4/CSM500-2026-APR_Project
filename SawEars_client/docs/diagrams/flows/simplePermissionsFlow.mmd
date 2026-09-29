@@ -1,0 +1,12 @@
+---
+title: ""
+---
+flowchart
+direction LR
+
+
+A["App starts"] --> B["Permissions screen"]
+B --> C["Permissions granted?"]
+C -->|Yes| D["Load Home screen"]
+C -->|No| E["Device permission dialogue"]
+E --> B

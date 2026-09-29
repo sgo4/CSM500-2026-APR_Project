@@ -1,7 +1,7 @@
 package com.sawears.domain.pitch
 
 import be.tarsos.dsp.pitch.FastYin
-import com.sawears.data.io.audioIn.AudioFrame
+import com.sawears.data.io.audioIn.AudioWindow
 
 /**
  * Yin estimator based on the TarsosDSP Fast Yin implementation
@@ -14,7 +14,7 @@ class FastYinEstimator(
     override val frameSize: Int
 ): PitchEstimator {
     private val estimator = FastYin(sampleRate, frameSize)
-    override fun estimate(frame: AudioFrame): PitchResult {
+    override fun estimate(frame: AudioWindow): PitchResult {
         return PitchResult(frame.frameId,estimator.getPitch(frame.samples).pitch.toDouble(), frame.timeStampNanos)
     }
 }
