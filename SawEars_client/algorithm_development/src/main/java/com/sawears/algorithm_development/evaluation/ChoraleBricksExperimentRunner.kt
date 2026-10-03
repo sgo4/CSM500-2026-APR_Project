@@ -111,10 +111,10 @@ fun windowSizeExperiment(
 
     windowSizes.forEach { windowSize ->
         val estimators = listOf(
-//        RTSwipeEstimator(
-//            sampleRate,
-//            windowSize
-//        ),
+            RTSwipeEstimator(
+                sampleRate,
+                windowSize
+            ),
             FastYinEstimator(
                 sampleRate,
                 windowSize

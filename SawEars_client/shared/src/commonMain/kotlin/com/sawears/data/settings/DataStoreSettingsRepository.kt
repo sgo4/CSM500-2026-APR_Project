@@ -23,7 +23,7 @@ class DataStoreSettingsRepository(
     private val MODE_KEY = stringPreferencesKey("mode")
     private val MARGIN_KEY = intPreferencesKey("margin")
 
-    private val rangeMinDefault = 20
+    private val rangeMinDefault = 40
     private val rangeMaxDefault = 90
     private val defaultDifficulty = enumValues<Difficulty>().let{
         if (it.size < 3){

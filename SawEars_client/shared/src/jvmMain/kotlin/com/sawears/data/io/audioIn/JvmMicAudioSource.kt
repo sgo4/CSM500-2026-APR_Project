@@ -7,10 +7,14 @@ import javax.sound.sampled.TargetDataLine
 import kotlin.math.max
 
 /**
- * Windows implementation of a live audio source, providing stream of samples from default mic
+ * JVM implementation of a live audio source, providing stream of signed 16-bit
+ * PCM samples from default mic.
  *
+ * Implementation notes:
+ * - Internally based on TargetDataLine (https://docs.oracle.com/javase/8/docs/api/javax/sound/sampled/TargetDataLine.html)
+ *  which receives binary data from a Mixer.
  */
-class WindowsMicAudioInputSource(
+class JvmMicAudioSource(
     override val windowSize: Int = 1024,
     override val sampleRate: Int = 44_100,
     mixerName: String? = null
@@ -18,7 +22,7 @@ class WindowsMicAudioInputSource(
 
     init {
         require(windowSize > 0) {
-            "frameSize must be greater than zero"
+            "windowSize must be greater than zero"
         }
 
         require(sampleRate > 0) {
@@ -56,9 +60,7 @@ class WindowsMicAudioInputSource(
     }
 
     /**
-     * Blocks until one complete frame has been captured.
-     *
-     * Callable from a worker thread / dispatchers.IO
+     * Reads a single window of audio of [windowSize] samples
      */
     override fun readWindow(): AudioWindow? {
         if (closed) return null

@@ -1,0 +1,20 @@
+
+flowchart
+direction LR
+
+A["Select song"]
+B["Confirm settings"]
+C["Proceed to lesson screen"]
+E["Start lesson"]
+F["Current note highilighted yellow"]
+F["User on pitch?"]
+G["Note fills green"]
+H["Note remains yellow"]
+
+
+A --> B
+B --> C
+C --> E
+E --> F
+F -->|Yes| G
+F -->|No| H

@@ -1,12 +1,9 @@
----
-title: Pitch capture coroutine
----
 flowchart
 direction LR
 
 
-A["View Model starts capture job"] -->|"While active"| B["ViewModel calls readWindow()"]
+A["View Model starts capture job"] -->|"While active"| B["Lesson View Model calls readWindow()"]
 B --> D["PitchEstimator generates prediction for window"]
 D --> B
 D -->|Output| E["PitchResult"]
-E --> F["User interface"]
+E --> F["UI updated"]

@@ -108,10 +108,9 @@ class SineWaveOutputSource(
                     phase -= 2.0 * PI
                 }
 
-
-                }
-
             }
+
+        }
 
         return samples
     }

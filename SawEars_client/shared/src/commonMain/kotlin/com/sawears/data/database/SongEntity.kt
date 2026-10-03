@@ -18,7 +18,7 @@ import androidx.room3.Index
  * Constraints:
  * - to prevent duplication, the combination of title, year, description must be unique
  *
- * @property id a unique id (auto generated)
+ * @property id a unique id must be provided in application code
  * @property title
  * @property year release year
  * @property description

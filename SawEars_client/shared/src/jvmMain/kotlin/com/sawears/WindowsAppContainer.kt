@@ -5,7 +5,7 @@ import com.sawears.data.midijson.SongRepository
 import com.sawears.data.database.buildWindowsDatabase
 import com.sawears.data.diagnostics.WindowsDiagnosticsCsvWriter
 import com.sawears.data.io.audioIn.AudioInputSourceFactory
-import com.sawears.data.io.audioIn.WindowsMicAudioInputSource
+import com.sawears.data.io.audioIn.JvmMicAudioSource
 import com.sawears.data.io.audioOut.WindowsAudioPlayerFactory
 import com.sawears.data.settings.DataStoreSettingsRepository
 import com.sawears.data.settings.EphemeralLessonSettingsRepository
@@ -35,7 +35,7 @@ class WindowsAppContainer(): AppContainer {
     override val songRepository: SongRepository = MidiJsonRepository()
 
     override val audioInputSourceFactory = AudioInputSourceFactory {
-        WindowsMicAudioInputSource()
+        JvmMicAudioSource()
     }
 
     override val audioPlayerFactory = WindowsAudioPlayerFactory()// TODO
@@ -77,7 +77,7 @@ class WindowsDiagnosticAppContainer(): AppContainer {
     override val songRepository: SongRepository = MidiJsonRepository()
 
     override val audioInputSourceFactory = AudioInputSourceFactory {
-        WindowsMicAudioInputSource()
+        JvmMicAudioSource()
     }
 
     override val audioPlayerFactory = WindowsAudioPlayerFactory()// TODO

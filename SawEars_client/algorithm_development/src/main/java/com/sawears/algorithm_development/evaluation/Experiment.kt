@@ -84,7 +84,7 @@ class Experiment(
         val result = estimator.estimate(frame)
         results += PitchResult(
             frequency = result.frequency,
-            timeStamp = calculateTimeStamp(), //override timestampe with relative time in recording
+            timeStamp = calculateTimeStamp(), //override timestamp with relative time in recording
             confidence = result.confidence
         )
     }

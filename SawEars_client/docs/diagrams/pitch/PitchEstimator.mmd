@@ -1,8 +1,5 @@
----
-title: Pitch Estimator Interface
----
 classDiagram
-direction LR
+direction TD
 %% Classes
 class PitchEstimator{
     <<interface>>
@@ -34,20 +31,13 @@ class PitchResult{
     +confidence Double?
 }
 
-class AudioWindow{
-    +frameId Long
-    +samples FloatArray
-    +timeStampNanos Long
-}
-
 %%Relationships
 %% YinEstimator implements PitchEstimator
-PitchEstimator <|-- FastYinEstimator
+FastYinEstimator ..|> PitchEstimator : Implements
 
 %% PitchEstimator dependencies
-PitchEstimator ..> AudioWindow
-PitchEstimator ..> PitchResult
+PitchEstimator ..> PitchResult :Outputs
 
 %% FastYin dependencies
-FastYinEstimator ..> tarsos.FastYin
+tarsos.FastYin <.. FastYinEstimator
 

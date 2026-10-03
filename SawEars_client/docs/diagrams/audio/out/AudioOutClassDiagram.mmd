@@ -1,0 +1,51 @@
+classDiagram
+direction TD
+
+
+
+
+
+class AudioPlayer{
+    <<interface>>
+    +audioSource AudioOutputSource
+    +writeWindow(): Int
+    +play()
+    +pause()
+    +flush()
+    +stop()
+    +close()
+}
+
+class WindowsAudioPlayer{
+    +audioSource AudioOutputSource
+    +writeWindow(): Int
+    +play()
+    +pause()
+    +flush()
+    +stop()
+    +close()
+}
+
+class AndroidAudioPlayer{
+    +audioSource AudioOutputSource
+    +writeWindow(): Int
+    +play()
+    +pause()
+    +flush()
+    +stop()
+    +close()
+}
+
+
+
+
+
+class android.media.AudioTrack{}
+class javax.sound.sampled{}
+
+
+AndroidAudioPlayer --|> AudioPlayer: implements
+android.media.AudioTrack <.. AndroidAudioPlayer: dependency
+javax.sound.sampled <.. WindowsAudioPlayer: dependency
+WindowsAudioPlayer --|> AudioPlayer: implements
+

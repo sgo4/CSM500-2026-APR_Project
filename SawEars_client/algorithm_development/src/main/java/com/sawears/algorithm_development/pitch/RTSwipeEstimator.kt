@@ -256,9 +256,6 @@ class RTSwipeEstimator(
 
     /*
     Convert ERB scale measurements to Hertz
-
-    // TODO check
-
     @param erbs
     @return Hz measurement
      */
@@ -378,7 +375,6 @@ class RTSwipeEstimator(
     }
     /*
     Primes numbers up to a defined limit, with 1 included
-    // TODO add rationale from paper
      */
     private fun primesWithOne(upto: Int = 1_000_000): IntArray {
 
@@ -649,7 +645,6 @@ class RTSwipeEstimator(
 
 /*
 Helper class to perform interpolation (parabolic + linear)
-TODO tests
  */
 class Interpolator(){
     /*
