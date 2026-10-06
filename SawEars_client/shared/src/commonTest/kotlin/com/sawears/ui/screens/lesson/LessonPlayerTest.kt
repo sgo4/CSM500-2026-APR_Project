@@ -1,11 +1,9 @@
-package com.sawears.ui
+package com.sawears.ui.screens.lesson
 
 import com.sawears.domain.songModel.Note
 import com.sawears.domain.songModel.Song
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import com.sawears.ui.screens.lesson.LessonPlayer
-import com.sawears.ui.screens.lesson.LessonUiState
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import junit.framework.TestCase.assertTrue
 import kotlin.math.abs
@@ -60,7 +58,7 @@ class LessonPlayerTests {
     }
 
     @Test
-    fun `Lesson correctly identifies notes in first frame`(){
+    fun `Lesson player correctly identifies notes in first frame`(){
         val song = generateTestSong(
             doubleArrayOf(
                 1.0,
@@ -89,7 +87,7 @@ class LessonPlayerTests {
     }
 
     @Test
-    fun `Lesson correctly identifies notes in last frame(s)`(){
+    fun `Lesson player correctly identifies notes in last frame`(){
         val song = generateTestSong(
             doubleArrayOf(
                 1.0,

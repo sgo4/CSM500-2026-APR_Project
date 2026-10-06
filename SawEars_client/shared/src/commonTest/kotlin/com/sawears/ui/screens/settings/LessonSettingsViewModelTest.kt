@@ -5,6 +5,7 @@ import com.sawears.data.settings.EphemeralLessonSettingsRepository
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.mocks.MockSettingsRepository
 import com.sawears.data.settings.SettingsRepository
+import com.sawears.domain.settings.Difficulty
 import com.sawears.mocks.mockSong
 import com.sawears.domain.useCases.RegisterLesson
 import com.sawears.ui.screens.lessonsettings.LessonMode
@@ -58,7 +59,8 @@ class LessonSettingsViewModelTest {
         appSettings = AppSettings(
             rangeMinMidi = 70,
             rangeMaxMidi = 90,
-            mode=LessonMode.PRACTICE
+            mode=LessonMode.PRACTICE,
+            difficulty = Difficulty.STANDARD
         )
         settingsRepository = MockSettingsRepository(
             appSettings!!
@@ -554,6 +556,49 @@ class LessonSettingsViewModelTest {
         assertEquals(
             100,
             viewModel.settings.value.pitchDisplayMarginMidi
+        )
+    }
+
+    @Test
+    fun `update difficulty updates at both lesson and app level`() = runTest {
+        // register lesson for mock song
+        val lessonId = 1
+        val song = mockSong(
+            pitches = listOf(60,70)
+        )
+        registerLesson!!.register(
+            song,
+            lessonId
+        )
+
+        val viewModel = LessonSettingsViewModel(
+            lessonId = 1,
+            lessonSettingsRepository = lessonSettingsRepository!!,
+            settingsRepository = settingsRepository!!,
+            autoTranspose = true
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            viewModel.lessonSettings.collect {}
+        }
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)){
+            viewModel.settings.collect {}
+        }
+
+        advanceUntilIdle()
+        // update difficulty from default (STANDARD) to HARDEST
+        viewModel.updateDifficulty(5)
+        advanceUntilIdle()
+
+        // verify update went through to both lesson and app settings
+        assertEquals(
+            Difficulty.HARDEST,
+            viewModel.lessonSettings.value.difficulty
+        )
+        assertEquals(
+            Difficulty.HARDEST,
+            viewModel.settings.value.difficulty
         )
     }
 

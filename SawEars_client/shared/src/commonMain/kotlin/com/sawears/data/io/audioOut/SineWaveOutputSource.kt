@@ -10,8 +10,9 @@ import kotlin.math.sin
  * Serves as platform independent input for platform
  * dependent sound generation.
  *
+ * @property currentInput a [Song] to convert to PCM stream
  * @param defaultTempo tempo to be used if none specified by input
- * @param amplitude controls volume (float in range -1 <= amplitude <= 1)
+ * @property amplitude controls volume (float in range -1 <= amplitude <= 1)
  * @property sampleRate samples per second
  * @property attackReleaseMillis transition period between notes to avoid jumps (ms)
  */

@@ -64,6 +64,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation("be.tarsos.dsp:core:2.5")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
         }
 

@@ -58,14 +58,14 @@ class DifficultySettingsTest {
     }
 
     @Test
-    fun `mapping integer to difficulty level as intended`(){
+    fun `mapping integer level to enum difficulty level`(){
         Difficulty.entries.forEach { difficulty ->
             assertEquals(difficulty, Difficulty.from(difficulty.level))
         }
     }
 
     @Test
-    fun `invalid integer difficulties throw exception`(){
+    fun `invalid integer levels throw exception`(){
         assertFailsWith<IllegalStateException> { Difficulty.from(0) } // too small
         assertFailsWith<IllegalStateException> { Difficulty.from(Difficulty.entries.size + 1) } // too big
     }

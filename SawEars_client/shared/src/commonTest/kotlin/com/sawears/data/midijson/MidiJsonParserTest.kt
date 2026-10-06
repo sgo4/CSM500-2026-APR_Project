@@ -11,7 +11,7 @@ internal class MidiJsonParserTest {
     val parser = MidiJsonParser()
 
     @Test
-    fun `parses valid input as expected`(){
+    fun `parses valid input`(){
         val input = """
             {
                 "title": "Never gonna give you up",

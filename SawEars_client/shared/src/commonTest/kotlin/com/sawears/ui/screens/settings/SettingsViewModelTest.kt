@@ -41,7 +41,7 @@ class SettingsViewModelTest {
      * Test range min updates through settingsViewModel with normal input
      */
     @Test
-    fun `update rangeMin works with correct unput`() = runTest {
+    fun `update rangeMin with correct input`() = runTest {
         val settingsRepository: SettingsRepository = MockSettingsRepository(
             AppSettings(
                 rangeMinMidi = 70, // use known start values for range min / max
@@ -70,7 +70,7 @@ class SettingsViewModelTest {
      * Test range max updates through settingsViewModel with normal input
      */
     @Test
-    fun `update rangeMax works with correct unput`() = runTest {
+    fun `update rangeMax with correct input`() = runTest {
         val settingsRepository: SettingsRepository = MockSettingsRepository(
             AppSettings(
                 rangeMinMidi = 70, // use known start values for range min / max
@@ -137,7 +137,7 @@ class SettingsViewModelTest {
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `update difficulty works as expected`() = runTest {
+    fun `update difficulty valid input`() = runTest {
 
         val settingsRepository: SettingsRepository = MockSettingsRepository()
         val settingsViewModel = SettingsViewModel(
@@ -164,7 +164,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `update difficulty fails with invalid values`() = runTest {
+    fun `update difficulty invalid input`() = runTest {
 
         val settingsRepository: SettingsRepository = MockSettingsRepository()
         val settingsViewModel = SettingsViewModel(
@@ -188,7 +188,7 @@ class SettingsViewModelTest {
 
     // mode
     @Test
-    fun `mode updates work as expected`() = runTest {
+    fun `Update mode valid input`() = runTest {
         val settingsRepository: SettingsRepository = MockSettingsRepository()
         val settingsViewModel = SettingsViewModel(
             settingsRepository
@@ -212,7 +212,7 @@ class SettingsViewModelTest {
 
     // pitch margin
     @Test
-    fun `pitchMargin works with valid input`() = runTest {
+    fun `update pitchMargin valid input`() = runTest {
         val settingsRepository: SettingsRepository = MockSettingsRepository(
             AppSettings(
                 pitchDisplayMarginMidi = 5 // make initial value explicit
@@ -234,7 +234,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `pitchMargin works with invalid input`() = runTest {
+    fun `update pitchMargin invalid input`() = runTest {
         val settingsRepository: SettingsRepository = MockSettingsRepository(
             AppSettings(
                 pitchDisplayMarginMidi = 5 // make initial value explicit

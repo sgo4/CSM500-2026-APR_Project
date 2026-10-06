@@ -168,7 +168,7 @@ class SongSelectionViewModelTest {
      * 2. Songs should be exposed in alphabetical order
      */
     @Test
-    fun `blank query lists all available songs in alphabet order`() = runTest {
+    fun `blank query lists all available songs in alphabetial order`() = runTest {
 
         val dao = db.songDao()
         // populate db with some fake songs

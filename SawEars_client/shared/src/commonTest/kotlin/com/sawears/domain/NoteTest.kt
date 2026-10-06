@@ -17,7 +17,7 @@ class NoteTest {
     )
 
     @Test
-    fun `converstion to ms behaves as expected`(){
+    fun `converts duration to ms`(){
 
         val cases = listOf(
             MsConverstionTestCase(
@@ -52,7 +52,7 @@ class NoteTest {
     )
 
     @Test
-    fun `correctly converts midi to hz`(){
+    fun `converts midi to hz`(){
 
         val cases = listOf(
             MidiHzTestCase(
@@ -99,7 +99,7 @@ class NoteTest {
     )
 
     @Test
-    fun `transposition works with valid values`(){
+    fun `transposition works with valid input`(){
 
         val cases = listOf(
             TranspositionTestCase(
@@ -132,7 +132,7 @@ class NoteTest {
     }
 
     @Test
-    fun `transposition rejects negative values`(){
+    fun `transposition throws exception for invalid input`(){
         val note = Note(
             0f,
             1.0
