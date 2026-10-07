@@ -47,8 +47,8 @@ import kotlin.system.exitProcess
 class RTSwipeEstimator(
     override val sampleRate: Float,
     override val frameSize: Int,
-    private val fMin: Double = 55.0,
-    private val fMax: Double = 1760.0,
+    private val fMin: Double = 130.0, // below the range of large saws
+    private val fMax: Double = 2300.0, // above the range of  large saws
     private val erbStep: Double = 0.1,
     private val pitchRes: Double = 12.5,
     private val strThresh: Double = 0.0,
@@ -414,8 +414,6 @@ class RTSwipeEstimator(
         return result.toIntArray()
     }
 
-
-
     /*
     Helper function to generate a hanning window of size M
     Based on numpy implementation: https://numpy.org/devdocs/reference/generated/numpy.hanning.html
@@ -565,10 +563,13 @@ class RTSwipeEstimator(
             val channelResult = result[channel]
 
             for (window in 0 until windows) {
+
                 val spectrum = channelSpectra[window]
                 val output = channelResult[window]
 
                 for (out in 0 until numOutputs) {
+                    // skip 0 values for efficiency
+                    if (mu[window][out] == 0.0) continue
                     val kernel = kernels[out]
                     var sum = 0.0
 
