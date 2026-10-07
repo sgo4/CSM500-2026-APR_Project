@@ -48,7 +48,6 @@ class LessonPlayer(
     private val pastBeats = canvasWidthBeats * playBackHeadPosition
     private val futureBeats = canvasWidthBeats * (1-playBackHeadPosition)
 
-
     init {
         // populate noteTransitions with the end of each note
         var boundary = 0f

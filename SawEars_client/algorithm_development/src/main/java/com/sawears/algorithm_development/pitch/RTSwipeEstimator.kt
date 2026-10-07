@@ -34,7 +34,7 @@ import kotlin.system.exitProcess
  * - Samples MUST be normalized
  *
  * @property sampleRate sample rate in Hz
- * @property frameSize size of the frame in number of samples
+ * @property frameSize size of the analysis window in number of samples
  * @property fMin minimum frequency expected in Hz
  * @property fMax maximum frequency expected in Hz
  * @property erbStep Step size for ERB (Equivalent rectangular bandwidth) scale
