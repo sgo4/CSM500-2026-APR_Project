@@ -23,8 +23,8 @@ data class Song(
     val description: String?,
     val notes: List<Note>
 ) {
-    val songMinMidi = notes.filter {it.pitchMidi >= 0}.minOf { it.pitchMidi}
-    val songMaxMidi = notes.filter {it.pitchMidi >= 0}.maxOf { it.pitchMidi }
+    val songMinMidi = notes.filter {it.pitchMidi >= 0}.minOfOrNull { it.pitchMidi} ?: 0f
+    val songMaxMidi = notes.filter {it.pitchMidi >= 0}.maxOfOrNull { it.pitchMidi } ?: 0f
 
     /**
      * Return a transposed Song object by a defined number of semitones

@@ -98,7 +98,10 @@ class SineWaveOutputSource(
                 val release = (frameCount - frame - 1).toDouble() / envelopeFrames
 
                 val envelope = minOf(1.0,attack,release).coerceAtLeast(0.0)
-                val sample = sin(phase) * amplitude * envelope
+
+                val sample = if (note.pitchMidi >= 0)
+                    sin(phase) * amplitude * envelope
+                    else 0.0 // samples should all be 0 for rests (negative MIDI)
 
                 samples[outputIdx++] = (sample.coerceIn(-1.0,1.0) * Short.MAX_VALUE)
                     .roundToInt()
@@ -110,7 +113,6 @@ class SineWaveOutputSource(
                 }
 
             }
-
         }
 
         return samples

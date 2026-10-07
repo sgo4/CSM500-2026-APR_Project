@@ -77,6 +77,9 @@ class AudioOutTests {
      *
      * E.g. MIDI 69 -> 440hz
      *
+     * Rests, represented by negative MIDI values should produce a period of
+     * silence
+     *
      * Implementation note: Relies on applying pitch estimation (YIN) which
      * has a natural margin of error, so equivalence is +/- 0.5 hz
      */
@@ -88,6 +91,12 @@ class AudioOutTests {
                     pitches = listOf(69) // 440 hz
                 ),
                 expectedFrequencyHz = 440.0
+            ),
+            PitchOutputTestCase(
+                song = mockSong(
+                    pitches = listOf(-1) // rest value
+                ),
+                expectedFrequencyHz = Double.NaN // pitch should be silent
             )
         )
         val sampleRate = 48_000f
@@ -125,11 +134,16 @@ class AudioOutTests {
                     }
                 }
             }
-            // average recorded freque cy should be within 0.5 hz of target
-            println(estimates.average())
-            println(estimates.min())
-            assertTrue{
-                abs(estimates.average() - testCase.expectedFrequencyHz) < 0.5
+
+            // rests should produce empty list of estimates
+            // since estimates < 0 are filtered out in loop above
+            if (testCase.expectedFrequencyHz.isNaN()) {
+                assertTrue(estimates.isEmpty())
+            } else {
+                assertTrue{
+                    // average recorded frequency should be within 0.5 hz of target
+                    abs(estimates.average() - testCase.expectedFrequencyHz) < 0.5
+                }
             }
         }
     }
