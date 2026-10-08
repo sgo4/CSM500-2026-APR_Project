@@ -8,6 +8,8 @@ import com.sawears.data.io.audioIn.AudioWindow
  *
  * Adapted to use common interface
  * Source: https://github.com/JorenSix/TarsosDSP/
+ * @author Joren Six
+ * @author Soeren Otter-Sharp (interface wrapper only)
  */
 class FastYinEstimator(
     override val sampleRate: Float,
@@ -15,6 +17,13 @@ class FastYinEstimator(
 ): PitchEstimator {
     private val estimator = FastYin(sampleRate, frameSize)
     override fun estimate(frame: AudioWindow): PitchResult {
-        return PitchResult(frame.frameId,estimator.getPitch(frame.samples).pitch.toDouble(), frame.timeStampNanos)
+        return PitchResult(
+            frameId=frame.frameId,
+            frequencyHz=estimator
+                .getPitch(frame.samples)
+                .pitch
+                .toDouble(),
+            timeStampNanos=frame.timeStampNanos
+        )
     }
 }

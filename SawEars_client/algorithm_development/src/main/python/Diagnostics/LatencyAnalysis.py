@@ -91,7 +91,7 @@ class ResultsAnalyser:
 def main():
 
     disregarded_frames = 0
-    fn = "latencyDiagnostics.csv"
+    fn = "latencyDiagnostics_mcleod.csv"
 
     acc = {}
     with open(fn) as fin:

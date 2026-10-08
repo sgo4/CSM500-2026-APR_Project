@@ -15,6 +15,7 @@ import com.sawears.diagnostics.DiagnosticRealTimeLatencyTracker
 import com.sawears.diagnostics.NoOpRealTimeLatencyTracker
 import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.domain.pitch.FastYinEstimator
+import com.sawears.domain.pitch.McLeodEstimator
 import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.domain.settings.StandardDifficultySettingsProvider
 
@@ -82,7 +83,7 @@ class WindowsDiagnosticAppContainer(): AppContainer {
 
     override val audioPlayerFactory = WindowsAudioPlayerFactory()// TODO
 
-    override val estimator = FastYinEstimator(
+    override val estimator = McLeodEstimator(
         44_100f,
         1024
     )
