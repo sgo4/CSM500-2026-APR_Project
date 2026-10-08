@@ -55,6 +55,9 @@ proguard-rules.pro
 ndkBuild/
 local.properties
 
+# cpython files
+*pyc
+
 # personal files marked 'tmp_'
 *tmp_*
 

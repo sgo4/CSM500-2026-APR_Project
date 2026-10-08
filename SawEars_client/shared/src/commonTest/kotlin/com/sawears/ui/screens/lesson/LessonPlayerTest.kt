@@ -237,7 +237,7 @@ class LessonPlayerTests {
      * At 180 bpm the animation state should advance from beat 1 to beat 4
      */
     @Test
-    fun `Tempo affects frame advance calculations`(){
+    fun `Tempo affects animation speed`(){
 
         val testCases = listOf(
             PlayBackTempoTestCase(
