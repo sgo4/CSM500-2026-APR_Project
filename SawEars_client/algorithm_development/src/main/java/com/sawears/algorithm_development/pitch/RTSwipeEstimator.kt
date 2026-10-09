@@ -49,6 +49,7 @@ class RTSwipeEstimator(
     override val frameSize: Int,
     private val fMin: Double = 130.0, // below the range of large saws
     private val fMax: Double = 2300.0, // above the range of  large saws
+    private val hopLen: Int = 256,
     private val erbStep: Double = 0.1,
     private val pitchRes: Double = 12.5,
     private val strThresh: Double = 0.0,
@@ -56,12 +57,11 @@ class RTSwipeEstimator(
     delay: Double = 0.0
 ): PitchEstimator {
 
-    private val hopLen = frameSize
     // Helper class for parabolic interpolation
     private val interpolator = Interpolator()
     /*
     Here we differ from author's implementation by caching primes up to a large number
-    on init rather than calculating every tine.
+    on init rather than calculating every time.
     This list can simply be sliced according to the desired number of harmonics as needed
      */
     private val primesWithOne = primesWithOne()
