@@ -22,7 +22,6 @@ import com.sawears.domain.pitch.FastYinEstimator
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.settings.DifficultySettingsProvider
 import com.sawears.domain.settings.StandardDifficultySettingsProvider
-import com.sawears.ui.screens.lesson.components.PlaybackClock
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -69,10 +68,6 @@ object AppProviderModule {
         44_100f,
         1024
     )
-
-    @Provides
-    @Singleton
-    fun providePlaybackClock(): PlaybackClock = PlaybackClock()
 
     @Provides
     @Singleton

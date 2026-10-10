@@ -7,7 +7,6 @@ import com.sawears.data.io.audioOut.AudioPlayerFactory
 import com.sawears.data.settings.LessonSettingsRepository
 import com.sawears.data.settings.SettingsRepository
 import com.sawears.diagnostics.RealTimeLatencyTracker
-import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.settings.DifficultySettingsProvider
 

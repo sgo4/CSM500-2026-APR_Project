@@ -9,7 +9,6 @@ import com.sawears.data.settings.SettingsRepository
 import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.settings.DifficultySettingsProvider
-import com.sawears.ui.screens.lesson.components.PlaybackClock
 import javax.inject.Inject
 
 /**
@@ -23,7 +22,6 @@ class AndroidAppContainer
     override val audioPlayerFactory: AudioPlayerFactory,
     override val estimator: PitchEstimator,
     override val audioInputSourceFactory: AudioInputSourceFactory,
-    override val playbackClock: PlaybackClock,
     override val db: AppDatabase,
     override val difficultySettingsProvider: DifficultySettingsProvider,
     override val latencyTracker: RealTimeLatencyTracker

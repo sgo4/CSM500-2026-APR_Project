@@ -106,7 +106,7 @@ fun SettingRow(
             text = label,
             modifier = Modifier
                 .weight(0.22f)
-                .padding(end = 14.dp)
+                .padding(end = 0.dp)
         )
         Tooltip(
             heading= label,

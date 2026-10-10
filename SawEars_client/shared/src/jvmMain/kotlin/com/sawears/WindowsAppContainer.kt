@@ -16,7 +16,6 @@ import com.sawears.diagnostics.NoOpRealTimeLatencyTracker
 import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.domain.pitch.FastYinEstimator
 import com.sawears.domain.pitch.McLeodEstimator
-import com.sawears.ui.screens.lesson.components.PlaybackClock
 import com.sawears.domain.settings.StandardDifficultySettingsProvider
 
 
@@ -45,16 +44,6 @@ class WindowsAppContainer(): AppContainer {
         44_100f,
         1024
     )
-//    override val estimator = FixedSineEstimator(
-//        44_100f,
-//        1024,
-//        frequency = 2f,
-//        minPitcHz = 600,
-//        maxPitchHz = 1000
-//    )
-//    override val estimator = DebugEstimator(44_100f,1024)
-
-    override val playbackClock = PlaybackClock()
 
     override val db = buildWindowsDatabase()
 
@@ -87,9 +76,6 @@ class WindowsDiagnosticAppContainer(): AppContainer {
         44_100f,
         1024
     )
-
-    override val playbackClock = PlaybackClock()
-
     override val db = buildWindowsDatabase()
 
     override val difficultySettingsProvider = StandardDifficultySettingsProvider()
