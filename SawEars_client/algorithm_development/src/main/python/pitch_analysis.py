@@ -26,17 +26,18 @@ class PitchMetrics:
     MAE (mean absolute error)
     GPE (Gross pitch error)
     """
-    def evaluate(self, estimates, reference) -> PitchMetricsResult:
-        mae = self.mean_absolute_pitch_error(estimates,reference)
-        gpe = self.gross_pitch_error(estimates, reference)
+    def evaluate(self, estimates, reference, include_unvoiced_frames=False) -> PitchMetricsResult:
+        mae = self.mean_absolute_pitch_error(estimates,reference, include_unvoiced_frames)
+        gpe = self.gross_pitch_error(estimates, reference, include_unvoiced_frames=include_unvoiced_frames)
         return self.PitchMetricsResult(gpe,mae)
 
     """
     Standard validation for comparing two pitch arrays
     """
-    def validate_pitch_arrays(self, estimates, reference):
-        if np.any(estimates <= 0) or np.any(reference <= 0):
-            raise ValueError("Frequencies must be positive")
+    def validate_pitch_arrays(self, estimates, reference, include_unvoiced_frames=False):
+        if not include_unvoiced_frames:
+            if np.any(estimates <= 0) or np.any(reference <= 0):
+                raise ValueError("Frequencies must be positive")
         elif estimates.shape != reference.shape:
             raise ValueError("Estimate / reference arrays must have the same shape")
 
@@ -44,8 +45,8 @@ class PitchMetrics:
     Calculate cents difference for 2 arrays of non negative pitch estimates
     against a given reference
     """
-    def cents_difference(self, estimates, reference):
-        self.validate_pitch_arrays(estimates, reference)
+    def cents_difference(self, estimates, reference, include_unvoiced_frames=False):
+        self.validate_pitch_arrays(estimates, reference, include_unvoiced_frames)
         
         return 1200 * np.log2(estimates/reference)
 
@@ -53,10 +54,11 @@ class PitchMetrics:
     Calculate mean absolute pitch error for two arrays of non negative pitch estimates
     against a given reference
     """
-    def mean_absolute_pitch_error(self, estimates, reference):
+    def mean_absolute_pitch_error(self, estimates, reference, include_unvoiced_frames=False):
+        
         return np.mean(
             np.abs(
-                self.cents_difference(estimates,reference)
+                self.cents_difference(estimates,reference, include_unvoiced_frames)
             )
         )
 
@@ -64,12 +66,20 @@ class PitchMetrics:
     Calculate gross pitch error (GPE) for two arrays of non negative pitch estimates
     against a given reference
     """
-    def gross_pitch_error(self, estimates, reference, threshold_cents=50):
-        self.validate_pitch_arrays(estimates, reference)
+    def gross_pitch_error(self, estimates, reference, threshold_cents=50, include_unvoiced_frames=False):
+        self.validate_pitch_arrays(estimates, reference,include_unvoiced_frames)
 
-        cents_error = self.cents_difference(estimates,reference)
+        cents_error = self.cents_difference(estimates,reference,include_unvoiced_frames)
         gross_error = np.abs(cents_error) > threshold_cents
         return 100 * gross_error.mean()
+
+    def unvoiced_percentage(self,estimates,reference):
+        """
+        Percentage of voicing errors where estimator fails to predict f0 but labelled
+        f0 data exists
+        """
+        return np.mean((reference > 0) & (estimates < 0))
+
 
 
 class PitchExperimentData:
@@ -130,12 +140,14 @@ class PitchExperimentData:
                 estimator_df = file_df[file_df["estimator"] == estimator] # a dataframe containing the results of a single estimator on a single file
                 processing_time = estimator_df["processing_time_file"].mean()
                 time_aligns = self.align_timestamps(labels,estimator_df) # align in time
-                time_aligns_voiced = time_aligns[(time_aligns["f0"] > 0) & (time_aligns["measured_f0"] > 0)]
-                reference_freq, estimated_freq = time_aligns_voiced["f0"], time_aligns_voiced["measured_f0"]
+                false_negative_estimates = metrics.unvoiced_percentage(time_aligns["measured_f0"],time_aligns["f0"])
+                time_aligns = time_aligns[(time_aligns["f0"] > 0) & (time_aligns["measured_f0"] > 0)]
+                reference_freq, estimated_freq = time_aligns["f0"], time_aligns["measured_f0"]
+        
                 estimator_res = metrics.evaluate(estimated_freq, reference_freq)
-
                 # append results as a tuple of dataset, file, estimator, gpe, mae
-                dataset_res.append([dataset,file,estimator,estimator_res.mae,estimator_res.gpe,processing_time])
+                dataset_res.append([dataset,file,estimator,estimator_res.mae,estimator_res.gpe,false_negative_estimates,processing_time])
+
         return dataset_res
 
     def process(self) -> pd.DataFrame:
@@ -147,7 +159,7 @@ class PitchExperimentData:
 
         # store results as tuples (dataset,file,estimator, metric( GPE, MAE etc.))
         res = [
-            ["dataset","track","estimator","MAE","GPE","processing_time_file"]
+            ["dataset","track","estimator","MAE","GPE","false_negatives","processing_time_file"]
         ]
 
         for dataset in datasets:
@@ -168,6 +180,8 @@ class PitchExperimentData:
         self.results = res # cach results for analysis
 
         return res
+
+
 
     def summary(self, reprocess=False, df=None):
         """
@@ -191,5 +205,6 @@ class PitchExperimentData:
         )
         return pd.DataFrame(summary)
 
-        
-        
+
+
+ 

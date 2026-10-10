@@ -80,13 +80,13 @@ class Experiment(
     * Process next frame
      */
     private fun next(frame: AudioFrame){
-        frame_idx += 1
         val result = estimator.estimate(frame)
         results += PitchResult(
             frequency = result.frequency,
             timeStamp = calculateTimeStamp(), //override timestamp with relative time in recording
             confidence = result.confidence
         )
+        frame_idx += 1
     }
 
 

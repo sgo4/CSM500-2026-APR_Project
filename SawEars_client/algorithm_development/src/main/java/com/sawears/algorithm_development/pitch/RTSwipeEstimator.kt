@@ -38,7 +38,6 @@ import kotlin.system.exitProcess
  * @property fMin minimum frequency expected in Hz
  * @property fMax maximum frequency expected in Hz
  * @property erbStep Step size for ERB (Equivalent rectangular bandwidth) scale
- * @property hopLen hop length
  * @property pitchRes  pitch resolution in cents (12.5 cent = 1/96 per octave)
  * @property strThresh strength threshold
  * @property numChannels number of audio channels (1 for mono)
@@ -49,13 +48,14 @@ class RTSwipeEstimator(
     override val frameSize: Int,
     private val fMin: Double = 130.0, // below the range of large saws
     private val fMax: Double = 2300.0, // above the range of  large saws
-    private val hopLen: Int = 256,
     private val erbStep: Double = 0.1,
     private val pitchRes: Double = 12.5,
     private val strThresh: Double = 0.0,
     private val numChannels: Int = 1,
     delay: Double = 0.0
 ): PitchEstimator {
+
+    private val hopLen = frameSize
 
     // Helper class for parabolic interpolation
     private val interpolator = Interpolator()

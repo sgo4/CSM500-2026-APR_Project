@@ -123,10 +123,6 @@ fun windowSizeExperiment(
                 sampleRate,
                 windowSize
             ),
-            DynamicWaveletEstimator(
-                sampleRate,
-                windowSize
-            ),
             McLeodEstimator(
                 sampleRate,
                 windowSize
