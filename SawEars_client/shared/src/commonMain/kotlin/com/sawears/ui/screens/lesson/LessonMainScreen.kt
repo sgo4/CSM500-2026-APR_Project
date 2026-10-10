@@ -97,7 +97,6 @@ fun LessonMainScreenContent(
             .fillMaxSize()
             .clickable(onClick = onContentTap) // clickable to toggle top bar visibility
     ){
-        DebugText(lessonState) // TODO remove
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -159,33 +158,6 @@ fun LessonMainScreenContent(
         )
     }
 }
-
-/*
-Debug text // TODO remove from final version
- */
-@Composable
-private fun DebugText(
-    lessonUiState: LessonUiState
-){
-
-    var showDebug by rememberSaveable { mutableStateOf(true)}
-    if (showDebug) {
-        Box(
-            modifier = Modifier
-                .clickable(
-                    onClick = { showDebug = !showDebug } // tap debug to hide it
-                )
-        ) {
-            Text(
-                """${lessonUiState.song} || 
-            |tempo=${lessonUiState.tempoBpm} ||
-            |pitchMargin=${lessonUiState.pitchDisplayMarginMidi}
-            |leniencyCents=${lessonUiState.leniencyThresholdCents}""".trimMargin()
-            )
-        }
-    }
-}
-
 
 /**
  * Represents pitch detection state for a single frame#

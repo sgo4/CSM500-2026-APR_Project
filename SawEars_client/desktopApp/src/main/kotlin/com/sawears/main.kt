@@ -18,7 +18,6 @@ import kotlinx.coroutines.runBlocking
  */
 fun SawEarsApp(container: AppContainer) = application {
 
-
     Window(
         onCloseRequest = ::exitApplication,
         title = "SawEars"
