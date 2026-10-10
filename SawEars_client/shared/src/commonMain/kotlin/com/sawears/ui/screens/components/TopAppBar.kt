@@ -14,8 +14,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -36,7 +37,7 @@ fun ContentWithTopBar(
     content: @Composable (PaddingValues) -> Unit,
     title: String,
     onClickHome: () -> Unit,
-    onClickAccount: () -> Unit,
+    onClickInfo: () -> Unit,
     onClickSettings: () -> Unit,
     showTopBar: Boolean = true
 ) {
@@ -78,9 +79,9 @@ fun ContentWithTopBar(
                                 contentDescription = "Settings"
                             )
                         }
-                        IconButton(onClick = onClickAccount) {
+                        IconButton(onClick = onClickInfo) {
                             Icon(
-                                imageVector = Icons.Filled.AccountCircle,
+                                imageVector = Icons.Filled.Info,
                                 contentDescription = "Account"
                             )
                         }
@@ -107,7 +108,7 @@ fun ContentWithTopBarPreview(){
     ContentWithTopBar(
         content = {ExampleContent()},
         title = "Sawears",
-        onClickAccount = {},
+        onClickInfo = {},
         onClickHome = {},
         onClickSettings = {}
     )

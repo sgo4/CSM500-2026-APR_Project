@@ -21,7 +21,7 @@ import sawears.shared.generated.resources.home_page_loading
 fun MainScreen(
     onOpenLesson: () -> Unit,
     onClickHome: () -> Unit,
-    onClickAccount: () -> Unit,
+    onClickInfo: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -43,11 +43,9 @@ fun MainScreen(
         },
         title = stringResource(Res.string.app_name),
         onClickHome = onClickHome,
-        onClickAccount = onClickAccount,
+        onClickInfo = onClickInfo,
         onClickSettings = onClickSettings
     )
-
-
 }
 @Composable
 fun LoadingScreen(){

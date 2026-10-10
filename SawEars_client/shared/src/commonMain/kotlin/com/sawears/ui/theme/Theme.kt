@@ -283,7 +283,7 @@ fun ThemePreview(){
                 },
                 title = "Theme preview",
                 onClickHome = {},
-                onClickAccount = {},
+                onClickInfo = {},
                 onClickSettings = {},
                 showTopBar = true
             )

@@ -45,7 +45,7 @@ import sawears.shared.generated.resources.settings_section_titles_song
  * @param onUpdateMode change song mode (PRACTICE / PERFORMANCE)
  * @param onUpdatePitchMargin update margin either side of melody range
  * @param onClickHome
- * @param onClickAccount
+ * @param onClickInfo
  */
 @Composable
 fun LessonSettingsScreen(
@@ -61,7 +61,7 @@ fun LessonSettingsScreen(
     onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: (Int) -> Unit,
     onClickHome: () -> Unit,
-    onClickAccount: () -> Unit,
+    onClickInfo: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -88,7 +88,7 @@ fun LessonSettingsScreen(
         },
         title = "Lesson Settings",
         onClickHome = onClickHome,
-        onClickAccount = onClickAccount,
+        onClickInfo = onClickInfo,
         onClickSettings = onClickSettings
     )
 
@@ -227,7 +227,7 @@ internal fun LessonSettingsScreenPreview(
         onUpdatePitchMargin = {Int -> },
         onClickDone={},
         onClickHome={},
-        onClickAccount={},
+        onClickInfo={},
         onClickSettings={}
     )
 }

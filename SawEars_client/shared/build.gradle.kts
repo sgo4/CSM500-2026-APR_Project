@@ -60,7 +60,8 @@ kotlin {
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
             api(libs.androidx.datastore.preferences.core)
-
+            implementation(libs.markdown.renderer)
+            implementation(libs.markdown.renderer.m3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

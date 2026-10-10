@@ -12,6 +12,8 @@
     <string name="account_page_title">Account</string>
     <string name="account_page_placeholdertext">Coming soon!\nAccount management features aren't implemented yet.\nIn the meantime, all features are usable without creating an account.</string>
     <string name="account_page_buttons_home">Back home</string>
+    <!-- user guide page -->
+    <string name="userguide_page_title">User guide</string>
     <!--settings and lesson settings screens -->
     <string name="settings_page_title">Settings</string>
     <string name="lessonsettings_page_title">Lesson Settings</string>

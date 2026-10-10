@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -16,8 +17,8 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import com.sawears.AppContainer
 import com.sawears.ui.screens.lesson.LessonMainScreen
 import com.sawears.ui.screens.lesson.LessonViewModel
-import com.sawears.ui.screens.account.AccountScreen
 import com.sawears.ui.screens.error.GenericErrorScreen
+import com.sawears.ui.screens.guide.UserGuideScreen
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import com.sawears.ui.screens.home.MainScreen
@@ -45,6 +46,8 @@ fun NavigationRoot(
     container: AppContainer,
     modifier: Modifier = Modifier
 ) {
+    // get locale for localization purposes
+    val locale = LocalLocale.current.language
 
     val backStack = rememberNavBackStack(
         configuration = SavedStateConfiguration {
@@ -79,9 +82,6 @@ fun NavigationRoot(
             val onClickSettings: () -> Unit = {
                 backStack.add(Route.SettingsScreen)
             }
-            val onClickAccount: () -> Unit = {
-                backStack.add(Route.AccountScreen)
-            }
 
             when(key) {
                 is Route.MainScreen -> {
@@ -93,18 +93,18 @@ fun NavigationRoot(
                                 )
                             },
                             onClickHome = home,
-                            onClickAccount = onClickAccount,
+                            onClickInfo = { backStack.add(Route.UserGuideScreen(locale=locale))},
                             onClickSettings = onClickSettings,
                         )
                     }
                 }
-                is Route.AccountScreen -> {
+                is Route.UserGuideScreen -> {
                     NavEntry(key){
-                        AccountScreen(
+                        UserGuideScreen(
+                            locale = locale,
+                            onClickInfo = { }, // already on user guide screen
                             onClickHome = home,
-                            onClickAccount = { }, // already on account screen
-                            onClickSettings = { backStack.add(Route.SettingsScreen) },
-                            onBack = { backStack.removeLastOrNull() }
+                            onClickSettings = { backStack.add(Route.SettingsScreen) }
                         )
                     }
                 }
@@ -148,7 +148,7 @@ fun NavigationRoot(
                                 viewModel.selectSong(songId, resourcePath)
                             },
                             onClickHome = home,
-                            onClickAccount = { backStack.add(Route.AccountScreen) },
+                            onClickInfo = { backStack.add(Route.UserGuideScreen(locale=locale)) },
                             onClickSettings = { backStack.add(Route.SettingsScreen) },
                         )
                     }
@@ -171,7 +171,7 @@ fun NavigationRoot(
                         LessonMainScreen(
                             viewModel=viewModel,
                             onClickHome = home,
-                            onClickAccount = onClickAccount,
+                            onClickInfo = { backStack.add(Route.UserGuideScreen(locale=locale))},
                             onClickSettings = { backStack.add(Route.LessonSettingsScreen(key.lessonId)) }
                         )
                     }
@@ -194,7 +194,7 @@ fun NavigationRoot(
                             onUpdateDifficulty = viewModel::updateDifficulty,
                             onUpdatePitchMargin = viewModel::updatePitchMargin,
                             onClickDone = {backStack.removeLastOrNull()}, // send user back to the screen from which they clicked settings
-                            onClickAccount = onClickAccount,
+                            onClickInfo = { backStack.add(Route.UserGuideScreen(locale=locale))},
                             onClickHome = home
                         )
                     }
@@ -229,7 +229,7 @@ fun NavigationRoot(
                                     Route.LessonScreen(key.lessonId)
                                 )
                             },
-                            onClickAccount = onClickAccount,
+                            onClickInfo = { backStack.add(Route.UserGuideScreen(locale=locale))},
                             onClickHome = home,
                             onClickSettings = {} // settings button does nothing on lesson settings screen
                         )
@@ -242,11 +242,10 @@ fun NavigationRoot(
                             errorMsg = key.message,
                             onClickHome = home,
                             onClickSettings = onClickSettings,
-                            onClickAccount = onClickAccount
+                            onClickInfo = { backStack.add(Route.UserGuideScreen(locale=locale))}
                         )
                     }
                 }
-
                 else -> error("Unknown nav key")
             }
         }

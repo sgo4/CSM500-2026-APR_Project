@@ -55,7 +55,7 @@ fun AccountScreen(
         },
         title = "Account",
         onClickHome = onClickHome,
-        onClickAccount = onClickAccount,
+        onClickInfo = onClickAccount,
         onClickSettings = onClickSettings
     )
 }

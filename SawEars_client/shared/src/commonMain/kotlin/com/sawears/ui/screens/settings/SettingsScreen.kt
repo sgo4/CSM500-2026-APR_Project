@@ -1,13 +1,11 @@
 package com.sawears.ui.screens.settings
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,15 +15,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sawears.data.settings.AppSettings
 import com.sawears.ui.screens.lessonsettings.LessonMode
 import com.sawears.ui.screens.components.ContentWithTopBar
-import com.sawears.ui.theme.SawEarsTheme
 import kotlinx.coroutines.flow.StateFlow
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.common_buttons_done
-import sawears.shared.generated.resources.settings_errors_failed_to_persist
-import sawears.shared.generated.resources.settings_errors_range_less_than_one
-import sawears.shared.generated.resources.settings_errors_range_too_small_for_song
 import sawears.shared.generated.resources.settings_page_title
 import sawears.shared.generated.resources.settings_section_titles_display
 import sawears.shared.generated.resources.settings_section_titles_instrument
@@ -43,7 +36,7 @@ import sawears.shared.generated.resources.settings_section_titles_lesson
  * @param onUpdatePitchMargin update margin either side of melody range
  * @param onClickDone return to home screen
  * @param onClickHome
- * @param onClickAccount
+ * @param onClickInfo
  */
 @Composable
 fun SettingsScreen(
@@ -56,7 +49,7 @@ fun SettingsScreen(
     onUpdatePitchMargin: (Int) -> Unit,
     onClickDone: () -> Unit,
     onClickHome: () -> Unit,
-    onClickAccount: () -> Unit,
+    onClickInfo: () -> Unit,
     modifier: Modifier = Modifier
 ){
     val error by error.collectAsStateWithLifecycle()
@@ -77,7 +70,7 @@ fun SettingsScreen(
         },
         title = stringResource(Res.string.settings_page_title),
         onClickHome = onClickHome,
-        onClickAccount = onClickAccount,
+        onClickInfo = onClickInfo,
         onClickSettings = { } // we're already on the settings page so this function doesn't need to do anything
     )
 

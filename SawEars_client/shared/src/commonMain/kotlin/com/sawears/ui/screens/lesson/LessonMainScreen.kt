@@ -52,7 +52,7 @@ import sawears.shared.generated.resources.lesson_button_restartlesson_descriptio
 fun LessonMainScreen(
     viewModel: LessonViewModel,
     onClickHome: () -> Unit = {},
-    onClickAccount: () -> Unit = {},
+    onClickInfo: () -> Unit = {},
     onClickSettings: () -> Unit = {}
 ){
 
@@ -79,7 +79,7 @@ fun LessonMainScreen(
         )},
         title = lessonState.song.title,
         onClickHome = onClickHome,
-        onClickAccount = onClickAccount,
+        onClickInfo = onClickInfo,
         onClickSettings = onClickSettings,
         showTopBar = showTopBar
     )

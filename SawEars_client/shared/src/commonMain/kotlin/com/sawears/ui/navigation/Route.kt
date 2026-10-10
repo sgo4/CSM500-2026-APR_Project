@@ -15,9 +15,14 @@ sealed interface Route: NavKey {
     @Serializable
     data object MainScreen: Route, NavKey
 
+    /*
+    User guide screen takes a locale because it takes its strings
+    from a markdown file and therefore must specify locale explicitly.
+    Other screens use string resources, which are automatically localized
+    to the device locale (if available)
+     */
     @Serializable
-    data object AccountScreen: Route, NavKey
-
+    data class UserGuideScreen(val locale: String): Route, NavKey
     @Serializable
     data object SettingsScreen: Route, NavKey
 

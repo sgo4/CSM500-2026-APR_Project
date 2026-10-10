@@ -24,6 +24,7 @@ multiplatform-nav3-ui = "1.1.1"
 serialization = "1.11.0"
 datastorePreferencesCore = "1.2.1"
 compose-material-icons = "1.7.3"
+markdown-renderer = "0.43.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -60,6 +61,9 @@ jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:naviga
 kotlinx-serialization = {module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 jetbrains-lifecycle-viewmodel-nav3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle" }
 androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "datastorePreferencesCore" }
+markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "markdown-renderer" }
+markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "markdown-renderer" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

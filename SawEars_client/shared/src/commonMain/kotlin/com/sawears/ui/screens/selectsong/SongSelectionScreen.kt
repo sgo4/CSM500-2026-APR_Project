@@ -22,7 +22,7 @@ import sawears.shared.generated.resources.songselection_page_title
  * @param onSearch callback function for search
  * @param onSelectSong callback function when a song is selected
  * @param onClickHome callback for home button
- * @param onClickAccount callback for account button
+ * @param onClickInfo callback for account button
  * @param onClickSettings callback for settings button
  */
 @Composable
@@ -31,7 +31,7 @@ fun SongSelectionScreen(
     onSearch: (String) -> Unit,
     onSelectSong: (Int, String) -> Unit,
     onClickHome: () -> Unit,
-    onClickAccount: () -> Unit,
+    onClickInfo: () -> Unit,
     onClickSettings: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -49,7 +49,7 @@ fun SongSelectionScreen(
         },
         title = stringResource(Res.string.songselection_page_title),
         onClickHome = onClickHome,
-        onClickAccount = onClickAccount,
+        onClickInfo = onClickInfo,
         onClickSettings = onClickSettings
     )
 }
@@ -81,7 +81,7 @@ fun SongSelectionScreenPreview(){
         },
         title = stringResource(Res.string.songselection_page_title),
         onClickHome = {},
-        onClickAccount = {},
+        onClickInfo = {},
         onClickSettings = {}
     )
 
