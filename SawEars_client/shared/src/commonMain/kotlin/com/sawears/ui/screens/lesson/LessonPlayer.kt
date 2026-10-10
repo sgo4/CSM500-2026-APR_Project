@@ -6,8 +6,6 @@ import com.sawears.ui.screens.lessonsettings.LessonMode
 /**
  * Player class that controlls the main animations
  *
- * // TODO this may be more suited to the model module
- *
  * @param lessonState an initial [LessonUiState] from which to initialize player values
  */
 class LessonPlayer(

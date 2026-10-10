@@ -182,10 +182,9 @@ fun DrawScope.drawNote(
     // A note must also graphically serve as a percentage bar, meaning we need a split rounded rectangle
     // conceptually this is a single rounded rectangle with two rectangles inside it
 
-    val baseColour = if (note.isCurrentNote) {Color(0xFFFFF08D) // TODO colours should be dynamic
-    } else {Color(0xFF8DC0FF)}
+    val baseColour = if (note.isCurrentNote) {Color(0xFFFFF08D)} else {Color(0xFF8DC0FF)}
 
-    val completeColour = Color(0xFF95FF8D) // TODO colours should be dynamic
+    val completeColour = Color(0xFF95FF8D)
 
     val centreY = midiToY(note.pitchMidi, dimensions)
 

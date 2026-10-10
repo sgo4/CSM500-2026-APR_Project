@@ -47,13 +47,6 @@ interface AppContainer {
     val estimator: PitchEstimator
 
     /**
-     * Monotonic clock for time synchronisation
-     *
-     * //TODO work out whether or not to use this
-     */
-    val playbackClock: PlaybackClock
-
-    /**
      * Factory for app database
      */
     val db: AppDatabase

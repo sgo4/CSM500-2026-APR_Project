@@ -43,32 +43,3 @@ interface AudioPlayer {
 	 */
 	fun close()
 }
-
-class MockAudioPlayer(): AudioPlayer {
-    override val audioSource: AudioOutputSource
-        get() = TODO("Not yet needed")
-
-    override fun writeWindow(): Int {
-        return 0
-    }
-
-    override fun play() {
-       // do nothing
-    }
-
-    override fun pause() {
-        // do nothing
-    }
-
-    override fun flush() {
-        TODO("Not yet implemented")
-    }
-
-    override fun stop() {
-        TODO("Not yet implemented")
-    }
-
-    override fun close() {
-        TODO("Not yet implemented")
-    }
-}

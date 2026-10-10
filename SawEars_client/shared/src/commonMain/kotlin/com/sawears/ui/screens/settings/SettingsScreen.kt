@@ -92,7 +92,7 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenContent(
     settings: AppSettings,
-    error: SettingsError?, // TODO implement and document
+    error: SettingsError?,
     onUpdateMin: (Int) -> Unit,
     onUpdateMax: (Int) -> Unit,
     onUpdateDifficulty: (Int) -> Unit,

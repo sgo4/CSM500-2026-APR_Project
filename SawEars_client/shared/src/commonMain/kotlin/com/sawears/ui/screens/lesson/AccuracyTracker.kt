@@ -6,8 +6,6 @@ import kotlin.math.abs
 
 /**
  * Calculates pitch accuracies for notes currently in view
- *
- *
  */
 class AccuracyTracker {
 
@@ -15,7 +13,13 @@ class AccuracyTracker {
     // rather than trying to mainntain all notes in memory
     val noteAccuracies: ArrayDeque<NoteAccuracy> = ArrayDeque()
 
-    // TODO kdoc
+    /**
+     * Updates accuracy for a given UI state
+     *
+     * @param notesInView a list of [DisplayNote] currently active on screen
+     * @param currentTimeBeats the position of the playback head in beats relative to song start
+     * @param isOnPitch whether the user is current considered accurate
+     */
     fun update(
         notesInView: List<DisplayNote>,
         currentTimeBeats: Float,
@@ -90,7 +94,6 @@ class AccuracyTracker {
     fun reset(){
         noteAccuracies.clear()
     }
-
 }
 
 
