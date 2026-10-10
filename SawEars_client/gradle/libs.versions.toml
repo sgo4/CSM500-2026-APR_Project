@@ -24,7 +24,7 @@ multiplatform-nav3-ui = "1.1.1"
 serialization = "1.11.0"
 datastorePreferencesCore = "1.2.1"
 compose-material-icons = "1.7.3"
-markdown-renderer = "0.43.0"
+markdown-renderer = "0.45.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

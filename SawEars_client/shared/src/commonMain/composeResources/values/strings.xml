@@ -5,13 +5,10 @@
     <string name="common_buttons_numericstepper_minus">-</string>
     <string name="common_buttons_numericstepper_plus">+</string>
     <!-- welcome page -->
+    <string name="home_page_intro_text">Welcome to SawEars.\nClick the info button for instructions, or click 'start lesson' to get started!</string>
     <string name="home_page_button_startlesson">Start lesson</string>
     <string name="home_page_loading">Loading..</string>
     <string name="home_page_error">Error: %s</string>
-    <!-- account page -->
-    <string name="account_page_title">Account</string>
-    <string name="account_page_placeholdertext">Coming soon!\nAccount management features aren't implemented yet.\nIn the meantime, all features are usable without creating an account.</string>
-    <string name="account_page_buttons_home">Back home</string>
     <!-- user guide page -->
     <string name="userguide_page_title">User guide</string>
     <!--settings and lesson settings screens -->

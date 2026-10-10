@@ -14,6 +14,7 @@ import sawears.shared.generated.resources.Res
 import sawears.shared.generated.resources.app_name
 import sawears.shared.generated.resources.home_page_button_startlesson
 import sawears.shared.generated.resources.home_page_error
+import sawears.shared.generated.resources.home_page_intro_text
 import sawears.shared.generated.resources.home_page_loading
 
 
@@ -32,6 +33,9 @@ fun MainScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+                Text(
+                    stringResource(Res.string.home_page_intro_text)
+                )
                 Button(
                     onClick = onOpenLesson
                 ) {

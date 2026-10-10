@@ -6,7 +6,7 @@ SawEars is a pedagogical application aimed at players of the musical saw, or oth
 
 # Getting started
 The basic flow of the application is as follows:
-1. From the main screen, click [REF] to go to the song selection screen
+1. From the main screen, click Start Lesson to open the song selection screen
 2. Search the available options and select a song to play
 3. On the Lesson Settings screen adjust lesson settings (for more detail see the Lesson Settings section of this guide) and hit "Done" to confirm
 4. On the Lesson screen, hit the play button to start the lesson.
@@ -22,7 +22,8 @@ Enter a search term in the search bar to search available songs.
 The settings menu can be reached by clicking the gear icon in the top app bar. Settings are grouped in the following categories.
 
 ## Instrument
-Here you can set the playable range of your instrument. This is the highest and lowest note your instrument can produce. 
+Here you can set the playable range of your instrument. This is the highest and lowest note your instrument can produce.
+It's very important to set these correctly as SawEars uses this to adjust the pitch of songs to fit your saw's range!
 
 - Range Min: The lowest note your instrument can produce (MIDI value)
 - Range Max: The highest note your instrument can product (MIDI value)
