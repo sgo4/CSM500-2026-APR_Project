@@ -23,7 +23,7 @@ data class LessonUiState(
     val tempoBpm: Int,
     val mode: LessonMode,
     val leniencyThresholdCents: Float = 50f,
-    val playBackHeadPosition: Float = 0.5f,
+    val playBackHeadPosition: Float = 0.3f,
     val pitchDisplayMarginMidi: Float = 5f,
     val canvasWidthBeats: Float = 5f,
     val paused: Boolean = true,

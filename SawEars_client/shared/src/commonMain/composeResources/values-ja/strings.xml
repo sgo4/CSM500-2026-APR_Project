@@ -5,7 +5,7 @@
     <string name="common_buttons_numericstepper_minus">-</string>
     <string name="common_buttons_numericstepper_plus">+</string>
     <!-- welcome page -->
-    <string name="home_page_intro_text">SawEarsへようこそ。\n使い方の説明を見るには「i」ボタンを、レッスンを始めるには「レッスンを開始」をクリックしてください！</string>
+    <string name="home_page_intro_text">SawEarsへようこそ。使い方の説明を見るには「i」ボタンを、レッスンを始めるには「レッスンを開始」をクリックしてください！</string>
     <string name="home_page_button_startlesson">レッスンを開始</string>
     <string name="home_page_loading">読み込み中...</string>
     <string name="home_page_error">エラー: %s</string>

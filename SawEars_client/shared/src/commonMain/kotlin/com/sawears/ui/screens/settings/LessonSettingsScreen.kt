@@ -160,7 +160,8 @@ fun LessonSettingsScreenContent(
                 onUpdateDifficulty
             )
             ModeSettingRow(
-                onUpdateMode
+                mode=settings.mode,
+                onUpdateMode=onUpdateMode
             )
         }
         SettingsGroup(

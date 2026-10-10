@@ -133,7 +133,10 @@ fun SettingsScreenContent(
                 settings.difficulty,
                 onUpdateDifficulty
             )
-            ModeSettingRow(onUpdateMode)
+            ModeSettingRow(
+                mode=settings.mode,
+                onUpdateMode=onUpdateMode
+            )
         }
         // display settings
         SettingsGroup(

@@ -182,6 +182,7 @@ fun DifficultySettingRow(
 
 @Composable
 fun ModeSettingRow(
+    mode: LessonMode,
     onUpdateMode: (LessonMode) -> Unit
 ){
     SettingRow(
@@ -190,8 +191,6 @@ fun ModeSettingRow(
     ){
         // set component options based on all available modes
         val options = LessonMode.entries
-        // keep track of which option is selected
-        var selectedIndex by remember { mutableIntStateOf(0) }
 
         // Component adapted from:
         // https://developer.android.com/develop/ui/compose/components/segmented-button
@@ -203,10 +202,9 @@ fun ModeSettingRow(
                         count = options.size
                     ),
                     onClick = {
-                        onUpdateMode(options[index]) // update mode based on option index
-                        selectedIndex = index // update selection
+                        onUpdateMode(label) // update mode based on option index
                     },
-                    selected = index == selectedIndex,
+                    selected = label == mode,
                     label = { when (label){
                         LessonMode.PRACTICE -> Text(stringResource(Res.string.settings_options_mode_practice_name))
                         LessonMode.PERFORMANCE -> Text(stringResource(Res.string.settings_options_mode_performance_name))

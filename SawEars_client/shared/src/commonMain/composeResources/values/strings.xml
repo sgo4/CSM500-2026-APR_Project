@@ -5,7 +5,7 @@
     <string name="common_buttons_numericstepper_minus">-</string>
     <string name="common_buttons_numericstepper_plus">+</string>
     <!-- welcome page -->
-    <string name="home_page_intro_text">Welcome to SawEars.\nClick the info button for instructions, or click 'start lesson' to get started!</string>
+    <string name="home_page_intro_text">Welcome to SawEars. Click the info button for instructions, or click 'start lesson' to get started!</string>
     <string name="home_page_button_startlesson">Start lesson</string>
     <string name="home_page_loading">Loading..</string>
     <string name="home_page_error">Error: %s</string>
