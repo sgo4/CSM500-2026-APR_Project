@@ -19,6 +19,7 @@ import com.sawears.data.settings.createDataStore
 import com.sawears.diagnostics.NoOpRealTimeLatencyTracker
 import com.sawears.diagnostics.RealTimeLatencyTracker
 import com.sawears.domain.pitch.FastYinEstimator
+import com.sawears.domain.pitch.McLeodEstimator
 import com.sawears.domain.pitch.PitchEstimator
 import com.sawears.domain.settings.DifficultySettingsProvider
 import com.sawears.domain.settings.StandardDifficultySettingsProvider
@@ -64,7 +65,7 @@ object AppProviderModule {
 
     @Provides
     @Singleton
-    fun provideEstimator(): PitchEstimator = FastYinEstimator(
+    fun provideEstimator(): PitchEstimator = McLeodEstimator(
         44_100f,
         1024
     )

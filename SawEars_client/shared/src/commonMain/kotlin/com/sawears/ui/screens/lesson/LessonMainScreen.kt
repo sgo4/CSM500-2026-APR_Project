@@ -58,7 +58,7 @@ fun LessonMainScreen(
 
     val lessonState by viewModel.lessonState.collectAsStateWithLifecycle()
     // allow user to show/hide top bar to maximise screen space
-    var showTopBar by rememberSaveable { mutableStateOf(false)}
+    var showTopBar by rememberSaveable { mutableStateOf(true)}
 
     DisposableEffect(viewModel){
         if (!lessonState.recordAudio) {

@@ -38,9 +38,9 @@ class WindowsAppContainer(): AppContainer {
         JvmMicAudioSource()
     }
 
-    override val audioPlayerFactory = WindowsAudioPlayerFactory()// TODO
+    override val audioPlayerFactory = WindowsAudioPlayerFactory()
 
-    override val estimator = FastYinEstimator(
+    override val estimator = McLeodEstimator(
         44_100f,
         1024
     )
@@ -70,7 +70,7 @@ class WindowsDiagnosticAppContainer(): AppContainer {
         JvmMicAudioSource()
     }
 
-    override val audioPlayerFactory = WindowsAudioPlayerFactory()// TODO
+    override val audioPlayerFactory = WindowsAudioPlayerFactory()
 
     override val estimator = McLeodEstimator(
         44_100f,
