@@ -14,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 /**
  * SawEars main desktop application
  *
- * @param container app container containing dependenices
+ * @param container [AppContainer] containing dependenices
  */
 fun SawEarsApp(container: AppContainer) = application {
 

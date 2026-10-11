@@ -5,10 +5,6 @@ import kotlinx.serialization.Serializable
 /**
  * Final data layer representation of a song parsed from midiJSON
  *
- *
- * This is the layer at which transformation such as transposition should occur
- * as midi values are eaiser to work with than Hz values
- *
  * @property title (required)
  * @property composers (required)
  * @property year year of release (optional)

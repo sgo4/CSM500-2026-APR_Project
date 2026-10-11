@@ -102,14 +102,14 @@ class AudioOutTests {
         val sampleRate = 48_000f
         val estimator = TestEstimator(
             sampleRate = sampleRate,
-            frameSize = 1024
+            windowSize = 1024
         )
         testCases.forEach{ testCase ->
             val outputSource = SineWaveOutputSource(sampleRate = 48_000)
             outputSource.loadInput(testCase.song)
 
             // buffer same size as estimator framesize
-            val buffer = ShortArray(estimator.frameSize)
+            val buffer = ShortArray(estimator.windowSize)
             // holder for pitch estimates
             val estimates = mutableListOf<Double>()
             // read samples into buffer until exhausted, tracking pitch
@@ -164,9 +164,9 @@ data class PitchOutputTestCase(
  */
 class TestEstimator(
     override val sampleRate: Float,
-    override val frameSize: Int
+    override val windowSize: Int
 ): PitchEstimator {
-    private val estimator = FastYin(sampleRate, frameSize)
+    private val estimator = FastYin(sampleRate, windowSize)
     override fun estimate(frame: AudioWindow): PitchResult {
         return PitchResult(frame.frameId,estimator.getPitch(frame.samples).pitch.toDouble(), frame.timeStampNanos)
     }

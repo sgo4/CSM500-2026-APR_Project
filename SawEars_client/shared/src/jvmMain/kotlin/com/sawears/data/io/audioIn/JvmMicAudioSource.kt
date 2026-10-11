@@ -8,7 +8,7 @@ import kotlin.math.max
 
 /**
  * JVM implementation of a live audio source, providing stream of signed 16-bit
- * PCM samples from default mic.
+ * mono PCM samples from default mic.
  *
  * Implementation notes:
  * - Internally based on TargetDataLine (https://docs.oracle.com/javase/8/docs/api/javax/sound/sampled/TargetDataLine.html)

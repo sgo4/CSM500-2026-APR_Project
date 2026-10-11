@@ -92,7 +92,7 @@ data class Song(
 }
 
 /**
- * Extension function to convet data layer song representation to domain layer
+ * Extension function to convert data layer song representation to domain layer
  */
 fun MidiJsonSongDto.toSong(): Song{
     return Song(

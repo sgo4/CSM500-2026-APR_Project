@@ -6,7 +6,7 @@ import com.sawears.data.io.audioIn.AudioWindow
  * Model layer interface representing a pitch estimator
  *
  * @property sampleRate
- * @property frameSize
+ * @property windowSize
  */
 interface PitchEstimator {
 
@@ -21,7 +21,7 @@ interface PitchEstimator {
      * Size of the frame - again some estimators can infer this from audio frame
      * but others require this information on initialization
      */
-    val frameSize: Int
+    val windowSize: Int
 
     /**
      * Estimates the pitch of a single audio frame.

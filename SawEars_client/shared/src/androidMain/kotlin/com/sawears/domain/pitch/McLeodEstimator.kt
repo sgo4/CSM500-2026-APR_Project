@@ -10,14 +10,16 @@ import com.sawears.data.io.audioIn.AudioWindow
  *
  * @author Joren Six
  * @author Soeren Otter-Sharp (interface wrapped only)
+ * @property sampleRate samples per second in Hz
+ * @property windowSize the size of audio window in n_samples
  */
 class McLeodEstimator(
     override val sampleRate: Float,
-    override val frameSize: Int
+    override val windowSize: Int
 ): PitchEstimator {
     private val estimator = McLeodPitchMethod(
         sampleRate,
-        frameSize)
+        windowSize)
     override fun estimate(frame: AudioWindow): PitchResult {
         return PitchResult(
             frameId=frame.frameId,

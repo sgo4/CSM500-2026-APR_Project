@@ -12,9 +12,9 @@ import com.sawears.data.io.audioIn.AudioWindow
  */
 class McLeodEstimator(
     override val sampleRate: Float,
-    override val frameSize: Int
+    override val windowSize: Int
 ): PitchEstimator {
-    private val estimator = McLeodPitchMethod(sampleRate, frameSize)
+    private val estimator = McLeodPitchMethod(sampleRate, windowSize)
     override fun estimate(frame: AudioWindow): PitchResult {
         return PitchResult(
             frameId=frame.frameId,

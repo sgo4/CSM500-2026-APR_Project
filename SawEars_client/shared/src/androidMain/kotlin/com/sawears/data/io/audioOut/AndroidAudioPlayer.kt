@@ -7,6 +7,13 @@ import kotlin.math.max
 
 /**
  * Android implementation of audio player interface
+ *
+ * @property audioSource and [AudioOutputSource] capable of providing
+ *  a stream of PCM samples
+ *
+ *  Implementation notes:
+ *  - Platform specific implementation based on Android Audio track
+ *  (https://developer.android.com/reference/android/media/AudioTrack)
  */
 class AndroidAudioPlayer(
     override val audioSource: AudioOutputSource
@@ -39,8 +46,11 @@ class AndroidAudioPlayer(
     private var _track: AudioTrack? = null
 
 
-    // Implementation detail: android audio record is capable of providing samples as Shorts, so no need
-    // to manually convert bytes or worry about endianness as in the desktop implementation
+    /*
+     Implementation note: android audio record is capable of providing samples as Shorts,
+     so no need to manually convert bytes or worry about endianness as in the desktop
+      implementation
+     */
     override fun writeWindow(): Int {
 
         val track = getTrack()

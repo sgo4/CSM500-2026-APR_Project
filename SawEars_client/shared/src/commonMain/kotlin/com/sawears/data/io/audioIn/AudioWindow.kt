@@ -1,11 +1,11 @@
 package com.sawears.data.io.audioIn
 
 /**
- * A single frame of audio
+ * Represents a single window of audio samples
  *
  * @param frameId
  * @param samples an array of normalised PCM samples
- * @param timeStampNanos time captured
+ * @param timeStampNanos timestamp captured
  */
 class AudioWindow(
     val frameId: Long,

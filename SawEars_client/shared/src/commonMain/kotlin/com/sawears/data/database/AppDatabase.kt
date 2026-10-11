@@ -36,6 +36,7 @@ fun getSeedVersion(): Int {
  *
  * @param db an [AppDatabase] object to seed
  * @param seedVersion version id to track updates
+ * @param seedData a [SeedData] object containing data to seed
  */
 suspend fun seedDatabase(
     db: AppDatabase,
@@ -81,12 +82,22 @@ suspend fun addSeedData(
     )
 }
 
+/**
+ * Represents the initial data seeded to the database on app install
+ *
+ * @property songs a list of [SongEntity]
+ * @property composers a list of [ComposerEntity]
+ * @property lookups a list of [SongComposerLookupEntity]
+ */
 data class SeedData(
     val songs: List<SongEntity>,
     val composers: List<ComposerEntity>,
     val lookups: List<SongComposerLookupEntity>
 )
 
+/**
+ * Determines what data specifically gets seeded on app installation
+ */
 private fun getSeedData(): SeedData {
     val songs = listOf(
         SongEntity(

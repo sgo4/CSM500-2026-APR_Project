@@ -5,7 +5,7 @@ import dagger.hilt.android.HiltAndroidApp
 
 /**
  * This is the entry point for Hilt dependency injection.
- * To run the app, see MainActivity
+ * For application entry point, see MainActivity
  */
 @HiltAndroidApp
 class SawEarsApplication : Application()

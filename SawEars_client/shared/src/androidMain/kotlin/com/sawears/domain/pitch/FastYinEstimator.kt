@@ -10,12 +10,14 @@ import com.sawears.data.io.audioIn.AudioWindow
  *
  * @author Joren Six
  * @author Soeren Otter-Sharp
+ * @property sampleRate samples per second in Hz
+ * @property windowSize the size of audio window in n_samples
  */
 class FastYinEstimator(
     override val sampleRate: Float,
-    override val frameSize: Int
+    override val windowSize: Int
 ): PitchEstimator {
-    private val estimator = FastYin(sampleRate, frameSize)
+    private val estimator = FastYin(sampleRate, windowSize)
     override fun estimate(frame: AudioWindow): PitchResult {
         return PitchResult(frame.frameId,estimator.getPitch(frame.samples).pitch.toDouble(), frame.timeStampNanos)
     }

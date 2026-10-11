@@ -8,8 +8,8 @@ import sawears.shared.generated.resources.Res
 import org.jetbrains.compose.resources.MissingResourceException
 
 /**
- * Public facing interface for song data, agnostic of source format
- *
+ * Main entrypoint for domain layer to request [Song] data.
+ * Agnostic to details of loading or parsing.
  */
 interface SongRepository{
 

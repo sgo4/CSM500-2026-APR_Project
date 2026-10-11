@@ -14,6 +14,9 @@ interface AudioOutputSource {
 
     val sampleRate: Int
 
+    /**
+     * Load [Song] data from which to generate audio
+     */
     fun loadInput(input: Song)
     fun reset()
 

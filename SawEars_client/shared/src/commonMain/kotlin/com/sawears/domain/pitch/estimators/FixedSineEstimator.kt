@@ -13,7 +13,7 @@ import kotlin.math.sin
  */
 class FixedSineEstimator(
     override val sampleRate: Float,
-    override val frameSize: Int,
+    override val windowSize: Int,
     private val frequency: Float = 2f,
     private val minPitcHz: Int = 600,
     private val maxPitchHz: Int = 900

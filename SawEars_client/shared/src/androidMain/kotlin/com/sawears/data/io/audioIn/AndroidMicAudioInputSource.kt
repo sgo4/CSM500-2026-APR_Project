@@ -22,7 +22,7 @@ constructor(
 
     init {
         require(windowSize > 0) {
-            "frameSize must be greater than zero"
+            "windowSize must be greater than zero"
         }
 
         require(sampleRate > 0) {
@@ -42,7 +42,7 @@ constructor(
     // track channel open / close
     @Volatile
     private var closed = false
-
+    // used to assign each frame a unique id
     private var frameId = 0L
 
     // android specific audio recorder
@@ -84,14 +84,9 @@ constructor(
     }
 
     /**
-     * Blocks until one complete frame has been captured.
+     * Capture a single window of bufferSize samples
      *
-     * Note, "frame" here refers to a frame of bufferSize samples, whereas
-     * in android terminology a frame refers to a single sample across all
-     * channels. As audio recording is specified to be mono, we use samples
-     * to represent what android refers to as frames.
-     *
-     * Callable from a worker thread / dispatchers.IO
+     * @return [AudioWindow]
      */
     override fun readWindow(): AudioWindow? {
         if (closed) return null
@@ -107,7 +102,6 @@ constructor(
                 windowSize - offset,
                 AudioRecord.READ_BLOCKING
             )
-
 
             if (count < 0) {
                 return null
@@ -127,6 +121,9 @@ constructor(
         return AudioWindow(frameId++, samples.copyOf(), System.nanoTime())
     }
 
+    /**
+     * Close the input source and release resources
+     */
     override fun close() {
         if (closed) return
         closed = true
