@@ -349,8 +349,14 @@ class LessonViewModel(
      *
      * @property frameDeltaNanos time delta between current and previous frame
      */
-    fun onPlaybackFrame(frameDeltaNanos: Long, latestPitch: PitchResult?){
-        updateAnimationState(frameDeltaNanos, latestPitch?.frequencyHz?.toFloat()?: -1f)
+    fun onPlaybackFrame(
+        frameDeltaNanos: Long,
+        latestPitch: PitchResult?,
+        paused: Boolean
+    ){
+        if (!paused) {
+            updateAnimationState(frameDeltaNanos, latestPitch?.frequencyHz?.toFloat() ?: -1f)
+        }
     }
 
     private fun updateAnimationState(frameDeltaNanos: Long, latestPitchHz: Float){

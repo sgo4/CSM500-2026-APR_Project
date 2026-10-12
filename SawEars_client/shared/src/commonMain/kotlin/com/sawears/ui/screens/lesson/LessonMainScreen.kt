@@ -254,12 +254,15 @@ fun providePitchDetectionstate(
                     val frameDeltaNanos = (currentFrameNanos - previousFrameNanos)
                     previousFrameNanos = currentFrameNanos
 
-                    if (!paused){
-                        viewModel.onPlaybackFrame(
-                            frameDeltaNanos,
-                            latestPitch
-                        )
-                    }
+                    /*
+                     * Allow viewmodel to process the new animation frame
+                     */
+                    viewModel.onPlaybackFrame(
+                        frameDeltaNanos,
+                        latestPitch,
+                        paused
+                    )
+
                 }
             }
         }
